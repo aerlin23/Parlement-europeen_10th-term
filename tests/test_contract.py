@@ -66,8 +66,9 @@ class DirectoryContract(unittest.TestCase):
 
     def test_photo_fallback(self):
         self.assertIn("const thumb='./thumbs/'", HTML)
-        self.assertIn("[thumb,local,official]", HTML)
-        self.assertIn("[local,official]", HTML)
+        self.assertIn("photoAssets.thumbs.has", HTML)
+        self.assertIn("photo-assets.json", HTML)
+        self.assertIn("availableLocal?[local,official]:[official]", HTML)
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
