@@ -317,7 +317,20 @@ const latestMembership=members.reduce((v,m)=>m.membershipCheckedAt>v?m.membershi
 if(latestMembership){const date=new Date(latestMembership+'T12:00:00Z');if(!isNaN(date))$('dataUpdated').textContent='Effectifs et groupes contrôlés le '+date.toLocaleDateString('fr-BE',{day:'numeric',month:'long',year:'numeric'})+' · Commissions et fonctions : vérification distincte';}
 populate();const params=new URLSearchParams(location.search),personParam=params.get('person'),selectedPerson=personParam&&members.find(m=>String(m.id)===personParam);const groupParam=params.get('group');if(selectedPerson){$('search').value=selectedPerson.name;$('directoryTab').click()}else if(groupParam&&[...$('group').options].some(o=>o.value===groupParam)){$('group').value=groupParam;$('sort').value='role'}applyGroupTheme();render();if(selectedPerson)requestAnimationFrame(()=>{$('grid').scrollIntoView({behavior:'smooth',block:'start'})})}).catch(()=>{$('count').textContent='Impossible de charger les données. Actualise la page.';$('startStudy').disabled=true});
 if('serviceWorker' in navigator){
- window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(()=>{}));
+ window.addEventListener('load',async()=>{
+  try{
+   const registration=await navigator.serviceWorker.register('./sw.js?v=7',{scope:'./',updateViaCache:'none'});
+   registration.update().catch(()=>{});
+   document.addEventListener('visibilitychange',()=>{if(!document.hidden)registration.update().catch(()=>{})});
+   // Une seule recharge lorsque la nouvelle version prend le contrôle.
+   navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(!session&&!sessionStorage.getItem('pe-pwa-reloaded-v7')){
+     sessionStorage.setItem('pe-pwa-reloaded-v7','1');
+     location.reload();
+    }
+   });
+  }catch(error){console.warn('Mise à jour PWA indisponible',error)}
+ });
 }
 </script></body></html>
 
