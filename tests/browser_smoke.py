@@ -44,7 +44,7 @@ def test(page, base):
         page.locator("#nextStudy").click()
         check(page, page.locator("#quizChoices button").count()==4, "Next quiz question broken")
         page.locator("#stopStudy").click()
-        page.locator("#trainingTab").click()
+        page.locator("#restartStudy").click()
     check(page, not errors, "JavaScript runtime errors: "+repr(errors))
 
 def main():
