@@ -1,0 +1,42 @@
+/* Trombinoscope PE – service worker. Les portraits consultés sont mis en cache au fur et à mesure. */
+const VERSION='pe-pwa-v1';
+const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
+const OFFLINE=['./','./index.html','./members.json','./committees.json','./manifest.webmanifest','./icon.svg','./assets/parlement-logo.png'];
+self.addEventListener('install',event=>{
+ event.waitUntil(caches.open(CORE).then(cache=>cache.addAll(OFFLINE)).then(()=>self.skipWaiting()));
+});
+self.addEventListener('activate',event=>{
+ event.waitUntil(Promise.all([caches.keys().then(names=>Promise.all(names.filter(n=>n.startsWith('pe-pwa-')&&n!==CORE&&n!==PHOTOS).map(n=>caches.delete(n)))),self.clients.claim()]));
+});
+self.addEventListener('fetch',event=>{
+ const request=event.request;
+ if(request.method!=='GET')return;
+ const url=new URL(request.url);
+ // Conserver hors ligne les portraits déjà consultés, même si le serveur distant ne fournit pas CORS.
+ if(url.hostname==='www.europarl.europa.eu'&&url.pathname.startsWith('/mepphoto/')&&url.pathname.endsWith('.jpg')){
+  event.respondWith(caches.open(PHOTOS).then(async cache=>{
+   const hit=await cache.match(request);if(hit)return hit;
+   const response=await fetch(request);
+   if(response.ok||response.type==='opaque'){
+    await cache.put(request,response.clone()).catch(()=>{});
+    // Limiter la place occupée sur le téléphone.
+    const items=await cache.keys();if(items.length>300)await cache.delete(items[0]);
+   }
+   return response;
+  }));
+  return;
+ }
+ if(url.origin!==self.location.origin)return;
+ const isDocument=request.mode==='navigate',isData=/\/(members|committees)\.json$/.test(url.pathname);
+ if(isDocument||isData){
+  event.respondWith(fetch(request).then(async response=>{
+   if(response.ok){const cache=await caches.open(CORE);cache.put(request,response.clone()).catch(()=>{});}
+   return response;
+  }).catch(async()=>{const cache=await caches.open(CORE);return (await cache.match(request))||(isDocument?await cache.match('./index.html'):undefined)||Response.error()}));
+  return;
+ }
+ event.respondWith(caches.match(request).then(hit=>hit||fetch(request).then(response=>{
+  if(response.ok)caches.open(CORE).then(cache=>cache.put(request,response.clone())).catch(()=>{});
+  return response;
+ })));
+});
