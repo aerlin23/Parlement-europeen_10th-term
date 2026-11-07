@@ -35,7 +35,7 @@ function sources(m){const list=fnEntries(m);const cs=committeesOf(m).filter(c=>c
 function populate(){for(const [id,values,label] of [['group',[...new Set(members.map(m=>m.group))],v=>v],['country',[...new Set(members.map(m=>m.country))],v=>fr[v]||v],['committee',[...new Set(members.flatMap(m=>committeesOf(m).filter(c=>c.status==='MEMBER').map(c=>c.code)))],v=>v+' — '+(committeeDefs[v]?.name||v)+(committeeDefs[v]?.type==='subcommittee'?' (sous-commission)':committeeDefs[v]?.type==='special'?' (spéciale)':'')]]){if(!$(id))continue;const selected=$(id).value;$(id).replaceChildren($(id).options[0]);for(const v of values.filter(Boolean).sort((a,b)=>label(a).localeCompare(label(b),'fr'))){const o=el('option','',label(v));o.value=v;$(id).append(o)}$(id).value=values.includes(selected)?selected:''}$('total').textContent=members.length;$('countries').textContent=new Set(members.map(m=>m.country)).size;$('localBanner').hidden=!imported}
 function groupSizeOrder(a,b,sizes){if(a.group===b.group)return 0;if(a.group==='NI')return 1;if(b.group==='NI')return -1;return (sizes[b.group]||0)-(sizes[a.group]||0)||(a.group||'').localeCompare(b.group||'','fr')}
 function selectMembers(){const groupSizes=members.reduce((sizes,m)=>{sizes[m.group]=(sizes[m.group]||0)+1;return sizes},{});const q=norm(field('search').trim()),f=field('function'),c=field('committee'),status=field('assignment'),kind=field('kind');return members.filter(m=>(!field('group')||m.group===field('group'))&&(!field('gender')||m.gender===field('gender'))&&(!field('country')||m.country===field('country'))&&matchesFunction(m,f)&&(!(c||status||kind)||committeesOf(m).some(x=>(!c||(x.code===c&&x.status==='MEMBER'))&&(!status||x.status===status)&&(!kind||committeeDefs[x.code]?.type===kind)))&&norm(m.name).includes(q)).sort((a,b)=>{let by=0;if(field('sort')==='role')by=rank(a)-rank(b)||groupSizeOrder(a,b,groupSizes);if(field('sort')==='country')by=(fr[a.country]||a.country).localeCompare(fr[b.country]||b.country,'fr');if(field('sort')==='group')by=(a.group||'').localeCompare(b.group||'','fr');return by||surname(a).localeCompare(surname(b),'fr',{sensitivity:'base'})||a.name.localeCompare(b.name,'fr')})}
-function render(){filtered=selectMembers();$('grid').replaceChildren();for(const m of filtered){const card=el('article','card'),info=el('div','info'),name=el('a','name',m.name);name.href=`https://www.europarl.europa.eu/meps/fr/${m.id}/_/home`;name.target='_blank';name.rel='noopener';info.append(badges(m),name,el('div','country',`${flags[m.country]||''} ${fr[m.country]||m.country}`),el('div','group-label',m.group||''),committeeBox(m));const official=el('a','official','Fiche Parlement ↗');official.href=name.href;official.target='_blank';official.rel='noopener';info.append(official);card.append(imageBox(m),info);$('grid').append(card)}$('count').textContent=`${filtered.length} député${filtered.length>1?'s':''} sur ${members.length}`;$('empty').hidden=!!filtered.length;const n=t=>members.flatMap(afs).filter(f=>f.type===t).length;$('coverage').textContent=`Commissions : ${n('COMMITTEE_CHAIR')} présidences · ${n('COMMITTEE_VICE_CHAIR')} vice-présidences. Parlement : ${n('EP_PRESIDENT')} présidence · ${n('EP_VICE_PRESIDENT')} vice-présidences · ${n('EP_QUAESTOR')} questeurs.`;const eligible=filtered.filter(canQuiz);$('startStudy').disabled=!eligible.length;$('startStudy').textContent=`Commencer · ${eligible.length} photo${eligible.length>1?'s':''}`;$('quizAvailability').textContent='';}
+function render(){filtered=selectMembers();$('grid').replaceChildren();for(const m of filtered){const card=el('article','card'),info=el('div','info'),name=el('a','name',m.name);name.href=`https://www.europarl.europa.eu/meps/fr/${m.id}/_/home`;name.target='_blank';name.rel='noopener';info.append(badges(m),name,el('div','country',`${flags[m.country]||''} ${fr[m.country]||m.country}`),el('div','group-label',m.group||''),committeeBox(m));const official=el('a','official','Fiche Parlement ↗');official.href=name.href;official.target='_blank';official.rel='noopener';info.append(official);card.append(imageBox(m),info);$('grid').append(card)}$('count').textContent=`${filtered.length} député${filtered.length>1?'s':''} sur ${members.length}`;$('empty').hidden=!!filtered.length;const n=t=>members.flatMap(afs).filter(f=>f.type===t).length;$('coverage').textContent=`Commissions : ${n('COMMITTEE_CHAIR')} présidences · ${n('COMMITTEE_VICE_CHAIR')} vice-présidences. Parlement : ${n('EP_PRESIDENT')} présidence · ${n('EP_VICE_PRESIDENT')} vice-présidences · ${n('EP_QUAESTOR')} questeurs.`;const eligible=filtered.filter(canQuiz);$('startStudy').disabled=!eligible.length;$('startStudy').textContent=`Commencer · ${eligible.length} photo${eligible.length>1?'s':''}`;$('quizAvailability').textContent='Session de 20 questions maximum. Les erreurs reviennent plus souvent, les bonnes réponses sont espacées.';}
 
 const GROUP_THEMES={
  'PPE':{name:'PPE',title:'Parti populaire européen',repo:'PPE_10th-term',file:'group-logo.png',primary:'#0155a0',accent:'#fbb034',soft:'#f2f5f7'},
@@ -112,23 +112,50 @@ function storeQuizError(m){const key=String(m.id);const old=quizErrors[key];quiz
 function quizErrorTotal(){return Object.values(quizErrors).reduce((n,x)=>n+(Number(x.count)||0),0)}
 function quizErrorSummary(){return Object.values(quizErrors).filter(x=>x&&x.name).sort((a,b)=>b.count-a.count||a.name.localeCompare(b.name,'fr')).map(x=>x.name+' ('+x.count+')').join(' · ')}
 function quizProgressLabel(done){return `Question ${session.index+1} / ${session.deck.length} · Réussites : ${session.correct}/${done} · Erreurs : ${session.missed.length} · Historique : ${quizErrorTotal()}`}
-function weightedDeck(list){
- const deck=shuffle([...list]);
- // Revoir plus souvent les députés déjà ratés, mais limiter les répétitions.
- const review=shuffle(list.filter(m=>(quizErrors[String(m.id)]?.count||0)>0));
- for(const m of review){
-  const repetitions=Math.min(2,Math.ceil(Math.log2((quizErrors[String(m.id)]?.count||0)+1)));
-  for(let n=0;n<repetitions;n++){
-   const positions=[];for(let i=4;i<deck.length;i++)if(String(deck[i].id)!==String(m.id)&&String(deck[Math.max(0,i-1)].id)!==String(m.id))positions.push(i);
-   const insert=positions.length?positions[Math.floor(Math.random()*positions.length)]:deck.length;
-   deck.splice(insert,0,m);
-  }
+const QUIZ_PROGRESS_KEY='trombinoscope-quiz-progress-v2-'+CONFIG.repo;
+function readQuizProgress(){
+ try{
+  const value=JSON.parse(localStorage.getItem(QUIZ_PROGRESS_KEY)||'{}');
+  return value&&typeof value==='object'&&!Array.isArray(value)?{round:Number(value.round)||0,people:value.people&&typeof value.people==='object'?value.people:{}}:{round:0,people:{}}
+ }catch{return {round:0,people:{}}}
+}
+let quizProgress=readQuizProgress();
+function saveQuizProgress(){try{localStorage.setItem(QUIZ_PROGRESS_KEY,JSON.stringify(quizProgress))}catch{}}
+function spacedDeck(list){
+ const size=Math.min(20,list.length),round=quizProgress.round;
+ // Le tirage favorise les erreurs déjà commises, puis les portraits jamais vus.
+ // Une bonne série repousse progressivement la prochaine révision (2/4/8/16 séances).
+ const candidates=shuffle([...list]).map(m=>{
+  const record=quizProgress.people[String(m.id)]||{};
+  const misses=Number(record.misses)||Number(quizErrors[String(m.id)]?.count)||0;
+  const due=Number(record.due)||0;
+  const neverSeen=!Number(record.seen);
+  const overdue=due<=round;
+  let weight=neverSeen?3:overdue?2:0.08;
+  if(misses&&overdue)weight+=Math.min(12,3+misses*1.6);
+  if(misses&&!overdue)weight=Math.max(weight,0.2);
+  return {m,weight};
+ });
+ const selected=[];
+ while(selected.length<size&&candidates.length){
+  const total=candidates.reduce((n,x)=>n+x.weight,0);
+  let ticket=Math.random()*total,idx=0;
+  for(;idx<candidates.length-1;idx++){ticket-=candidates[idx].weight;if(ticket<=0)break}
+  selected.push(candidates.splice(idx,1)[0].m);
  }
- return deck;
+ return selected;
+}
+function updateQuizProgress(m,correct){
+ const key=String(m.id),previous=quizProgress.people[key]||{};
+ const streak=correct?(Number(previous.streak)||0)+1:0;
+ const delay=correct?Math.min(16,2**Math.min(streak,4)):1;
+ quizProgress.people[key]={seen:(Number(previous.seen)||0)+1,misses:(Number(previous.misses)||0)+(correct?0:1),streak,due:quizProgress.round+delay};
+ saveQuizProgress();
 }
 function startSession(list=filtered){
  const eligible=list.filter(canQuiz);if(!eligible.length)return;
- session={deck:weightedDeck(eligible),index:0,correct:0,missed:[],answered:false,mode:$('quizMode').value,reviewedInSession:new Set()};
+ quizProgress.round++;saveQuizProgress();
+ session={deck:spacedDeck(eligible),index:0,correct:0,missed:[],answered:false,mode:$('quizMode').value};
  $('studyIntro').hidden=true;$('studyEnd').hidden=true;$('studySession').hidden=false;$('filters').hidden=true;$('count').hidden=true;
  showStudy();$('training').scrollIntoView({block:'start'});
 }
@@ -158,15 +185,8 @@ function answerQuiz(id){
  if(!buttons.some(b=>b.dataset.answerId===id))return;
  session.answered=true;
  const correct=String(id)===String(m.id);
- if(correct)session.correct++;else{
-  session.missed.push(m);storeQuizError(m);
-  // Répéter une fois la photo ratée après quelques autres questions.
-  if(!session.reviewedInSession.has(String(m.id))){
-   session.reviewedInSession.add(String(m.id));
-   const delay=5+Math.floor(Math.random()*4),position=Math.min(session.deck.length,session.index+delay+1);
-   session.deck.splice(position,0,m);
-  }
- }
+ if(correct)session.correct++;else{session.missed.push(m);storeQuizError(m)}
+ updateQuizProgress(m,correct);
  for(const button of buttons){
   button.disabled=true;
   if(session.mode==='name-photo'){
