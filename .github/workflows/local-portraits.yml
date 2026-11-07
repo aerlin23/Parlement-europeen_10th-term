@@ -5,12 +5,14 @@ on:
     # Vérifier et compléter les portraits chaque deuxième jour du mois.
     - cron: "20 4 2 * *"
   push:
+    branches: [main]
     paths:
       - ".github/workflows/local-portraits.yml"
       - "members.json"
 permissions:
   contents: write
   issues: write
+  pull-requests: write
 concurrency:
   group: local-portraits
   cancel-in-progress: false
@@ -99,15 +101,21 @@ jobs:
           Path("photo-assets.json").write_text(json.dumps(manifest,separators=(",",":"))+"\n",encoding="utf-8")
           print("Inventaire :",len(manifest["photos"]),"photos,",len(manifest["thumbs"]),"miniatures")
           PY
-      - name: Publier les portraits sur GitHub Pages
+      - name: Proposer les photos et miniatures après validation
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add photos/ thumbs/ photo-assets.json
           if ! git diff --cached --quiet; then
-            git commit -m "Actualiser les portraits et miniatures WebP du trombinoscope"
-            git pull --rebase origin main
-            git push origin HEAD:main
+            BRANCH="auto/portraits-${GITHUB_RUN_ID}"
+            git switch -c "$BRANCH"
+            git commit -m "Proposer les portraits et miniatures actualisés"
+            git push origin "HEAD:refs/heads/$BRANCH"
+            gh pr create --base main --head "$BRANCH" \
+              --title "Contrôle : nouveaux portraits du trombinoscope" \
+              --body "Photos et miniatures proposées, avec inventaire associé. Vérifier leur réutilisation autorisée, leur qualité et les tests avant fusion."
           fi
       - name: Signaler une erreur de téléchargement sans doublon
         if: failure()
