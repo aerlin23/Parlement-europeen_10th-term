@@ -1,7 +1,7 @@
 /* Trombinoscope PE – service worker. Les portraits consultés sont mis en cache au fur et à mesure. */
-const VERSION='pe-pwa-v1';
+const VERSION='pe-pwa-v2';
 const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
-const OFFLINE=['./','./index.html','./members.json','./committees.json','./manifest.webmanifest','./icon.svg','./assets/parlement-logo.png'];
+const OFFLINE=['./','./index.html','./members.json','./committees.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CORE).then(cache=>cache.addAll(OFFLINE)).then(()=>self.skipWaiting()));
 });
@@ -23,6 +23,15 @@ self.addEventListener('fetch',event=>{
     const items=await cache.keys();if(items.length>300)await cache.delete(items[0]);
    }
    return response;
+  }));
+  return;
+ }
+ // Logos des groupes : conserver en cache ceux que l'utilisateur a affichés.
+ if(url.origin===self.location.origin&&url.pathname.includes('/assets/group-logo.')){
+  event.respondWith(caches.open(CORE).then(async cache=>{
+   const hit=await cache.match(request);
+   try{const response=await fetch(request);if(response.ok)cache.put(request,response.clone()).catch(()=>{});return response}
+   catch{return hit||Response.error()}
   }));
   return;
  }
