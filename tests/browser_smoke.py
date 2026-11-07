@@ -35,6 +35,7 @@ def test(page, base):
         check(page, page.locator("#quizChoices button").count()==4, "Quiz must have exactly 4 answers")
         check(page, page.locator("#studyProgress").inner_text().startswith("Question 1 / 20"), "Quiz length is not 20")
         if mode=="name-photo":
+            page.wait_for_function("document.querySelectorAll('#quizChoices img').length === 4", timeout=10000)
             check(page, page.locator("#quizChoices img").count()==4, "Name-photo mode missing images")
         else:
             check(page, page.locator("#studyPhoto img").count()==1, "Photo-name mode missing main portrait")
