@@ -63,6 +63,13 @@ def test(page, base):
     check(page, backup.suggested_filename.endswith(".json"), "Backup must be JSON")
     page.locator("#progressFile").set_input_files(str(backup.path()))
     check(page, "Progression restaurée" in page.locator("#backupStatus").inner_text(), "Backup import failed")
+    if os.environ.get("TEST_BROWSER", "chromium")=="chromium":
+        page.wait_for_function("navigator.serviceWorker?.controller != null",timeout=15000)
+        page.context.set_offline(True)
+        page.reload(wait_until="domcontentloaded")
+        page.wait_for_function("Number(document.querySelector('#total')?.textContent) >= 680",timeout=15000)
+        check(page, page.locator("#quizMode").count()==1, "Quiz modes unavailable offline")
+        page.context.set_offline(False)
     check(page, not errors, "JavaScript runtime errors: "+repr(errors))
 
 def main():
