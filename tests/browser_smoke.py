@@ -35,8 +35,8 @@ def test(page, base):
         check(page, page.locator("#quizChoices button").count()==4, "Quiz must have exactly 4 answers")
         check(page, page.locator("#studyProgress").inner_text().startswith("Question 1 / 20"), "Quiz length is not 20")
         if mode=="name-photo":
-            page.wait_for_function("document.querySelectorAll('#quizChoices img').length === 4", timeout=10000)
-            check(page, page.locator("#quizChoices img").count()==4, "Name-photo mode missing images")
+            check(page, page.locator("#quizChoices button.photo-choice").count()==4, "Name-photo mode missing four photo choices")
+            check(page, page.locator("#quizChoices button.photo-choice").evaluate_all("(buttons) => buttons.every(b => b.querySelector('img, .fallback'))"), "Name-photo choice has neither photo nor fallback")
         else:
             check(page, page.locator("#studyPhoto img").count()==1, "Photo-name mode missing main portrait")
         page.locator("#quizChoices button").first.click()
