@@ -1,5 +1,5 @@
 /* Trombinoscope PE – service worker. Les portraits consultés sont mis en cache au fur et à mesure. */
-const VERSION='pe-pwa-v5';
+const VERSION='pe-pwa-v6';
 const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
 const OFFLINE=['./','./index.html','./members.json','./committees.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png'];
 self.addEventListener('install',event=>{
@@ -12,20 +12,9 @@ self.addEventListener('fetch',event=>{
  const request=event.request;
  if(request.method!=='GET')return;
  const url=new URL(request.url);
- // Conserver hors ligne les portraits déjà consultés, même si le serveur distant ne fournit pas CORS.
- if(url.hostname==='www.europarl.europa.eu'&&url.pathname.startsWith('/mepphoto/')&&url.pathname.endsWith('.jpg')){
-  event.respondWith(caches.open(PHOTOS).then(async cache=>{
-   const hit=await cache.match(request);if(hit)return hit;
-   const response=await fetch(request);
-   if(response.ok||response.type==='opaque'){
-    await cache.put(request,response.clone()).catch(()=>{});
-    // Limiter la place occupée sur le téléphone.
-    const items=await cache.keys();if(items.length>300)await cache.delete(items[0]);
-   }
-   return response;
-  }));
-  return;
- }
+ // Ne pas intercepter les photos du Parlement européen : Safari iOS les charge directement.
+ // Un échec de récupération en cache opaque ne doit jamais bloquer l'affichage du portrait.
+ if(url.hostname==='www.europarl.europa.eu'&&url.pathname.startsWith('/mepphoto/'))return;
  // Logos des groupes : conserver en cache ceux que l'utilisateur a affichés.
  if(url.origin===self.location.origin&&url.pathname.includes('/assets/group-logo.')){
   event.respondWith(caches.open(CORE).then(async cache=>{
