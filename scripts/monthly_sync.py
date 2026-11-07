@@ -94,7 +94,7 @@ def main():
         else:
             item={
                 **entry,"lastName":entry["name"].split()[-1].title(),
-                "groupLabel":"","gender":"UNKNOWN","genderSource":"",
+                "groupLabel":"","gender":"","genderSource":"",
                 "role":"","coordinators":[],"committees":[],
                 "parliamentaryFunctions":[]
             }
