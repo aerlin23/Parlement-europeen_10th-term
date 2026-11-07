@@ -1,40 +1,66 @@
-/* Trombinoscope PE – service worker. Les portraits consultés sont mis en cache au fur et à mesure. */
-const VERSION='pe-pwa-v8';
+/* Trombinoscope PE : ressources critiques hors-ligne et mises à jour consenties. */
+const VERSION='pe-pwa-v9';
 const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
-const OFFLINE=['./','./index.html','./members.json','./committees.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png'];
+const OFFLINE=['./','./index.html','./members.json','./committees.json','./photo-assets.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png'];
 self.addEventListener('install',event=>{
- event.waitUntil(caches.open(CORE).then(cache=>cache.addAll(OFFLINE)).then(()=>self.skipWaiting()));
+ event.waitUntil(caches.open(CORE).then(cache=>cache.addAll(OFFLINE)));
+});
+self.addEventListener('message',event=>{
+ if(event.data?.type==='SKIP_WAITING')self.skipWaiting();
 });
 self.addEventListener('activate',event=>{
- event.waitUntil(Promise.all([caches.keys().then(names=>Promise.all(names.filter(n=>n.startsWith('pe-pwa-')&&n!==CORE&&n!==PHOTOS).map(n=>caches.delete(n)))),self.clients.claim()]));
+ event.waitUntil((async()=>{
+  const keys=await caches.keys();
+  await Promise.all(keys.filter(k=>k.startsWith('pe-pwa-')&&k!==CORE&&k!==PHOTOS).map(k=>caches.delete(k)));
+  await self.clients.claim();
+ })());
 });
+async function fromNetworkOrCache(request,isDocument){
+ const cache=await caches.open(CORE);
+ try{
+  const response=await fetch(new Request(request,{cache:'no-store'}));
+  if(response.ok)await cache.put(request,response.clone());
+  return response;
+ }catch{
+  return await cache.match(request)||(isDocument?await cache.match('./index.html'):null)||Response.error();
+ }
+}
+async function cachePhoto(request){
+ const cache=await caches.open(PHOTOS);
+ const hit=await cache.match(request);
+ if(hit)return hit;
+ try{
+  const response=await fetch(request);
+  if(response.ok){
+   await cache.put(request,response.clone());
+   const keys=await cache.keys();
+   // Éviter un stockage illimité sur iOS et Android.
+   if(keys.length>240)await Promise.all(keys.slice(0,keys.length-240).map(key=>cache.delete(key)));
+  }
+  return response;
+ }catch{return Response.error()}
+}
 self.addEventListener('fetch',event=>{
  const request=event.request;
  if(request.method!=='GET')return;
  const url=new URL(request.url);
- // Ne pas intercepter les photos du Parlement européen : Safari iOS les charge directement.
- // Un échec de récupération en cache opaque ne doit jamais bloquer l'affichage du portrait.
- if(url.hostname==='www.europarl.europa.eu'&&url.pathname.startsWith('/mepphoto/'))return;
- // Logos des groupes : conserver en cache ceux que l'utilisateur a affichés.
- if(url.origin===self.location.origin&&url.pathname.includes('/assets/group-logo.')){
-  event.respondWith(caches.open(CORE).then(async cache=>{
-   const hit=await cache.match(request);
-   try{const response=await fetch(request);if(response.ok)cache.put(request,response.clone()).catch(()=>{});return response}
-   catch{return hit||Response.error()}
-  }));
-  return;
- }
+ // Les portraits officiels externes ne sont pas interceptés : Safari les gère directement.
  if(url.origin!==self.location.origin)return;
- const isDocument=request.mode==='navigate',isData=/\/(members|committees)\.json$/.test(url.pathname);
- if(isDocument||isData){
-  event.respondWith(fetch(new Request(request,{cache:'no-store'})).then(async response=>{
-   if(response.ok){const cache=await caches.open(CORE);cache.put(request,response.clone()).catch(()=>{});}
-   return response;
-  }).catch(async()=>{const cache=await caches.open(CORE);return (await cache.match(request))||(isDocument?await cache.match('./index.html'):undefined)||Response.error()}));
-  return;
+ const isDocument=request.mode==='navigate';
+ const isData=/\/(members|committees|photo-assets)\.json$/.test(url.pathname);
+ if(isDocument||isData){event.respondWith(fromNetworkOrCache(request,isDocument));return}
+ if(/\/(photos|thumbs)\/[0-9]+\.(jpg|webp)$/.test(url.pathname)){
+  event.respondWith(cachePhoto(request));return;
  }
- event.respondWith(caches.match(request).then(hit=>hit||fetch(request).then(response=>{
-  if(response.ok)caches.open(CORE).then(cache=>cache.put(request,response.clone())).catch(()=>{});
-  return response;
- })));
+ // Les ressources statiques déjà enregistrées restent disponibles hors ligne.
+ event.respondWith((async()=>{
+  const cache=await caches.open(CORE);
+  const hit=await cache.match(request);
+  if(hit)return hit;
+  try{
+   const response=await fetch(request);
+   if(response.ok)cache.put(request,response.clone()).catch(()=>{});
+   return response;
+  }catch{return Response.error()}
+ })());
 });
