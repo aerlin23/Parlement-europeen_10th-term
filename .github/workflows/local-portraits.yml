@@ -85,11 +85,25 @@ jobs:
               created+=1
           print("Miniatures WebP créées ou actualisées:",created)
           PY
+      - name: Générer l'inventaire fiable des portraits disponibles
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          members=json.loads(Path("members.json").read_text(encoding="utf-8"))
+          ids={str(m["id"]) for m in members}
+          manifest={
+            "photos":sorted(i for i in ids if (Path("photos")/(i+".jpg")).is_file()),
+            "thumbs":sorted(i for i in ids if (Path("thumbs")/(i+".webp")).is_file())
+          }
+          Path("photo-assets.json").write_text(json.dumps(manifest,separators=(",",":"))+"\n",encoding="utf-8")
+          print("Inventaire :",len(manifest["photos"]),"photos,",len(manifest["thumbs"]),"miniatures")
+          PY
       - name: Publier les portraits sur GitHub Pages
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add photos/ thumbs/
+          git add photos/ thumbs/ photo-assets.json
           if ! git diff --cached --quiet; then
             git commit -m "Actualiser les portraits et miniatures WebP du trombinoscope"
             git pull --rebase origin main
