@@ -1,8 +1,9 @@
-name: Icônes PWA du Parlement européen
+name: Générer les icônes PWA
 on:
   workflow_dispatch:
   push:
     paths:
+      - "icon.svg"
       - ".github/workflows/pwa-official-icons.yml"
 permissions:
   contents: write
@@ -11,23 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Installer Pillow
-        run: python -m pip install --quiet Pillow
-      - name: Générer les icônes à partir du logo existant
+      - name: Installer le moteur SVG
+        run: python -m pip install --quiet cairosvg
+      - name: Produire les icônes à partir du dessin validé
         run: |
           python - <<'PY'
-          from PIL import Image
-          from pathlib import Path
-          original=Image.open("assets/parlement-logo.png").convert("RGBA")
+          import cairosvg
           for side in (192,512):
-              # Conserver l'intégralité du logo du Parlement européen, sans le déformer.
-              canvas=Image.new("RGBA",(side,side),"white")
-              max_width=int(side*0.91)
-              max_height=int(side*0.58)
-              logo=original.copy()
-              logo.thumbnail((max_width,max_height),Image.Resampling.LANCZOS)
-              canvas.alpha_composite(logo,((side-logo.width)//2,(side-logo.height)//2))
-              canvas.convert("RGB").save(f"icon-{side}.png",optimize=True)
+              cairosvg.svg2png(url="icon.svg",write_to=f"icon-{side}.png",output_width=side,output_height=side)
           PY
       - name: Enregistrer les icônes
         run: |
@@ -35,6 +27,6 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add icon-192.png icon-512.png
           if ! git diff --cached --quiet; then
-            git commit -m "Remplacer les icônes PWA par le logo officiel du Parlement européen"
+            git commit -m "Mettre à jour les icônes de la PWA"
             git push
           fi
