@@ -1,5 +1,5 @@
 /* Trombinoscope PE – service worker. Les portraits consultés sont mis en cache au fur et à mesure. */
-const VERSION='pe-pwa-v2';
+const VERSION='pe-pwa-v3';
 const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
 const OFFLINE=['./','./index.html','./members.json','./committees.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png'];
 self.addEventListener('install',event=>{
