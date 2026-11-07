@@ -7,6 +7,7 @@ on:
 permissions:
   contents: write
   issues: write
+  pull-requests: write
 concurrency:
   group: monthly-parliament-directory-sync
   cancel-in-progress: false
@@ -35,15 +36,21 @@ jobs:
         run: |
           python -m unittest discover -s tests -p 'test_*.py' -v
           git diff --check
-      - name: Publier les nouvelles données
+      - name: Proposer les données validées sans modifier le site public
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add members.json monthly-sync-report.json
           if ! git diff --cached --quiet; then
-            git commit -m "Actualiser les députés depuis le Parlement européen (mensuel)"
-            git pull --rebase origin main
-            git push origin HEAD:main
+            BRANCH="auto/monthly-directory-${GITHUB_RUN_ID}"
+            git switch -c "$BRANCH"
+            git commit -m "Proposer la mise à jour mensuelle des députés"
+            git push origin "HEAD:refs/heads/$BRANCH"
+            gh pr create --base main --head "$BRANCH" \
+              --title "Contrôle : synchronisation mensuelle des députés" \
+              --body "Modifications proposées depuis la source du Parlement européen. Vérifier les changements, le rapport et les contrôles qualité avant fusion. Les commissions et fonctions ne sont pas synchronisées."
           fi
       - name: Signaler les changements de membres
         if: success()
