@@ -64,6 +64,21 @@ class DirectoryContract(unittest.TestCase):
         self.assertIn("cache:'no-store'", SW)
         self.assertIn("navigator.serviceWorker.register", HTML)
 
+    def test_backup_and_update_require_user_action(self):
+        for tag in ('id="exportProgress"', 'id="importProgress"', 'id="progressFile"', 'id="appUpdateNotice"', 'id="applyAppUpdate"'):
+            self.assertIn(tag, HTML)
+        self.assertIn("validBackup(data)", HTML)
+        self.assertIn("progressFile", HTML)
+        self.assertIn("registration.waiting.postMessage({type:'SKIP_WAITING'})", HTML)
+        self.assertIn("if(session)", HTML)
+
+    def test_offline_shell_and_photo_cache_are_bounded(self):
+        self.assertIn("'./members.json'", SW)
+        self.assertIn("'./committees.json'", SW)
+        self.assertIn("'./photo-assets.json'", SW)
+        self.assertIn("cachePhoto(request)", SW)
+        self.assertIn("keys.length>240", SW)
+
     def test_photo_fallback(self):
         self.assertIn("const thumb='./thumbs/'", HTML)
         self.assertIn("photoAssets.thumbs.has", HTML)
