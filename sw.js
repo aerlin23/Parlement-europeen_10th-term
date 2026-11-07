@@ -1,5 +1,5 @@
 /* Trombinoscope PE – service worker. Les portraits consultés sont mis en cache au fur et à mesure. */
-const VERSION='pe-pwa-v6';
+const VERSION='pe-pwa-v7';
 const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
 const OFFLINE=['./','./index.html','./members.json','./committees.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png'];
 self.addEventListener('install',event=>{
@@ -27,7 +27,7 @@ self.addEventListener('fetch',event=>{
  if(url.origin!==self.location.origin)return;
  const isDocument=request.mode==='navigate',isData=/\/(members|committees)\.json$/.test(url.pathname);
  if(isDocument||isData){
-  event.respondWith(fetch(request).then(async response=>{
+  event.respondWith(fetch(new Request(request,{cache:'no-store'})).then(async response=>{
    if(response.ok){const cache=await caches.open(CORE);cache.put(request,response.clone()).catch(()=>{});}
    return response;
   }).catch(async()=>{const cache=await caches.open(CORE);return (await cache.match(request))||(isDocument?await cache.match('./index.html'):undefined)||Response.error()}));
