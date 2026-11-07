@@ -62,7 +62,8 @@ def test(page, base):
     backup=downloaded.value
     check(page, backup.suggested_filename.endswith(".json"), "Backup must be JSON")
     page.locator("#progressFile").set_input_files(str(backup.path()))
-    check(page, "Progression restaurée" in page.locator("#backupStatus").inner_text(), "Backup import failed")
+    page.wait_for_function("document.querySelector('#backupStatus')?.textContent.includes('Progression restaurée') || document.querySelector('#backupStatus')?.textContent.includes('Import refusé')", timeout=10000)
+    check(page, "Progression restaurée" in page.locator("#backupStatus").inner_text(), "Backup import failed: "+page.locator("#backupStatus").inner_text())
     if os.environ.get("TEST_BROWSER", "chromium")=="chromium":
         page.wait_for_function("navigator.serviceWorker?.controller != null",timeout=15000)
         page.context.set_offline(True)
