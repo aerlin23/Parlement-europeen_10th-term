@@ -45,6 +45,24 @@ def test(page, base):
         check(page, page.locator("#quizChoices button").count()==4, "Next quiz question broken")
         page.locator("#stopStudy").click()
         page.locator("#restartStudy").click()
+    # Une session complète doit aboutir à un bilan cohérent.
+    page.locator("#quizMode").select_option("photo-name")
+    page.locator("#startStudy").click()
+    for question in range(20):
+        check(page, page.locator("#quizChoices button").count()==4, "Four answers required at every question")
+        page.locator("#quizChoices button").first.click()
+        page.locator("#nextStudy").click()
+    check(page, page.locator("#studyEnd").is_visible(), "Quiz must reach final results")
+    check(page, "Questions répondues" in page.locator("#studyResult").inner_text(), "Quiz results missing")
+    check(page, "Fautes" in page.locator("#studyResult").inner_text(), "Quiz error summary missing")
+    page.locator("#restartStudy").click()
+    # Vérifier la sauvegarde et son import, sans quitter le navigateur.
+    with page.expect_download() as downloaded:
+        page.locator("#exportProgress").click()
+    backup=downloaded.value
+    check(page, backup.suggested_filename.endswith(".json"), "Backup must be JSON")
+    page.locator("#progressFile").set_input_files(str(backup.path()))
+    check(page, "Progression restaurée" in page.locator("#backupStatus").inner_text(), "Backup import failed")
     check(page, not errors, "JavaScript runtime errors: "+repr(errors))
 
 def main():
