@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Trombinoscope du Parlement européen",
-  "short_name": "Trombinoscope PE",
-  "description": "Annuaire et quiz des députés européens de la 10e législature",
+  "name": "Aide Vademecum PE",
+  "short_name": "Aide Vademecum PE",
+  "description": "Annuaire indépendant des députés européens et quiz de reconnaissance — 10e législature",
   "lang": "fr",
   "start_url": "./",
   "scope": "./",
