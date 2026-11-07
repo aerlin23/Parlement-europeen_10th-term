@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Trombinoscope PE">
+<rect width="512" height="512" rx="112" fill="#003399"/>
+<circle cx="256" cy="222" r="112" fill="none" stroke="#ffcc00" stroke-width="11" stroke-dasharray="12 26"/>
+<circle cx="256" cy="193" r="56" fill="#ffffff"/>
+<path d="M131 348c18-58 66-86 125-86s107 28 125 86v30H131z" fill="#ffffff"/>
+<rect x="156" y="406" width="200" height="17" rx="8.5" fill="#ffcc00"/>
+</svg>
