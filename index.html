@@ -58,7 +58,7 @@ function applyGroupTheme(){
  logo.hidden=!!theme&&!theme.file;mark.hidden=!(theme&&!theme.file);mark.textContent=theme?.name||'';
  logo.src=theme?.file?'https://aerlin23.github.io/'+theme.repo+'/assets/'+theme.file:'./assets/parlement-logo.png';
  logo.alt=theme?'Logo '+theme.name:'Parlement européen';
- logo.onerror=()=>{if(theme&&theme.file){logo.hidden=true;mark.hidden=false;mark.textContent=theme.name}else{logo.onerror=null}};
+ logo.onerror=()=>{if(field('group')!==selected)return;if(theme&&theme.file){logo.hidden=true;mark.hidden=false;mark.textContent=theme.name}else{logo.onerror=null}};
  if(theme&&theme.file){logo.hidden=false;mark.hidden=true}
  link.href=theme?'?group='+encodeURIComponent(selected):'https://www.europarl.europa.eu/portal/fr';
  link.target=theme?'':'_blank';
