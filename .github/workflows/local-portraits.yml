@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - ".github/workflows/local-portraits.yml"
+      - "members.json"
 permissions:
   contents: write
 concurrency:
@@ -56,13 +57,37 @@ jobs:
           if sum(result)<int(len(ids)*.9):
               raise SystemExit("Moins de 90 % des portraits ont été téléchargés : vérifier le serveur source")
           PY
+      - name: Générer les miniatures WebP optimisées pour l'annuaire
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image,ImageOps
+          members=json.loads(Path("members.json").read_text(encoding="utf-8"))
+          folder=Path("thumbs")
+          folder.mkdir(exist_ok=True)
+          created=0
+          for mid in sorted({str(m["id"]) for m in members}):
+              source=Path("photos")/(mid+".jpg")
+              target=folder/(mid+".webp")
+              if not source.exists():
+                  continue
+              if target.exists() and target.stat().st_mtime >= source.stat().st_mtime:
+                  continue
+              with Image.open(source) as picture:
+                  picture=ImageOps.exif_transpose(picture).convert("RGB")
+                  picture.thumbnail((220,280),Image.Resampling.LANCZOS)
+                  picture.save(target,"WEBP",quality=74,method=5)
+              created+=1
+          print("Miniatures WebP créées ou actualisées:",created)
+          PY
       - name: Publier les portraits sur GitHub Pages
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add photos/
+          git add photos/ thumbs/
           if ! git diff --cached --quiet; then
-            git commit -m "Héberger les portraits localement pour iPhone et PWA"
+            git commit -m "Actualiser les portraits et miniatures WebP du trombinoscope"
             git pull --rebase origin main
             git push origin HEAD:main
           fi
