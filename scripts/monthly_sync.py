@@ -4,8 +4,6 @@ Preserves curated committee roles and other metadata for existing members.
 Fails closed when the source format is unexpected; never empties the directory.
 """
 import json
-import os
-import sys
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
@@ -25,12 +23,14 @@ GROUPS = {
  "Group of the European People's Party (Christian Democrats)":"PPE",
  "Group of the Progressive Alliance of Socialists and Democrats in the European Parliament":"S&D",
  "Patriots for Europe Group":"PfE",
+ "Renew Europe Group":"Renew",
  "European Conservatives and Reformists Group":"ECR",
  "Renew Europe Group":"Renew",
  "Group of the Greens/European Free Alliance":"Verts/ALE",
  "The Left group in the European Parliament - GUE/NGL":"The Left",
  "Europe of Sovereign Nations Group":"ESN",
  "Non-attached Members":"NI",
+ "Non-attached":"NI",
 }
 def text(node, *names):
     for name in names:
