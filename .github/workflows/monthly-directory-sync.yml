@@ -1,0 +1,65 @@
+name: Mise à jour mensuelle du trombinoscope
+on:
+  schedule:
+    # Le 1er de chaque mois à 05:15 UTC (06:15 ou 07:15 à Bruxelles).
+    - cron: "15 5 1 * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+  issues: write
+concurrency:
+  group: monthly-parliament-directory-sync
+  cancel-in-progress: false
+jobs:
+  update-directory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Synchroniser les députés depuis le Parlement européen
+        id: sync
+        run: python scripts/monthly_sync.py
+      - name: Contrôler la cohérence des données mises à jour
+        run: |
+          python - <<'PY'
+          import json
+          members=json.load(open("members.json",encoding="utf-8"))
+          assert 680<=len(members)<=735, "Effectif anormal"
+          assert len({str(m["id"]) for m in members})==len(members), "Identifiants dupliqués"
+          assert all(m.get("name") and m.get("group") for m in members), "Données essentielles manquantes"
+          print("Contrôles validés :",len(members),"députés")
+          PY
+      - name: Publier les nouvelles données
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add members.json monthly-sync-report.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Actualiser les députés depuis le Parlement européen (mensuel)"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Signaler les changements de membres
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY' > /tmp/changes.txt
+          import json
+          data=json.load(open("monthly-sync-report.json",encoding="utf-8"))
+          for section in ("newMembers","departedMembers","changedGroups"):
+              if data.get(section):
+                  print(section+":")
+                  for value in data[section]:print(" -",value)
+          PY
+          if [ -s /tmp/changes.txt ]; then
+            gh issue create --title "Contrôle humain : modifications de la liste des députés" --body-file /tmp/changes.txt --label "documentation" 2>/dev/null || gh issue create --title "Contrôle humain : modifications de la liste des députés" --body-file /tmp/changes.txt
+          fi
+      - name: Signaler tout échec (sans publier de données suspectes)
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create --title "Échec de synchronisation mensuelle du Parlement européen" --body "La mise à jour a échoué le $(date -u +%Y-%m-%d). Les données précédentes doivent rester en place. Vérifier le rapport de l'action GitHub : https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
