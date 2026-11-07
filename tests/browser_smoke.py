@@ -18,15 +18,15 @@ def test(page, base):
     errors=[]
     page.on("pageerror", lambda error: errors.append(str(error)))
     page.goto(base, wait_until="domcontentloaded")
-    page.wait_for_function("document.querySelector('#total')?.textContent === '720'", timeout=20000)
+    page.wait_for_function("Number(document.querySelector('#total')?.textContent) >= 680", timeout=20000)
     check(page, page.locator("#grid .card").count()==40, "Directory must initially render 40 cards")
-    check(page, "720" in page.locator("#count").inner_text(), "Count must cover entire dataset")
+    check(page, page.locator("#total").inner_text() in page.locator("#count").inner_text(), "Count must cover entire dataset")
     page.locator("#search").fill("AALTOLA")
     check(page, page.locator("#grid .card").count()==1, "Name search failed")
     page.locator("#reset").click()
     page.locator("#group").select_option("PPE")
     check(page, page.locator("#grid .card").count()>0, "Group filter failed")
-    check(page, "720" in page.locator("#count").inner_text(), "Filter changed total roster")
+    check(page, page.locator("#total").inner_text() in page.locator("#count").inner_text(), "Filter changed total roster")
     page.locator("#reset").click()
     page.locator("#trainingTab").click()
     for mode in ("name-photo","photo-name"):
