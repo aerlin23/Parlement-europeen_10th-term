@@ -31,6 +31,10 @@ jobs:
           assert all(m.get("name") and m.get("group") for m in members), "Données essentielles manquantes"
           print("Contrôles validés :",len(members),"députés")
           PY
+      - name: Exécuter les tests de cohérence avant publication
+        run: |
+          python -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --check
       - name: Publier les nouvelles données
         run: |
           git config user.name "github-actions[bot]"
