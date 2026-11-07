@@ -333,13 +333,13 @@ populate();const params=new URLSearchParams(location.search),personParam=params.
 if('serviceWorker' in navigator){
  window.addEventListener('load',async()=>{
   try{
-   const registration=await navigator.serviceWorker.register('./sw.js?v=7',{scope:'./',updateViaCache:'none'});
+   const registration=await navigator.serviceWorker.register('./sw.js?v=8',{scope:'./',updateViaCache:'none'});
    registration.update().catch(()=>{});
    document.addEventListener('visibilitychange',()=>{if(!document.hidden)registration.update().catch(()=>{})});
    // Une seule recharge lorsque la nouvelle version prend le contrôle.
    navigator.serviceWorker.addEventListener('controllerchange',()=>{
-    if(!session&&!sessionStorage.getItem('pe-pwa-reloaded-v7')){
-     sessionStorage.setItem('pe-pwa-reloaded-v7','1');
+    if(!session&&!sessionStorage.getItem('pe-pwa-reloaded-v8')){
+     sessionStorage.setItem('pe-pwa-reloaded-v8','1');
      location.reload();
     }
    });
