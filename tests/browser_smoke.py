@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Browser smoke tests of the real static site in Chromium."""
-import contextlib
+import os
 import functools
 import http.server
 import threading
@@ -71,11 +71,15 @@ def main():
         thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
         base=f"http://127.0.0.1:{server.server_port}/"
         with sync_playwright() as playwright:
-            browser=playwright.chromium.launch(headless=True)
+            engine=os.environ.get("TEST_BROWSER","chromium")
+            if engine not in ("chromium","webkit"):
+                raise RuntimeError("Unsupported browser: "+engine)
+            browser=getattr(playwright,engine).launch(headless=True)
             try:
-                page=browser.new_page(viewport={"width":390,"height":844},device_scale_factor=2)
+                context=browser.new_context(viewport={"width":390,"height":844},device_scale_factor=2,accept_downloads=True)
+                page=context.new_page()
                 test(page,base)
-                print("Smoke test PASSED: directory, filters, both quizzes, progression and sound button")
+                print("Smoke test PASSED:",engine,"directory, both quizzes, full session and backup")
             finally:
                 browser.close()
 if __name__=="__main__":
