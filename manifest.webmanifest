@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "Aide Vademecum PE",
-  "short_name": "Aide Vademecum PE",
+  "name": "Vademecum PE",
+  "short_name": "Vademecum PE",
   "description": "Annuaire indépendant des députés européens et quiz de reconnaissance — 10e législature",
   "lang": "fr",
   "start_url": "./",
