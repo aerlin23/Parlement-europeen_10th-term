@@ -38,7 +38,8 @@ def test(page, base):
             check(page, page.locator("#quizChoices button.photo-choice").count()==4, "Name-photo mode missing four photo choices")
             check(page, page.locator("#quizChoices button.photo-choice").evaluate_all("(buttons) => buttons.every(b => b.querySelector('img, .fallback'))"), "Name-photo choice has neither photo nor fallback")
         else:
-            check(page, page.locator("#studyPhoto img").count()==1, "Photo-name mode missing main portrait")
+            check(page, page.locator("#studyPhoto .study-photo").count()==1, "Photo-name mode missing portrait container")
+            check(page, page.locator("#studyPhoto img, #studyPhoto .fallback").count()==1, "Photo-name mode missing portrait or unavailable-photo fallback")
         page.locator("#quizChoices button").first.click()
         check(page, page.locator("#listenName").is_visible(), "Audio replay button missing after answer")
         check(page, page.locator("#nextStudy").is_visible(), "Next question missing")
