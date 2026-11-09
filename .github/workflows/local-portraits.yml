@@ -1,4 +1,4 @@
-name: Sauvegarder les portraits pour iPhone
+name: Préparer les portraits locaux iPhone et Android
 on:
   workflow_dispatch:
   schedule:
@@ -42,7 +42,7 @@ jobs:
               for attempt in range(4):
                   try:
                       response=requests.get("https://www.europarl.europa.eu/mepphoto/"+mid+".jpg",
-                          timeout=25,headers={"User-Agent":"Mozilla/5.0 (compatible; TrombinoscopePE/1.0)"})
+                          timeout=25,headers={"User-Agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36","Accept":"image/avif,image/webp,image/apng,image/*,*/*;q=0.8"})
                       response.raise_for_status()
                       if not response.headers.get("Content-Type","").lower().startswith("image/"):
                           raise ValueError("Réponse non-image")
