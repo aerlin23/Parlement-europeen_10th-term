@@ -60,7 +60,7 @@ class DirectoryContract(unittest.TestCase):
         self.assertIn('function sgCard(', HTML)
         self.assertIn('Alessandro Chiocchetti', HTML)
         self.assertIn('Photo non disponible', HTML)
-        self.assertEqual(len(re.findall(r'\\["(?:PRES|ECTI|IUST|CASP|BUDG|EXPO|EPRS|COMM|PART|PERS|INLO|TRAD|LINC|FINS|ITEC|SAFE)",', HTML)), 16)
+        self.assertEqual(sum(1 for code in ('PRES', 'ECTI', 'IUST', 'CASP', 'BUDG', 'EXPO', 'EPRS', 'COMM', 'PART', 'PERS', 'INLO', 'TRAD', 'LINC', 'FINS', 'ITEC', 'SAFE') if '["'+code+'",' in HTML), 16)
         old = (ROOT / "secretariat-general.html").read_text(encoding="utf-8")
         self.assertIn('url=./?section=secretariat', old)
 
