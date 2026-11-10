@@ -49,16 +49,17 @@ class DirectoryContract(unittest.TestCase):
         self.assertIn("spacedDeck(eligible)", HTML)
         self.assertIn("QUIZ_PROGRESS_KEY", HTML)
 
-    def test_secretariat_general_tab(self):
-        self.assertIn('id="secretariatTab"', HTML)
-        self.assertIn('id="secretariatPanel"', HTML)
-        self.assertIn('id="secretariatSearch"', HTML)
-        self.assertIn('function showSecretariat()', HTML)
-        self.assertIn('function renderSecretariat()', HTML)
-        self.assertEqual(len(re.findall(r'"(?:PRES|ECTI|IUST|CASP|BUDG|EXPO|EPRS|COMM|PART|PERS|INLO|TRAD|LINC|FINS|ITEC|SAFE)"\s*,', HTML)), 16)
-        self.assertIn('Alessandro Chiocchetti', HTML)
-        self.assertIn('Markus Winkler', HTML)
-        self.assertIn('Anders Rasmussen', HTML)
+    def test_secretariat_general_navigation(self):
+        self.assertIn('href="./secretariat-general.html"', HTML)
+        self.assertNotIn('id="secretariatTab"', HTML)
+        self.assertNotIn('id="secretariatPanel"', HTML)
+        sg = (ROOT / "secretariat-general.html").read_text(encoding="utf-8")
+        self.assertIn('id="sgGrid"', sg)
+        self.assertIn('id="deputiesGrid"', sg)
+        self.assertIn('id="dgGrid"', sg)
+        self.assertIn('Alessandro Chiocchetti', sg)
+        self.assertEqual(len(re.findall(r'"(?:PRES|ECTI|IUST|CASP|BUDG|EXPO|EPRS|COMM|PART|PERS|INLO|TRAD|LINC|FINS|ITEC|SAFE)"\s*,', sg)), 16)
+        self.assertIn('Photo non disponible', sg)
 
     def test_pagination_keeps_entire_dataset(self):
         self.assertIn("DIRECTORY_PAGE_SIZE=40", HTML)
