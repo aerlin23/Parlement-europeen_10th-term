@@ -1,7 +1,7 @@
 /* Vademecum PE : ressources critiques hors-ligne et mises à jour consenties. */
-const VERSION='pe-pwa-v12';
+const VERSION='pe-pwa-v13';
 const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
-const OFFLINE=['./','./index.html','./members.json','./committees.json','./photo-assets.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png'];
+const OFFLINE=['./','./index.html','./secretariat-general.html','./members.json','./committees.json','./photo-assets.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CORE).then(cache=>cache.addAll(OFFLINE)));
 });
