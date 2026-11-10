@@ -28,6 +28,14 @@ def test(page, base):
     check(page, page.locator("#grid .card").count()>0, "Group filter failed")
     check(page, page.locator("#total").inner_text() in page.locator("#count").inner_text(), "Filter changed total roster")
     page.locator("#reset").click()
+    # Même présentation que les groupes : Secrétariat général dans la page courante.
+    page.locator("#secretariatNav").click()
+    check(page, page.locator("#secretariatPanel").is_visible(), "Secretariat must open inline")
+    check(page, page.locator("#sgDirectorGrid .card").count()==16, "Expected 16 DG portrait cards")
+    check(page, page.locator("#directory").is_hidden(), "Deputies must hide while SG is active")
+    page.locator("#directoryTab").click()
+    check(page, page.locator("#secretariatPanel").is_hidden(), "Secretariat must close without navigating away")
+    check(page, page.locator("#directory").is_visible(), "Directory must be restored")
     page.locator("#trainingTab").click()
     for mode in ("name-photo","photo-name"):
         page.locator("#quizMode").select_option(mode)
