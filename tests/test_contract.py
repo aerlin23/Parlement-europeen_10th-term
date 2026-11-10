@@ -55,7 +55,7 @@ class DirectoryContract(unittest.TestCase):
         self.assertIn('id="secretariatSearch"', HTML)
         self.assertIn('function showSecretariat()', HTML)
         self.assertIn('function renderSecretariat()', HTML)
-        self.assertEqual(len(re.findall(r'"(?:PRES|ECTI|IUST|CASP|BUDG|EXPO|EPRS|COMM|PART|PERS|INLO|TRAD|LINC|FINS|ITEC|SAFE)"\\s*,', HTML)), 16)
+        self.assertEqual(len(re.findall(r'"(?:PRES|ECTI|IUST|CASP|BUDG|EXPO|EPRS|COMM|PART|PERS|INLO|TRAD|LINC|FINS|ITEC|SAFE)"\s*,', HTML)), 16)
         self.assertIn('Alessandro Chiocchetti', HTML)
         self.assertIn('Markus Winkler', HTML)
         self.assertIn('Anders Rasmussen', HTML)
