@@ -1,5 +1,5 @@
 /* Vademecum PE : ressources critiques hors-ligne et mises à jour consenties. */
-const VERSION='pe-pwa-v19';
+const VERSION='pe-pwa-v20';
 const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
 const OFFLINE=['./','./index.html','./secretariat-general.html','./members.json','./hemicycle-seats.json','./committees.json','./photo-assets.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png','./assets/sg-juan-carlos-jimenez-marin.webp','./assets/sg-markus-winkler.webp'];
 self.addEventListener('install',event=>{
@@ -47,7 +47,7 @@ self.addEventListener('fetch',event=>{
  // Les portraits officiels externes ne sont pas interceptés : Safari les gère directement.
  if(url.origin!==self.location.origin)return;
  const isDocument=request.mode==='navigate';
- const isData=/\/(members|committees|photo-assets)\.json$/.test(url.pathname);
+ const isData=/\/(members|committees|photo-assets|hemicycle-seats)\.json$/.test(url.pathname);
  if(isDocument||isData){event.respondWith(fromNetworkOrCache(request,isDocument));return}
  if(/\/(photos|thumbs)\/[0-9]+\.(jpg|webp)$/.test(url.pathname)){
   event.respondWith(cachePhoto(request));return;
