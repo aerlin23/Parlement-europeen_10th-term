@@ -38,6 +38,22 @@ class DirectoryContract(unittest.TestCase):
                 with self.subTest(mep=m["id"], committee=c):
                     self.assertIn(c.get("code"), codes)
 
+    def test_hemicycle_seats_are_sourced_and_displayed_only_if_known(self):
+        seat_file = json.loads((ROOT / "hemicycle-seats.json").read_text(encoding="utf-8"))
+        member_ids = {str(m["id"]) for m in MEMBERS}
+        seats = seat_file["seats"]
+        self.assertGreater(len(seats), 0)
+        self.assertTrue(set(seats).issubset(member_ids))
+        for location in ("str", "bru"):
+            taken = [item[location] for item in seats.values() if item.get(location) is not None]
+            self.assertEqual(len(taken), len(set(taken)))
+            self.assertTrue(all(isinstance(x, int) and 1 <= x <= 999 for x in taken))
+        self.assertIn("function hemicycleBlock(m)", HTML)
+        self.assertIn("if(!seats||(!seats.str&&!seats.bru))return null;", HTML)
+        self.assertIn("if(seats)info.append(seats)", HTML)
+        self.assertIn("hemicycle-seats.json", HTML)
+        self.assertIn("'./hemicycle-seats.json'", SW)
+
     def test_both_quiz_modes_stay_available(self):
         self.assertIn('id="quizMode"', HTML)
         self.assertIn('value="name-photo"', HTML)
