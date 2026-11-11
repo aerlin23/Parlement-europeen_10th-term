@@ -10,7 +10,7 @@
       "url": "https://www.europarl.europa.eu/sedcms/pubfile/HEMICYCLE/PLAN_BRU.pdf"
     }
   },
-  "notes": "Plans officiels Strasbourg 19/10/2026 et Bruxelles 11/11/2026 : correspondances par noms uniques, initiales distinctives (Bay/Buda/David) et contrôles des deux index PDF. Les sièges non vérifiables restent vides.",
+  "notes": "Plans officiels Strasbourg 19/10/2026 et Bruxelles 11/11/2026. Correspondances de noms contrôlées avec les listes alphabétiques des PDF, les noms homonymes vérifiés séparément, sans collision de sièges.",
   "seats": {
     "840": {
       "str": 399,
@@ -156,14 +156,16 @@
       "bru": 568
     },
     "28400": {
-      "str": 586
+      "str": 586,
+      "bru": 617
     },
     "28419": {
       "str": 87,
       "bru": 138
     },
     "28615": {
-      "str": 40
+      "str": 40,
+      "bru": 43
     },
     "28617": {
       "str": 744,
@@ -242,7 +244,8 @@
       "bru": 97
     },
     "91636": {
-      "str": 128
+      "str": 128,
+      "bru": 182
     },
     "94649": {
       "str": 602,
@@ -969,7 +972,8 @@
       "bru": 548
     },
     "197514": {
-      "str": 11
+      "str": 11,
+      "bru": 11
     },
     "197516": {
       "str": 18,
@@ -1076,7 +1080,8 @@
       "bru": 343
     },
     "197591": {
-      "str": 242
+      "str": 242,
+      "bru": 277
     },
     "197606": {
       "str": 197,
@@ -1099,7 +1104,8 @@
       "bru": 419
     },
     "197624": {
-      "str": 57
+      "str": 57,
+      "bru": 439
     },
     "197627": {
       "str": 603,
@@ -1206,7 +1212,8 @@
       "bru": 232
     },
     "197711": {
-      "str": 13
+      "str": 13,
+      "bru": 13
     },
     "197718": {
       "str": 540,
@@ -1333,7 +1340,8 @@
       "bru": 572
     },
     "197842": {
-      "str": 762
+      "str": 762,
+      "bru": 770
     },
     "197845": {
       "str": 632,
@@ -1779,7 +1787,8 @@
       "bru": 526
     },
     "256884": {
-      "str": 507
+      "str": 507,
+      "bru": 409
     },
     "256885": {
       "str": 716,
@@ -2414,7 +2423,8 @@
       "bru": 369
     },
     "257071": {
-      "str": 235
+      "str": 235,
+      "bru": 327
     },
     "257072": {
       "str": 437,
