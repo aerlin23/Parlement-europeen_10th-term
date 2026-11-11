@@ -10,7 +10,7 @@
       "url": "https://www.europarl.europa.eu/sedcms/pubfile/HEMICYCLE/PLAN_BRU.pdf"
     }
   },
-  "notes": "Plans PDF officiels Strasbourg 19/10/2026 et Bruxelles 11/11/2026. Attributions par nom unique, complétées par comparaison de l'index numéroté du PDF de Bruxelles; sièges ambigus conservés vides.",
+  "notes": "Plans officiels Strasbourg 19/10/2026 et Bruxelles 11/11/2026 : correspondances par noms uniques, initiales distinctives (Bay/Buda/David) et contrôles des deux index PDF. Les sièges non vérifiables restent vides.",
   "seats": {
     "840": {
       "str": 399,
@@ -380,7 +380,8 @@
       "bru": 245
     },
     "99878": {
-      "str": 684
+      "str": 684,
+      "bru": 515
     },
     "99945": {
       "str": 262,
@@ -483,7 +484,8 @@
       "bru": 179
     },
     "124760": {
-      "str": 208
+      "str": 208,
+      "bru": 201
     },
     "124766": {
       "str": 398,
@@ -594,7 +596,8 @@
       "bru": 79
     },
     "125012": {
-      "str": 63
+      "str": 63,
+      "bru": 69
     },
     "125023": {
       "str": 232,
@@ -1024,7 +1027,8 @@
       "bru": 253
     },
     "197556": {
-      "str": 360
+      "str": 360,
+      "bru": 317
     },
     "197557": {
       "str": 567,
@@ -1702,7 +1706,8 @@
       "bru": 561
     },
     "256862": {
-      "str": 407
+      "str": 407,
+      "bru": 448
     },
     "256864": {
       "str": 573,
@@ -1808,7 +1813,8 @@
       "bru": 772
     },
     "256895": {
-      "str": 783
+      "str": 783,
+      "bru": 776
     },
     "256896": {
       "str": 698,
@@ -2326,7 +2332,8 @@
       "bru": 80
     },
     "257051": {
-      "str": 340
+      "str": 340,
+      "bru": 404
     },
     "257052": {
       "str": 685,
@@ -2552,7 +2559,8 @@
       "bru": 358
     },
     "257110": {
-      "str": 92
+      "str": 92,
+      "bru": 33
     },
     "257111": {
       "str": 311,
@@ -2814,7 +2822,8 @@
       "bru": 840
     },
     "261797": {
-      "str": 786
+      "str": 786,
+      "bru": 839
     },
     "262021": {
       "str": 756,
