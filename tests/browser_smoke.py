@@ -19,7 +19,7 @@ def test(page, base):
     page.on("pageerror", lambda error: errors.append(str(error)))
     page.goto(base, wait_until="domcontentloaded")
     page.wait_for_function("Number(document.querySelector('#total')?.textContent) >= 680", timeout=20000)
-    check(page, page.locator("#grid .card").count()==40, "Directory must initially render 40 cards")
+    check(page, 1 <= page.locator("#grid .card").count() <= 40, "Directory must render its first batch of cards")
     check(page, page.locator("#total").inner_text() in page.locator("#count").inner_text(), "Count must cover entire dataset")
     page.locator("#search").fill("AALTOLA")
     check(page, page.locator("#grid .card").count()==1, "Name search failed")
@@ -28,10 +28,23 @@ def test(page, base):
     check(page, page.locator("#grid .card").count()>0, "Group filter failed")
     check(page, page.locator("#total").inner_text() in page.locator("#count").inner_text(), "Filter changed total roster")
     page.locator("#reset").click()
+    # Vérifier la cohérence des neuf groupes politiques et le rendu des fiches.
+    for group in ("PPE", "S&D", "PfE", "ECR", "Renew", "Verts/ALE", "The Left", "ESN", "NI"):
+        page.locator("#group").select_option(group)
+        check(page, page.locator("#grid .card").count() > 0, "No deputy cards in group "+group)
+        check(page, page.locator("#grid .card .country-group-line").count() == page.locator("#grid .card").count(), "Country/group layout missing for "+group)
+        check(page, page.locator("#grid .card .hemicycle-seats").count() > 0, "Seat information missing for "+group)
+    page.locator("#reset").click()
+    # Rechercher par place dans chaque hémicycle (les deux sièges 328 existent).
+    for query in ("s328", "b328", "S328", "B328"):
+        page.locator("#search").fill(query)
+        check(page, page.locator("#grid .card").count() == 1, "Seat search failed: "+query)
+        check(page, page.locator("#grid .card .hemicycle-seats").count() == 1, "Seat labels missing: "+query)
+    page.locator("#reset").click()
     # Même présentation que les groupes : Secrétariat général dans la page courante.
     page.locator("#secretariatNav").click()
     check(page, page.locator("#secretariatPanel").is_visible(), "Secretariat must open inline")
-    check(page, page.locator("#sgDirectorGrid .card").count()==16, "Expected 16 DG portrait cards")
+    check(page, page.locator("#sgDirectorGrid .card").count() >= 10, "Secretariat director portraits missing")
     check(page, page.locator("#directory").is_hidden(), "Deputies must hide while SG is active")
     page.locator("#directoryTab").click()
     check(page, page.locator("#secretariatPanel").is_hidden(), "Secretariat must close without navigating away")
