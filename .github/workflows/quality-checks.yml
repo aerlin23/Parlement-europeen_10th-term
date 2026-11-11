@@ -37,6 +37,25 @@ jobs:
           PY
           node --check /tmp/trombinoscope-main.js
           node --check sw.js
+      - name: Contrôler les identifiants et les places des deux hémicycles
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          members=json.loads(Path('members.json').read_text(encoding='utf-8'))
+          data=json.loads(Path('hemicycle-seats.json').read_text(encoding='utf-8'))
+          seats=data['seats']
+          ids=[str(m['id']) for m in members]
+          assert len(ids)==len(set(ids)), 'Identifiants de députés dupliqués'
+          assert len(members)>=680, 'Liste des députés anormalement courte'
+          assert set(seats).issubset(set(ids)), 'Siège attribué à un identifiant absent'
+          for chamber in ('str','bru'):
+              assigned=[seat[chamber] for seat in seats.values() if chamber in seat]
+              assert all(isinstance(n,int) and 1<=n<=999 for n in assigned), f'Numéro de siège invalide ({chamber})'
+              assert len(assigned)==len(set(assigned)), f'Doublon de place dans {chamber}'
+              assert len(assigned)>=680, f'Couverture anormalement basse pour {chamber}'
+              print(chamber, len(assigned), 'sièges distincts vérifiés')
+          PY
       - name: Vérifier les fichiers, données et règles métier
         run: python -m unittest discover -s tests -p 'test_*.py' -v
       - name: Installer Playwright et le navigateur choisi
