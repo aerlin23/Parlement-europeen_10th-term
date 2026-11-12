@@ -44,9 +44,10 @@ def test(page, base):
     # Même présentation que les groupes : Secrétariat général dans la page courante.
     page.locator("#secretariatNav").click()
     check(page, page.locator("#secretariatPanel").is_visible(), "Secretariat must open inline")
-    check(page, page.locator("#sgDirectorGrid details.sg-org-entry").count() == 17, "The sixteen DG and Legal Service must be available")
-    page.locator("#sgDirectorGrid details.sg-org-entry").first.locator("summary").click()
-    check(page, page.locator("#sgDirectorGrid details.sg-org-entry").first.locator(".sg-org-branch").count() >= 1, "DG architecture does not expand")
+    check(page, page.locator("#sgDirectorGrid .card").count() == 16, "The sixteen DG portrait cards must be restored")
+    check(page, page.locator("#sgOrgGrid details.sg-org-entry").count() == 17, "The simplified organigram must have 16 DG plus Legal Service")
+    page.locator("#sgOrgGrid details.sg-org-entry").first.locator("summary").click()
+    check(page, page.locator("#sgOrgGrid details.sg-org-entry").first.locator(".sg-org-branch").count() >= 1, "DG architecture does not expand")
     check(page, page.locator("#directory").is_hidden(), "Deputies must hide while SG is active")
     page.locator("#directoryTab").click()
     check(page, page.locator("#secretariatPanel").is_hidden(), "Secretariat must close without navigating away")
