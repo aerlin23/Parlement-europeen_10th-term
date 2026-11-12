@@ -1554,7 +1554,9 @@
         "label": "Vice-présidente du Parlement européen",
         "source": "https://data.europarl.europa.eu/api/v2/meps/197433?format=application%2Fld%2Bjson",
         "checkedAt": "2026-11-06",
-        "startDate": "2024-07-16"
+        "startDate": "2024-07-16",
+        "protocolRank": 4,
+        "protocolRankSource": "https://www.europarl.europa.eu/news/en/press-room/20240710IPR22814/parlament-si-zvolil-nove-predsednictvo"
       }
     ],
     "committeesCheckedAt": "2026-11-06"
@@ -9227,7 +9229,9 @@
         "label": "Vice-président du Parlement européen",
         "source": "https://data.europarl.europa.eu/api/v2/meps/125027?format=application%2Fld%2Bjson",
         "checkedAt": "2026-11-06",
-        "startDate": "2024-07-16"
+        "startDate": "2024-07-16",
+        "protocolRank": 3,
+        "protocolRankSource": "https://www.europarl.europa.eu/news/en/press-room/20240710IPR22814/parlament-si-zvolil-nove-predsednictvo"
       }
     ],
     "committeesCheckedAt": "2026-11-06"
@@ -10740,7 +10744,9 @@
         "label": "Vice-président du Parlement européen",
         "source": "https://data.europarl.europa.eu/api/v2/meps/197770?format=application%2Fld%2Bjson",
         "checkedAt": "2026-11-06",
-        "startDate": "2024-07-16"
+        "startDate": "2024-07-16",
+        "protocolRank": 7,
+        "protocolRankSource": "https://www.europarl.europa.eu/news/en/press-room/20240710IPR22814/parlament-si-zvolil-nove-predsednictvo"
       }
     ],
     "committeesCheckedAt": "2026-11-06"
@@ -12884,7 +12890,9 @@
         "label": "Vice-présidente du Parlement européen",
         "source": "https://data.europarl.europa.eu/api/v2/meps/197525?format=application%2Fld%2Bjson",
         "checkedAt": "2026-11-06",
-        "startDate": "2024-07-16"
+        "startDate": "2024-07-16",
+        "protocolRank": 2,
+        "protocolRankSource": "https://www.europarl.europa.eu/news/en/press-room/20240710IPR22814/parlament-si-zvolil-nove-predsednictvo"
       }
     ],
     "committeesCheckedAt": "2026-11-06"
@@ -14316,7 +14324,9 @@
         "label": "Vice-président du Parlement européen",
         "source": "https://data.europarl.europa.eu/api/v2/meps/125042?format=application%2Fld%2Bjson",
         "checkedAt": "2026-11-06",
-        "startDate": "2024-07-16"
+        "startDate": "2024-07-16",
+        "protocolRank": 9,
+        "protocolRankSource": "https://www.europarl.europa.eu/news/en/press-room/20240710IPR22814/parlament-si-zvolil-nove-predsednictvo"
       }
     ],
     "committeesCheckedAt": "2026-11-06"
@@ -16034,7 +16044,10 @@
         "label": "Vice-présidente du Parlement européen",
         "source": "https://oeil.europarl.europa.eu/oeil/fr/procedure-file?reference=2026%2F2952%28RSO%29",
         "startDate": "2026-11-12",
-        "verificationStatus": "Élection signalée le 12 novembre 2026, publication du résultat officiel en attente"
+        "verificationStatus": "Élection signalée le 12 novembre 2026, publication du résultat officiel en attente",
+        "protocolRank": 11,
+        "protocolRankSource": "https://www.europarl.europa.eu/news/en/press-room/20240710IPR22814/parlament-si-zvolil-nove-predsednictvo",
+        "protocolRankStatus": "Rang 11 provisoire : remplacement de Nicolae Ștefănuță, en attente de publication officielle"
       },
       {
         "type": "COMMITTEE_VICE_CHAIR",
@@ -16952,7 +16965,9 @@
         "label": "Vice-président du Parlement européen",
         "source": "https://data.europarl.europa.eu/api/v2/meps/88882?format=application%2Fld%2Bjson",
         "checkedAt": "2026-11-06",
-        "startDate": "2024-07-16"
+        "startDate": "2024-07-16",
+        "protocolRank": 6,
+        "protocolRankSource": "https://www.europarl.europa.eu/news/en/press-room/20240710IPR22814/parlament-si-zvolil-nove-predsednictvo"
       }
     ],
     "committeesCheckedAt": "2026-11-06"
@@ -17853,7 +17868,9 @@
         "label": "Vice-président du Parlement européen",
         "source": "https://data.europarl.europa.eu/api/v2/meps/30482?format=application%2Fld%2Bjson",
         "checkedAt": "2026-11-06",
-        "startDate": "2024-07-16"
+        "startDate": "2024-07-16",
+        "protocolRank": 14,
+        "protocolRankSource": "https://www.europarl.europa.eu/news/en/press-room/20240710IPR22814/parlament-si-zvolil-nove-predsednictvo"
       }
     ],
     "committeesCheckedAt": "2026-11-06"
@@ -18882,7 +18899,9 @@
         "label": "Vice-présidente du Parlement européen",
         "source": "https://data.europarl.europa.eu/api/v2/meps/124846?format=application%2Fld%2Bjson",
         "checkedAt": "2026-11-06",
-        "startDate": "2024-07-16"
+        "startDate": "2024-07-16",
+        "protocolRank": 5,
+        "protocolRankSource": "https://www.europarl.europa.eu/news/en/press-room/20240710IPR22814/parlament-si-zvolil-nove-predsednictvo"
       }
     ],
     "committeesCheckedAt": "2026-11-06"
@@ -20912,7 +20931,9 @@
         "label": "Vice-présidente du Parlement européen",
         "source": "https://data.europarl.europa.eu/api/v2/meps/257113?format=application%2Fld%2Bjson",
         "checkedAt": "2026-11-06",
-        "startDate": "2024-07-16"
+        "startDate": "2024-07-16",
+        "protocolRank": 13,
+        "protocolRankSource": "https://www.europarl.europa.eu/news/en/press-room/20240710IPR22814/parlament-si-zvolil-nove-predsednictvo"
       }
     ],
     "committeesCheckedAt": "2026-11-06"
@@ -20954,7 +20975,9 @@
         "label": "Vice-présidente du Parlement européen",
         "source": "https://data.europarl.europa.eu/api/v2/meps/37312?format=application%2Fld%2Bjson",
         "checkedAt": "2026-11-06",
-        "startDate": "2024-07-16"
+        "startDate": "2024-07-16",
+        "protocolRank": 8,
+        "protocolRankSource": "https://www.europarl.europa.eu/news/en/press-room/20240710IPR22814/parlament-si-zvolil-nove-predsednictvo"
       }
     ],
     "committeesCheckedAt": "2026-11-06"
@@ -25173,7 +25196,9 @@
         "label": "Vice-présidente du Parlement européen",
         "source": "https://data.europarl.europa.eu/api/v2/meps/96756?format=application%2Fld%2Bjson",
         "checkedAt": "2026-11-06",
-        "startDate": "2024-07-16"
+        "startDate": "2024-07-16",
+        "protocolRank": 1,
+        "protocolRankSource": "https://www.europarl.europa.eu/news/en/press-room/20240710IPR22814/parlament-si-zvolil-nove-predsednictvo"
       }
     ],
     "committeesCheckedAt": "2026-11-06"
@@ -26355,7 +26380,9 @@
         "label": "Vice-présidente du Parlement européen",
         "source": "https://data.europarl.europa.eu/api/v2/meps/220801?format=application%2Fld%2Bjson",
         "checkedAt": "2026-11-06",
-        "startDate": "2024-07-16"
+        "startDate": "2024-07-16",
+        "protocolRank": 10,
+        "protocolRankSource": "https://www.europarl.europa.eu/news/en/press-room/20240710IPR22814/parlament-si-zvolil-nove-predsednictvo"
       }
     ],
     "committeesCheckedAt": "2026-11-06"
@@ -27138,7 +27165,9 @@
         "label": "Vice-président du Parlement européen",
         "source": "https://data.europarl.europa.eu/api/v2/meps/28615?format=application%2Fld%2Bjson",
         "checkedAt": "2026-11-06",
-        "startDate": "2024-07-16"
+        "startDate": "2024-07-16",
+        "protocolRank": 12,
+        "protocolRankSource": "https://www.europarl.europa.eu/news/en/press-room/20240710IPR22814/parlament-si-zvolil-nove-predsednictvo"
       }
     ],
     "committeesCheckedAt": "2026-11-06"
