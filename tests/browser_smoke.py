@@ -45,6 +45,8 @@ def test(page, base):
     page.locator("#secretariatNav").click()
     check(page, page.locator("#secretariatPanel").is_visible(), "Secretariat must open inline")
     check(page, page.locator("#sgDirectorGrid .card").count() == 17, "The sixteen DG portrait cards and Freddy Drexler must be present")
+    check(page, page.locator("#sgDirectorGrid .card a.name[href^='https://the-secretary-general.europarl.europa.eu/']").count() == 17, "All director names must open official pages")
+    check(page, page.locator("#sgDirectorGrid .card a.sg-portrait-link").count() == 17, "All director portraits must be clickable")
     check(page, page.locator("#sgOrgGrid details.sg-tree-dg").count() == 17, "The organization tree must contain 16 DG and the Legal Service")
     page.locator("#sgOrgGrid details.sg-tree-dg").first.locator("summary").click()
     check(page, page.locator("#sgOrgGrid details.sg-tree-dg").first.locator(".sg-tree-direction").count() >= 1, "The organization tree must expand to directions")
