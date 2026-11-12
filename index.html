@@ -8,7 +8,8 @@
  <label class="sg-filter">RECHERCHER <input id="sgSearch" type="search" placeholder="Nom, fonction, direction générale…" autocomplete="off"></label>
  <section id="sgLeadership"><h3>Secrétaire général</h3><div class="grid" id="sgMainGrid"></div></section>
  <section id="sgDeputies"><h3>Secrétaires généraux adjoints</h3><div class="grid" id="sgDeputyGrid"></div></section>
- <section id="sgDirectors"><h3>Directions générales et Service juridique</h3><p class="sg-intro">16 directions générales et le Service juridique · Ouvre une rubrique pour consulter ses domaines, directions et unités. Structure simplifiée d’après l’organigramme SFP-Europa du 15 août 2026 (document non officiel) ; noms des directeurs généraux vérifiés séparément. Les responsables d’unité non identifiés avec certitude ne sont pas indiqués.</p><div class="sg-org-list" id="sgDirectorGrid"></div></section>
+ <section id="sgDirectors"><h3>Directeurs généraux</h3><p class="sg-intro">Trombinoscope des 16 directeurs généraux, dans l’ordre de l’organigramme officiel.</p><div class="grid" id="sgDirectorGrid"></div></section>
+ <section id="sgOrgSection"><h3>Organigramme administratif simplifié</h3><p class="sg-intro">Structure synthétique d’après le document SFP-Europa daté du 15 août 2026 (source non officielle) : 16 DG et Service juridique, directions et domaines, puis unités. Les noms non vérifiables ne sont pas attribués.</p><div class="sg-org-list" id="sgOrgGrid"></div></section>
  <p class="sg-intro">Les portraits sont affichés lorsque leur source est identifiée. Une photo manquante n’est jamais remplacée par le portrait d’une autre personne. <a href="https://the-secretary-general.europarl.europa.eu/en/organisation/directorates-general" target="_blank" rel="noopener">Consulter l’organigramme officiel</a>.</p>
  </section><section id="training" class="training" hidden><div id="studyIntro"><h2>Reconnais le député</h2><div class="study-actions"><button id="exportProgress" type="button">Exporter ma progression</button><button id="importProgress" type="button">Importer une sauvegarde</button><input id="progressFile" type="file" accept="application/json,.json" hidden></div><p id="backupStatus" class="progress" role="status" aria-live="polite"></p><label class="choice-label">MODE DU QUIZ<select id="quizMode"><option value="name-photo">Nom → Photo</option><option value="photo-name">Photo → Nom</option></select></label><p class="progress">20 questions par session · 4 propositions par question</p><p id="quizAvailability" class="progress"></p><button id="startStudy" class="primary">Commencer</button></div><div id="studySession" hidden><p id="studyProgress" class="progress" aria-live="polite"></p><article class="study-card"><div id="studyPhoto" class="study-photo"></div><div class="answer" id="studyAnswer"></div></article><div id="quizChoices" class="quiz-choices" role="group" aria-label="Choisis la bonne réponse"></div><p id="quizFeedback" class="quiz-feedback" role="status" aria-live="polite"></p><div class="study-actions"><button id="listenName" class="listen-name" type="button" hidden aria-label="Écouter la prononciation officielle du nom">🔊 Écouter le nom</button><button id="nextStudy" class="primary" hidden>Photo suivante →</button><button id="stopStudy">Terminer et voir mon bilan</button></div></div><div id="studyEnd" hidden><h2>Quiz terminé</h2><p id="studyResult" class="intro"></p><div class="study-actions"><button id="retryStudy" class="primary">Rejouer les erreurs</button><button id="restartStudy">Nouveau quiz</button></div></div></section><section class="recent-changes"><h2>Derniers changements</h2><ul>
 <li><time datetime="2026-10-21">21 octobre 2026</time> · <a href="?person=58766">Nicolae Ștefănuță</a> : fin de mandat de vice-président du Parlement (reste député).</li>
@@ -214,19 +215,27 @@ function sgRender(){
  for(const [sectionId,gridId,list] of [
   ['sgLeadership','sgMainGrid',SG_PE_DATA.slice(0,1)],
   ['sgDeputies','sgDeputyGrid',SG_PE_DATA.slice(1,3)],
-  ['sgDirectors','sgDirectorGrid',SG_PE_DATA.slice(3)]
+  ['sgDirectors','sgDirectorGrid',SG_PE_DATA.slice(3,19)]
  ]){
   const section=$(sectionId),grid=$(gridId);grid.replaceChildren();
   for(const x of list){
-   const hierarchy=x[0]!=='SG'&&x[0]!=='SG adjoint' ? SG_PE_ORG[x[0]]||[] : [];
-   const base=norm(x.slice(0,3).join(' '));const deep=norm(hierarchy.map(z=>z.join(' ')).join(' '));
-   if(query&&!base.includes(query)&&!deep.includes(query))continue;
-   const item=x[0]!=='SG'&&x[0]!=='SG adjoint' ? sgOrgCard(x):sgCard(x);
-   if(query&&deep.includes(query)&&!base.includes(query))item.open=true;
-   grid.append(item);
+   const hierarchy=SG_PE_ORG[x[0]]||[];
+   const plain=norm(x.slice(0,3).join(' '));
+   const related=norm(hierarchy.map(row=>row.join(' ')).join(' '));
+   if(!query||plain.includes(query)||related.includes(query))grid.append(sgCard(x));
   }
   section.hidden=grid.children.length===0;
  }
+ const org=$('sgOrgGrid');org.replaceChildren();
+ for(const entry of SG_PE_DATA.slice(3)){
+  const hierarchy=SG_PE_ORG[entry[0]]||[];
+  const plain=norm(entry.slice(0,3).join(' ')),related=norm(hierarchy.map(row=>row.join(' ')).join(' '));
+  if(query&&!plain.includes(query)&&!related.includes(query))continue;
+  const node=sgOrgCard(entry);
+  if(query&&related.includes(query)&&!plain.includes(query))node.open=true;
+  org.append(node);
+ }
+ $('sgOrgSection').hidden=org.children.length===0;
 }
 $('sgSearch').addEventListener('input',sgRender);sgRender();
 function showSecretariat(changeUrl=true){
@@ -506,7 +515,7 @@ populate();const params=new URLSearchParams(location.search),personParam=params.
 if('serviceWorker' in navigator){
  window.addEventListener('load',async()=>{
   try{
-   const registration=await navigator.serviceWorker.register('./sw.js?v=30',{scope:'./',updateViaCache:'none'});
+   const registration=await navigator.serviceWorker.register('./sw.js?v=31',{scope:'./',updateViaCache:'none'});
    const notice=$('appUpdateNotice'),apply=$('applyAppUpdate');
    const displayUpdate=()=>{
     if(registration.waiting&&navigator.serviceWorker.controller)notice.hidden=false;
