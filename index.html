@@ -90,13 +90,29 @@
  .secretariat-section .sg-dg-photo{width:70px;height:80px;flex-basis:70px}
  .secretariat-section .sg-dg-name{font-size:14px}
 }
+
+/* Organigramme unique : hiérarchie d'origine avec portrait dans chaque bloc DG. */
+.secretariat-section #sgOrgGrid.sg-chart{display:flex;flex-direction:column;gap:0;margin:10px 0 25px;overflow:visible}
+.secretariat-section #sgOrgGrid .sg-tree-root{align-self:center}
+.secretariat-section #sgOrgGrid .sg-tree-trunk{align-self:center}
+.secretariat-section #sgOrgGrid .sg-tree-deputies{align-self:center}
+.secretariat-section #sgOrgGrid .sg-tree-caption{align-self:center}
+.secretariat-section #sgOrgGrid .sg-tree-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;width:100%;padding-top:17px;margin:0}
+.secretariat-section #sgOrgGrid .sg-tree-grid::before{display:block;content:"";position:absolute;top:0;left:4%;right:4%;border-top:2px solid #abc0d1}
+.secretariat-section #sgOrgGrid .sg-tree-grid::after{display:block;content:"";position:absolute;left:50%;top:-12px;height:12px;border-left:2px solid #abc0d1}
+.secretariat-section #sgOrgGrid .sg-dg-card{position:relative;overflow:visible}
+.secretariat-section #sgOrgGrid .sg-dg-card::before{display:block;content:"";position:absolute;top:-13px;left:50%;height:13px;border-left:2px solid #abc0d1}
+.secretariat-section #sgOrgGrid .sg-dg-card>.sg-tree-dg-head{border-radius:12px}
+.secretariat-section #sgOrgGrid .sg-dg-card[open]>.sg-tree-dg-head{border-radius:12px 12px 0 0;background:#f4f9fb}
+.secretariat-section #sgOrgGrid .sg-dg-photo{flex-shrink:0}
+.secretariat-section #sgOrgGrid .sg-dg-identity{min-width:0}
+@media(min-width:760px){
+ .secretariat-section #sgOrgGrid .sg-tree-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 </style></head><body><header class="ep-header"><div class="top"><div class="ep-identity"><a class="ep-logo" href="https://www.europarl.europa.eu/portal/fr" target="_blank" rel="noopener"><img id="identityLogo" src="./assets/parlement-logo.png" width="260" height="90" alt="Parlement européen"><span id="identityText" class="identity-text" hidden>NI</span></a><div id="identityBrand" class="brand">VADEMECUM · 10ᵉ LÉGISLATURE</div></div><div class="term">PARLEMENT EUROPÉEN · 2024–2029</div></div><h1 id="identityTitle">Vademecum des députés européens</h1><p id="identitySubtitle">Retrouver un député. Reconnaître un visage.</p><p class="header-updated" id="dataUpdated">Application mise à jour le 13 novembre 2026</p><div class="stats" id="headerStats"><div><b id="total">—</b>députés</div><div><b id="countries">—</b>pays</div><div><b>10ᵉ</b>législature</div></div></header><div id="appUpdateNotice" role="status" hidden style="padding:12px 18px;background:#e8f4f6;border-bottom:1px solid #b2cbd0;text-align:center">Une nouvelle version est prête. <button id="applyAppUpdate" type="button">Mettre à jour</button></div><main><nav class="directories" aria-label="Annuaires"><a href="https://aerlin23.github.io/Parlement-europeen_10th-term/">Tous les députés</a><a href="?group=PPE">PPE</a><a href="?group=S%26D">S&amp;D</a><a href="?group=PfE">Patriotes</a><a href="?group=ECR">ECR</a><a href="?group=Renew">Renew</a><a href="?group=Verts%2FALE">Verts/ALE</a><a href="?group=The%20Left">The Left</a><a href="?group=ESN">ESN</a><a href="?group=NI">NI</a><a href="./commission-europeenne.html">Commission européenne</a><a href="?section=secretariat" id="secretariatNav">Secrétariat général</a></nav><div class="tabs" role="group" aria-label="Mode"><button id="directoryTab" class="active" aria-pressed="true">Vademecum</button><button id="trainingTab" aria-pressed="false">S’entraîner</button></div><section id="filters" class="toolbar" aria-label="Filtres"><div class="fields"><label>RECHERCHER<input id="search" type="search" placeholder="Nom ou place (s328 / b328)…" autocomplete="off"></label><label>GENRE<select id="gender"><option value="">Tous</option><option value="MALE">Masculin</option><option value="FEMALE">Féminin</option></select></label><label>PAYS<select id="country"><option value="">Tous les pays</option></select></label><label>GROUPE POLITIQUE<select id="group"><option value="">Tous les groupes</option></select></label></div><section id="advanced" class="advanced" aria-label="Fonctions et tri"><h2 class="filter-heading">Fonctions et tri</h2><div class="extra"><label>FONCTION<select id="function"><option value="">Toutes les fonctions</option><option value="presidencype">Présidence et vice-présidences du Parlement</option><option value="quaestor">Questeurs du Parlement</option><option value="chair">Présidence de commission</option><option value="grouppresident">Présidence de groupe</option><option value="coord">Coordinateurs de groupe</option></select></label><label>COMMISSION · TITULAIRES<select id="committee"><option value="">Toutes les commissions</option></select></label><label>TRIER PAR<select id="sort"><option value="name" selected>Nom de famille · A → Z</option><option value="role">Responsabilités, groupes, puis nom</option><option value="country">Pays, puis nom</option><option value="group">Groupe politique, puis nom</option></select></label></div></section><div class="tools"><button id="reset">Réinitialiser les filtres</button><label class="sep"><input id="compact" type="checkbox">Affichage compact</label></div><p id="coverage" class="coverage"></p><div id="localBanner" class="local-banner" hidden>Aperçu d’un fichier importé, visible uniquement dans cet onglet. Le site public n’a pas été modifié. <button id="restore">Revenir aux données publiées</button></div></section><p id="count" class="count" aria-live="polite">Chargement des députés…</p><section id="directory"><div id="grid" class="grid"></div><div id="loadMoreWrap" class="study-actions" hidden><button id="loadMore" type="button">Afficher plus de députés</button></div><p id="empty" class="empty" hidden>Aucun député pour ces filtres. Modifie la recherche ou réinitialise les filtres.</p></section><section id="secretariatPanel" class="secretariat-section" aria-label="Secrétariat général" hidden>
  <div class="sg-heading"><span class="sg-eyebrow">ADMINISTRATION DU PARLEMENT EUROPÉEN</span><h2>Secrétariat général</h2><p>Responsables, directions générales et organisation administrative.</p></div>
- <nav class="sg-quicknav" aria-label="Navigation dans le Secrétariat général"><a href="#sgLeadership">Secrétaire général</a><a href="#sgDeputies">Adjoints</a><a href="#sgOrgSection">Directions générales</a></nav>
  <label class="sg-filter">RECHERCHER <input id="sgSearch" type="search" placeholder="Nom, fonction, direction générale…" autocomplete="off"></label>
- <section id="sgLeadership"><h3>Secrétaire général</h3><div class="grid" id="sgMainGrid"></div></section>
- <section id="sgDeputies"><h3>Secrétaires généraux adjoints</h3><div class="grid" id="sgDeputyGrid"></div></section>
- <section id="sgOrgSection"><h3>Directions générales et Service juridique</h3><p class="sg-explainer">Sélectionne un directeur général pour afficher ses directions et leurs responsables.</p><div class="sg-chart" id="sgOrgGrid" aria-label="Directions générales et responsables du Secrétariat général"></div></section>
+ <section id="sgOrgSection"><p class="sg-explainer">Appuie sur la photo ou le nom d'un directeur général pour afficher ses directions, responsables et services.</p><div class="sg-chart" id="sgOrgGrid" aria-label="Organigramme du Secrétariat général"></div></section>
  <p class="sg-intro"><a href="https://the-secretary-general.europarl.europa.eu/en/organisation/directorates-general" target="_blank" rel="noopener">Source officielle : organigramme du Parlement européen</a>.</p>
  </section><section id="training" class="training" hidden><div id="studyIntro"><h2>Reconnais le député</h2><div class="study-actions"><button id="exportProgress" type="button">Exporter ma progression</button><button id="importProgress" type="button">Importer une sauvegarde</button><input id="progressFile" type="file" accept="application/json,.json" hidden></div><p id="backupStatus" class="progress" role="status" aria-live="polite"></p><label class="choice-label">MODE DU QUIZ<select id="quizMode"><option value="name-photo">Nom → Photo</option><option value="photo-name">Photo → Nom</option></select></label><p class="progress">20 questions par session · 4 propositions par question</p><p id="quizAvailability" class="progress"></p><button id="startStudy" class="primary">Commencer</button></div><div id="studySession" hidden><p id="studyProgress" class="progress" aria-live="polite"></p><article class="study-card"><div id="studyPhoto" class="study-photo"></div><div class="answer" id="studyAnswer"></div></article><div id="quizChoices" class="quiz-choices" role="group" aria-label="Choisis la bonne réponse"></div><p id="quizFeedback" class="quiz-feedback" role="status" aria-live="polite"></p><div class="study-actions"><button id="listenName" class="listen-name" type="button" hidden aria-label="Écouter la prononciation officielle du nom">🔊 Écouter le nom</button><button id="nextStudy" class="primary" hidden>Photo suivante →</button><button id="stopStudy">Terminer et voir mon bilan</button></div></div><div id="studyEnd" hidden><h2>Quiz terminé</h2><p id="studyResult" class="intro"></p><div class="study-actions"><button id="retryStudy" class="primary">Rejouer les erreurs</button><button id="restartStudy">Nouveau quiz</button></div></div></section><section class="recent-changes"><h2>Derniers changements</h2><ul>
 <li><time datetime="2026-11-12">12 novembre 2026</time> · <a href="?person=193292">Tilly Metz</a> élue 11e vice-présidente du Parlement européen, en remplacement de Nicolae Ștefănuță.</li>
@@ -319,13 +335,28 @@ function sgOrgCard([code,name,role,source]){
 }
 function sgDrawOrg(query){
  const board=$('sgOrgGrid');board.replaceChildren();
- const entries=SG_PE_DATA.slice(3);
+ const leaders=SG_PE_DATA.slice(0,3),entries=SG_PE_DATA.slice(3);
  const matching=entries.filter(x=>!query||norm(x.slice(0,3).join(' ')).includes(query)||norm((SG_PE_ORG[x[0]]||[]).map(y=>y.join(' ')).join(' ')).includes(query));
- $('sgOrgSection').hidden=matching.length===0;
- if(!matching.length)return;
+ const topMatch=leaders.some(x=>norm(x.slice(0,3).join(' ')).includes(query));
+ $('sgOrgSection').hidden=!!query&&!matching.length&&!topMatch;
+ if($('sgOrgSection').hidden)return;
+ const root=el('div','sg-tree-root');
+ const sgLink=el('a','sg-tree-person-link',leaders[0][1]+' ↗');
+ sgLink.href=leaders[0][3];sgLink.target='_blank';sgLink.rel='noopener noreferrer';
+ root.append(el('strong','','Secrétaire général'),sgLink);board.append(root);
+ board.append(el('div','sg-tree-trunk'));
+ const deputies=el('div','sg-tree-deputies');
+ for(const person of leaders.slice(1,3)){
+  const node=el('div','sg-tree-deputy');
+  const link=el('a','sg-person-link',person[1]+' ↗');
+  link.href=person[3];link.target='_blank';link.rel='noopener noreferrer';
+  node.append(el('strong','','Secrétaire général adjoint'),link);deputies.append(node);
+ }
+ board.append(deputies,el('div','sg-tree-trunk'),el('div','sg-tree-caption','Directions générales et Service juridique'));
  const grid=el('div','sg-tree-grid');
  for(const x of matching){
   const node=sgOrgCard(x);
+  // Les détails restent fermés sauf quand une recherche cible une de leurs directions.
   if(query&&!norm(x.slice(0,3).join(' ')).includes(query))node.open=true;
   grid.append(node);
  }
@@ -348,17 +379,6 @@ function sgCard([code,name,role,source]){
 }
 function sgRender(){
  const query=norm($('sgSearch').value.trim());
- for(const [sectionId,gridId,list] of [
-  ['sgLeadership','sgMainGrid',SG_PE_DATA.slice(0,1)],
-  ['sgDeputies','sgDeputyGrid',SG_PE_DATA.slice(1,3)]
- ]){
-  const section=$(sectionId),grid=$(gridId);grid.replaceChildren();
-  for(const x of list){
-   const hierarchy=SG_PE_ORG[x[0]]||[];
-   if(!query||norm(x.slice(0,3).join(' ')).includes(query)||norm(hierarchy.map(y=>y.join(' ')).join(' ')).includes(query))grid.append(sgCard(x));
-  }
-  section.hidden=grid.children.length===0;
- }
  sgDrawOrg(query);
 }
 $('sgSearch').addEventListener('input',sgRender);sgRender();
