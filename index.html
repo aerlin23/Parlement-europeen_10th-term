@@ -505,7 +505,10 @@ body.group-view .directories a[aria-current="page"]{
  schedule();
 })();
 const CONFIG={general:true,repo:'Parlement-europeen_10th-term',short:'PE',localPhotos:false,updated:'2026-11-13'};
-const $=id=>document.getElementById(id),norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ß/gi,'ss').toLocaleLowerCase('fr');
+const $=id=>document.getElementById(id);
+// Translittération pour recherche et navigation A-Z : les noms affichés restent inchangés.
+const LATIN_FOLDS={'ß':'ss','ẞ':'ss','æ':'ae','Æ':'ae','œ':'oe','Œ':'oe','ø':'o','Ø':'o','ł':'l','Ł':'l','đ':'d','Đ':'d','ð':'d','Ð':'d','þ':'th','Þ':'th','ı':'i','İ':'i','ħ':'h','Ħ':'h','ŋ':'n','Ŋ':'n','ŀ':'l','Ŀ':'l','ĸ':'k','Ə':'e','ə':'e'};
+const norm=s=>String(s||'').replace(/[ßẞæÆœŒøØłŁđĐðÐþÞıİħĦŋŊŀĿĸƏə]/g,c=>LATIN_FOLDS[c]).normalize('NFKD').replace(/\p{M}/gu,'').toLocaleLowerCase('fr');
 const fr={Croatia:'Croatie',Cyprus:'Chypre',Estonia:'Estonie',Finland:'Finlande',Ireland:'Irlande',Luxembourg:'Luxembourg',Malta:'Malte',Romania:'Roumanie',Slovenia:'Slovénie',Sweden:'Suède',Austria:'Autriche',Belgium:'Belgique',Bulgaria:'Bulgarie',Czechia:'Tchéquie','Czech Republic':'Tchéquie',Denmark:'Danemark',France:'France',Germany:'Allemagne',Greece:'Grèce',Hungary:'Hongrie',Italy:'Italie',Latvia:'Lettonie',Lithuania:'Lituanie',Netherlands:'Pays-Bas',Poland:'Pologne',Portugal:'Portugal',Slovakia:'Slovaquie',Spain:'Espagne'};
 const flags={Croatia:'🇭🇷',Cyprus:'🇨🇾',Estonia:'🇪🇪',Finland:'🇫🇮',Ireland:'🇮🇪',Luxembourg:'🇱🇺',Malta:'🇲🇹',Romania:'🇷🇴',Slovenia:'🇸🇮',Sweden:'🇸🇪',Austria:'🇦🇹',Belgium:'🇧🇪',Bulgaria:'🇧🇬',Czechia:'🇨🇿','Czech Republic':'🇨🇿',Denmark:'🇩🇰',France:'🇫🇷',Germany:'🇩🇪',Greece:'🇬🇷',Hungary:'🇭🇺',Italy:'🇮🇹',Latvia:'🇱🇻',Lithuania:'🇱🇹',Netherlands:'🇳🇱',Poland:'🇵🇱',Portugal:'🇵🇹',Slovakia:'🇸🇰',Spain:'🇪🇸'};
 const flagCodes={Austria:'at',Belgium:'be',Bulgaria:'bg',Croatia:'hr',Cyprus:'cy',Czechia:'cz','Czech Republic':'cz',Denmark:'dk',Estonia:'ee',Finland:'fi',France:'fr',Germany:'de',Greece:'gr',Hungary:'hu',Ireland:'ie',Italy:'it',Latvia:'lv',Lithuania:'lt',Luxembourg:'lu',Malta:'mt',Netherlands:'nl',Poland:'pl',Portugal:'pt',Romania:'ro',Slovakia:'sk',Slovenia:'si',Spain:'es',Sweden:'se'};
