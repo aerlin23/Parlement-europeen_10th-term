@@ -1765,6 +1765,15 @@
       "source": "https://www.europarl.europa.eu/cmsdata/301676/20251215%20-%20DROI%20Coordinators.pdf",
       "sourceDate": "2025-01-30",
       "sourceStatus": "committee-list"
+    },
+    {
+      "id": "257050",
+      "committee": "AFET",
+      "group": "PfE",
+      "role": "coordinator",
+      "source": "Document « Coordinators - 10th legislature » AFET fourni par l’utilisateur (photographie)",
+      "sourceDate": "date non lisible",
+      "sourceStatus": "user-provided-document"
     }
   ]
 }
