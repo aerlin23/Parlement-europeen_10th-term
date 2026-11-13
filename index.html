@@ -377,7 +377,7 @@ body.group-view .directories a[aria-current="page"]{
 @media(min-width:1000px){.alpha-floating .alpha-letters{max-width:unset}.alpha-floating button{min-width:29px;font-size:12px}}
 @media(max-width:650px){.alpha-floating{bottom:calc(10px + env(safe-area-inset-bottom));padding:4px 6px}}
 
-.vf-toolbar{display:flex;justify-content:flex-end;margin:7px 0 9px}.vf-favorites-toggle{font-size:12px;padding:7px 10px}.vf-favorites-toggle[aria-pressed=true]{background:#e4f1fb;color:#174b7b;border-color:#8bb5d5}
+.vf-toolbar{display:flex;justify-content:flex-end;gap:6px;flex-wrap:wrap;margin:7px 0 9px}#filters[hidden]+.vf-toolbar,#filters[hidden]+.vf-toolbar+.vf-fav-committees{display:none}.vf-favorites-toggle{font-size:12px;padding:7px 10px}.vf-favorites-toggle[aria-pressed=true]{background:#e4f1fb;color:#174b7b;border-color:#8bb5d5}
 .vf-card-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px;padding-top:6px;border-top:1px solid #edf1f4}
 .vf-action{font-size:10px;padding:5px 6px;border-radius:6px;min-height:30px;font-weight:600;white-space:nowrap}
 .vf-action[aria-pressed=true]{background:#e4effa;border-color:#9abfdc;color:#174b7b}
@@ -767,7 +767,7 @@ async function showSeatOnPlan(city,number,memberName,memberGroup){
    background.append(seat);
    seatCircles.push([seat,assignedGroups.get(i+1)]);
    const owner=seatOwners.get(i+1);
-   if(owner){const hit=seatSVG('circle',{cx:x,cy:y,r:6,fill:'transparent',class:'seat-map-pick',tabindex:0,role:'button','aria-label':'Place '+(i+1)+' : '+owner.name+' · '+owner.group});const tooltip=seatSVG('title',{},'Place '+(i+1)+' · '+owner.name+' · '+owner.group);hit.append(tooltip);const pick=()=>showSeatOnPlan(city,i+1,owner.name,owner.group);hit.addEventListener('click',pick);hit.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();pick()}});background.append(hit)}
+   if(owner){const hit=seatSVG('circle',{cx:x,cy:y,r:6,fill:'transparent',class:'seat-map-pick',tabindex:i+1===number?0:-1,role:'button','aria-label':'Place '+(i+1)+' : '+owner.name+' · '+owner.group});const tooltip=seatSVG('title',{},'Place '+(i+1)+' · '+owner.name+' · '+owner.group);hit.append(tooltip);const pick=()=>showSeatOnPlan(city,i+1,owner.name,owner.group);hit.addEventListener('click',pick);hit.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();pick()}});background.append(hit)}
   }
   const [x,y]=point;
   const marker=seatSVG('g');
@@ -790,6 +790,7 @@ async function showSeatOnPlan(city,number,memberName,memberGroup){
   if(unassigned){const entry=el('span','seat-group-legend-item');const dot=el('span','seat-group-dot');dot.style.backgroundColor='#a4b4c4';entry.append(dot,document.createTextNode('Non attribué / non renseigné'));legend.append(entry)}
   area.append(legend);
   const caption=el('p','seat-map-caption',city==='bru'?'Position relevée sur le plan de Bruxelles du 11 novembre 2026. Les places peuvent changer selon la session.':'Position issue du plan officiel de Strasbourg du 19 octobre 2026. Les places peuvent évoluer selon la session.');
+  caption.append(document.createTextNode(' Touchez un autre siège occupé pour voir son député.'));
   area.append(caption);
   const groupBtn=el('button','seat-group-toggle','Vue groupes');groupBtn.type='button';groupBtn.setAttribute('aria-pressed','false');
   groupBtn.onclick=()=>{
