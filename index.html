@@ -722,7 +722,7 @@ function seatGroupsForCity(city){
  }
  return assigned;
 }
-async function showSeatOnPlan(city,number,memberName){
+async function showSeatOnPlan(city,number,memberName,memberGroup){
  const existing=document.querySelector('.seat-map-backdrop');
  if(existing)existing.remove();
  const backdrop=el('div','seat-map-backdrop'),dialog=el('section','seat-map-dialog');
@@ -731,7 +731,7 @@ async function showSeatOnPlan(city,number,memberName){
  const head=el('div','seat-map-head'),heading=el('h2','',(city==='str'?'Strasbourg':'Bruxelles')+' · place '+number);
  const close=el('button','', '×');close.type='button';close.setAttribute('aria-label','Fermer le plan');
  head.append(heading,close);
- const detail=el('p','seat-map-caption',memberName+' · Plan de l’hémicycle');
+ const detail=el('p','seat-map-caption',memberName+(memberGroup?' · '+(SEAT_GROUP_LABELS[memberGroup]||memberGroup):''));
  const area=el('div','','Chargement du plan…');
  const controls=el('div','seat-map-controls');
  const original=el('a','', 'Consulter le plan officiel actualisé');original.href=seatPlanURL[city];original.target='_blank';original.rel='noopener noreferrer';
@@ -804,7 +804,7 @@ function hemicycleBlock(m){
  for(const [key,label] of [['str','Str'],['bru','Bru']]){
   if(!Number.isInteger(seats[key]))continue;
   const row=el('span','hemicycle-row');
-  row.append(el('span','',label),el('span','hemicycle-number',String(seats[key])));row.setAttribute('role','button');row.tabIndex=0;row.setAttribute('aria-label',`Voir la place ${seats[key]} sur le plan de ${key==='str'?'Strasbourg':'Bruxelles'} pour ${m.name}`);row.addEventListener('click',()=>showSeatOnPlan(key,seats[key],m.name));row.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();showSeatOnPlan(key,seats[key],m.name)}});box.append(row);
+  row.append(el('span','',label),el('span','hemicycle-number',String(seats[key])));row.setAttribute('role','button');row.tabIndex=0;row.setAttribute('aria-label',`Voir la place ${seats[key]} sur le plan de ${key==='str'?'Strasbourg':'Bruxelles'} pour ${m.name}`);row.addEventListener('click',()=>showSeatOnPlan(key,seats[key],m.name,m.group));row.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();showSeatOnPlan(key,seats[key],m.name,m.group)}});box.append(row);
  }
  box.title='Plans officiels du Parlement européen · Strasbourg 19/10/2026 · Bruxelles 11/11/2026';
  return box;
