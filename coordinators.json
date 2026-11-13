@@ -1,0 +1,1347 @@
+{
+  "updated": "2026-11-13",
+  "description": "Coordinateurs des groupes politiques dans les commissions du PE. Les nominations de 2024 sont historiques et ne prouvent pas une fonction toujours en cours.",
+  "entries": [
+    {
+      "id": "2341",
+      "committee": "AFET",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197421",
+      "committee": "DROI",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "257040",
+      "committee": "SEDE",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "190713",
+      "committee": "DEVE",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197405",
+      "committee": "INTA",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197413",
+      "committee": "BUDG",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "124713",
+      "committee": "CONT",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "1917",
+      "committee": "ECON",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "257027",
+      "committee": "FISC",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "188945",
+      "committee": "EMPL",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "1927",
+      "committee": "ENVI",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197417",
+      "committee": "SANT",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "28226",
+      "committee": "ITRE",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "28223",
+      "committee": "IMCO",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "124807",
+      "committee": "TRAN",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "107212",
+      "committee": "REGI",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "96787",
+      "committee": "AGRI",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "96936",
+      "committee": "PECH",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "96761",
+      "committee": "JURI",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "99945",
+      "committee": "LIBE",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "98582",
+      "committee": "AFCO",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "256943",
+      "committee": "FEMM",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "257035",
+      "committee": "PETI",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "119652",
+      "committee": "SANT",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "28307",
+      "committee": "DROI",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "247735",
+      "committee": "IMCO",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "124867",
+      "committee": "INTA",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "4267",
+      "committee": "DEVE",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "256880",
+      "committee": "EMPL",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "38542",
+      "committee": "TRAN",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "125046",
+      "committee": "ECON",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "256901",
+      "committee": "BUDG",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "256997",
+      "committee": "PETI",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257059",
+      "committee": "FISC",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197682",
+      "committee": "CULT",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "96812",
+      "committee": "AFCO",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197497",
+      "committee": "SEDE",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257111",
+      "committee": "AGRI",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "124784",
+      "committee": "ITRE",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "229839",
+      "committee": "JURI",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257066",
+      "committee": "PECH",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "204413",
+      "committee": "REGI",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197722",
+      "committee": "AFET",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "37312",
+      "committee": "EUDS",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257084",
+      "committee": "FEMM",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197670",
+      "committee": "HOUS",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "96932",
+      "committee": "LIBE",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257071",
+      "committee": "CONT",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "185619",
+      "committee": "ENVI",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "204419",
+      "committee": "AFCO",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "130100",
+      "committee": "AFET",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "191693",
+      "committee": "AGRI",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257011",
+      "committee": "BUDG",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197463",
+      "committee": "CONT",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197589",
+      "committee": "CULT",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "840",
+      "committee": "DEVE",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197543",
+      "committee": "DROI",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197581",
+      "committee": "ECON",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "124700",
+      "committee": "EMPL",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "96711",
+      "committee": "ENVI",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "256841",
+      "committee": "EUDS",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197400",
+      "committee": "FEMM",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257010",
+      "committee": "FISC",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "124700",
+      "committee": "HOUS",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197444",
+      "committee": "IMCO",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197401",
+      "committee": "INTA",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197557",
+      "committee": "ITRE",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "256807",
+      "committee": "JURI",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "22858",
+      "committee": "LIBE",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "214839",
+      "committee": "PECH",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257037",
+      "committee": "PETI",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257013",
+      "committee": "REGI",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257112",
+      "committee": "SANT",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197494",
+      "committee": "SEDE",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197432",
+      "committee": "TRAN",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "23788",
+      "committee": "AFET",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257060",
+      "committee": "DROI",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "256907",
+      "committee": "SEDE",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257055",
+      "committee": "DEVE",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257145",
+      "committee": "INTA",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197545",
+      "committee": "BUDG",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257091",
+      "committee": "CONT",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "125106",
+      "committee": "ECON",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "28615",
+      "committee": "FISC",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197794",
+      "committee": "EMPL",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197537",
+      "committee": "ENVI",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257080",
+      "committee": "IMCO",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "28615",
+      "committee": "TRAN",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "239260",
+      "committee": "REGI",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "96810",
+      "committee": "AGRI",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257000",
+      "committee": "PECH",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257073",
+      "committee": "JURI",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197469",
+      "committee": "LIBE",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197516",
+      "committee": "AFCO",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "256925",
+      "committee": "FEMM",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257113",
+      "committee": "HOUS",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197464",
+      "committee": "AFET",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "190464",
+      "committee": "AGRI",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197448",
+      "committee": "BUDG",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197832",
+      "committee": "CULT",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "24942",
+      "committee": "DEVE",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197573",
+      "committee": "ECON",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197448",
+      "committee": "FISC",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "198076",
+      "committee": "EMPL",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "208722",
+      "committee": "ENVI",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197870",
+      "committee": "IMCO",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "256917",
+      "committee": "INTA",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197802",
+      "committee": "ITRE",
+      "group": "Verts/ALE",
+      "role": "co-coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197449",
+      "committee": "ITRE",
+      "group": "Verts/ALE",
+      "role": "co-coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197460",
+      "committee": "JURI",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197772",
+      "committee": "LIBE",
+      "group": "Verts/ALE",
+      "role": "co-coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197470",
+      "committee": "LIBE",
+      "group": "Verts/ALE",
+      "role": "co-coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "256965",
+      "committee": "TRAN",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "256978",
+      "committee": "AFCO",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "96675",
+      "committee": "PECH",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "24942",
+      "committee": "PETI",
+      "group": "Verts/ALE",
+      "role": "co-coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "256995",
+      "committee": "PETI",
+      "group": "Verts/ALE",
+      "role": "co-coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "256915",
+      "committee": "FEMM",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197439",
+      "committee": "CONT",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "257437",
+      "committee": "DROI",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "257132",
+      "committee": "SANT",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
+      "sourceDate": "2024-07-23",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "187917",
+      "committee": "AFET",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
+      "sourceDate": "2024-07-24",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "187917",
+      "committee": "SEDE",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
+      "sourceDate": "2024-07-24",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "257009",
+      "committee": "DEVE",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
+      "sourceDate": "2024-07-24",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "257009",
+      "committee": "DROI",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
+      "sourceDate": "2024-07-24",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "124984",
+      "committee": "INTA",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
+      "sourceDate": "2024-07-24",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197795",
+      "committee": "JURI",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
+      "sourceDate": "2024-07-24",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "127766",
+      "committee": "ECON",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
+      "sourceDate": "2024-07-24",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "127766",
+      "committee": "FISC",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
+      "sourceDate": "2024-07-24",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197529",
+      "committee": "EMPL",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
+      "sourceDate": "2024-07-24",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "2268",
+      "committee": "ENVI",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
+      "sourceDate": "2024-07-24",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "2268",
+      "committee": "CONT",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
+      "sourceDate": "2024-07-24",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "257092",
+      "committee": "IMCO",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
+      "sourceDate": "2024-07-24",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "257092",
+      "committee": "FEMM",
+      "group": "The Left",
+      "role": "co-coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
+      "sourceDate": "2024-07-24",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "245770",
+      "committee": "FEMM",
+      "group": "The Left",
+      "role": "co-coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
+      "sourceDate": "2024-07-24",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "124985",
+      "committee": "AGRI",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
+      "sourceDate": "2024-07-24",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "256913",
+      "committee": "PECH",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
+      "sourceDate": "2024-07-24",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "124813",
+      "committee": "ITRE",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
+      "sourceDate": "2024-07-24",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "124736",
+      "committee": "TRAN",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
+      "sourceDate": "2024-07-24",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "257063",
+      "committee": "SANT",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
+      "sourceDate": "2024-07-24",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "256952",
+      "committee": "CULT",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
+      "sourceDate": "2024-07-24",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "257012",
+      "committee": "LIBE",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
+      "sourceDate": "2024-07-24",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "257255",
+      "committee": "AFET",
+      "group": "ESN",
+      "role": "coordinator",
+      "source": "https://esn-group.eu/committees/",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197475",
+      "committee": "EUDS",
+      "group": "ESN",
+      "role": "coordinator",
+      "source": "https://esn-group.eu/committees/",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "256951",
+      "committee": "ENVI",
+      "group": "ESN",
+      "role": "coordinator",
+      "source": "https://esn-group.eu/committees/",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257457",
+      "committee": "CULT",
+      "group": "ESN",
+      "role": "coordinator",
+      "source": "https://esn-group.eu/committees/",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "128483",
+      "committee": "INTA",
+      "group": "ESN",
+      "role": "coordinator",
+      "source": "https://esn-group.eu/committees/",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "256949",
+      "committee": "FISC",
+      "group": "ESN",
+      "role": "coordinator",
+      "source": "https://esn-group.eu/committees/",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197578",
+      "committee": "ENVI",
+      "group": "PfE",
+      "role": "coordinator",
+      "source": "https://www.europarl.europa.eu/cmsdata/303774/2026%2001%2027%20Coordinators%20results.pdf",
+      "sourceDate": "2026-01-27",
+      "sourceStatus": "published-roster"
+    }
+  ]
+}
