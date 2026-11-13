@@ -38,7 +38,7 @@ async function share(title,url){
  window.prompt('Copier le lien :',url);
 }
 function report(m){
- const title='Erreur Vademecum PE — '+m.name;
+ const title='Signalement Vademecum PE — '+m.name;
  const body='Fiche : '+internalUrl(m)+'\n\nInformation à corriger :\n\nSource officielle (si disponible) :\n';
  location.href='mailto:frederic.perou@europarl.europa.eu?subject='+encodeURIComponent(title)+'&body='+encodeURIComponent(body);
 }
@@ -53,7 +53,7 @@ window.vademecumCardActions=m=>{
   else{star.textContent=favorites.has(id)?'★':'☆';star.title=favorites.has(id)?'Retirer des favoris':'Ajouter aux favoris';star.setAttribute('aria-label',star.title);star.setAttribute('aria-pressed',String(favorites.has(id)))}
  });
  const sharing=document.createElement('button');sharing.type='button';sharing.className='vf-action';sharing.textContent='↗';sharing.title='Partager le lien vers cette fiche';sharing.setAttribute('aria-label',sharing.title);sharing.addEventListener('click',()=>share(m.name+' · Vademecum PE',internalUrl(m)));
- const correction=document.createElement('button');correction.type='button';correction.className='vf-action vf-report';correction.textContent='⚑';correction.title='Préparer un courriel de signalement';correction.setAttribute('aria-label',correction.title);correction.addEventListener('click',()=>report(m));
+ const correction=document.createElement('button');correction.type='button';correction.className='vf-action vf-report';correction.textContent='Signaler';correction.title='Envoyer un signalement par e-mail à frederic.perou@europarl.europa.eu';correction.setAttribute('aria-label',correction.title);correction.addEventListener('click',()=>report(m));
  row.append(star,sharing,correction);return row;
 };
 // Lien vers un filtre de commission, séparé de la fiche du député.
