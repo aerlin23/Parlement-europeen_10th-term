@@ -368,6 +368,8 @@ body.group-view .directories a[aria-current="page"]{
 .alpha-floating button{flex:none;background:transparent;border:0;border-radius:6px;padding:8px 6px;color:#fff;font-size:12px;font-weight:750;min-width:28px;min-height:42px;cursor:pointer}
 .alpha-floating button:hover,.alpha-floating button:focus-visible{background:#386784;outline:none}
 .alpha-floating button:focus-visible{box-shadow:inset 0 0 0 2px #b9ecf4}
+/* Les lettres ne reçoivent aucun fond ni relief, même après sélection tactile. */
+.alpha-floating .alpha-letters button:hover,.alpha-floating .alpha-letters button:focus,.alpha-floating .alpha-letters button:focus-visible,.alpha-floating .alpha-letters button:active,.alpha-floating .alpha-letters button.alpha-current{background:transparent;box-shadow:none;filter:none}
 .alpha-floating button:disabled{opacity:.25;cursor:default}
 .alpha-floating .alpha-letters button.alpha-current{font-size:25px;min-width:36px;font-weight:800;color:#fff;background:transparent;box-shadow:none}
 .alpha-floating .alpha-letters button.alpha-current:disabled{opacity:1}
@@ -410,7 +412,7 @@ body.group-view .directories a[aria-current="page"]{
    if(index<0)return;
    while(directoryVisible<=index)appendDirectoryPage();
    const card=document.getElementById('grid')?.children[index];
-   if(card){card.scrollIntoView({behavior:reduce.matches?'instant':'smooth',block:'start'});}
+   if(card){b.blur();card.scrollIntoView({behavior:reduce.matches?'instant':'smooth',block:'start'});}
   });
   letters.append(b);
  }
