@@ -436,10 +436,23 @@ body.group-view .directories a[aria-current="page"]{
   schedule();
  };
  const scrollByThird=direction=>{
-  const maxScroll=Math.max(0,document.documentElement.scrollHeight-window.innerHeight);
-  const step=maxScroll/3;
-  const destination=Math.max(0,Math.min(maxScroll,window.scrollY+direction*step));
-  window.scrollTo({top:destination,behavior:reduce.matches?'instant':'smooth'});
+  // Un tiers de l'ensemble des députés filtrés, et non du HTML chargé par lots.
+  if(typeof filtered==='undefined'||!Array.isArray(filtered)||!filtered.length)return;
+  const grid=document.getElementById('grid');
+  if(!grid)return;
+  const step=Math.ceil(filtered.length/3);
+  const cards=grid.children;
+  const viewportTop=window.scrollY+Math.min(window.innerHeight*0.18,110);
+  let currentIndex=0;
+  // Chercher le premier député visible dans la liste chargée.
+  for(let i=0;i<cards.length;i++){
+   if(cards[i].getBoundingClientRect().top+window.scrollY<=viewportTop)currentIndex=i;
+   else break;
+  }
+  const target=Math.max(0,Math.min(filtered.length-1,currentIndex+direction*step));
+  while(directoryVisible<=target)appendDirectoryPage();
+  const targetCard=grid.children[target];
+  targetCard?.scrollIntoView({behavior:reduce.matches?'instant':'smooth',block:'start'});
  };
  top.addEventListener('click',()=>scrollByThird(-1));
  bottom.addEventListener('click',()=>scrollByThird(1));
