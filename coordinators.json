@@ -12,15 +12,6 @@
       "sourceStatus": "historical-nomination"
     },
     {
-      "id": "197421",
-      "committee": "DROI",
-      "group": "PPE",
-      "role": "coordinator",
-      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
-      "sourceDate": "2024-07-17",
-      "sourceStatus": "historical-nomination"
-    },
-    {
       "id": "257040",
       "committee": "SEDE",
       "group": "PPE",
@@ -212,15 +203,6 @@
     {
       "id": "119652",
       "committee": "SANT",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "28307",
-      "committee": "DROI",
       "group": "S&D",
       "role": "coordinator",
       "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
@@ -507,15 +489,6 @@
       "sourceStatus": "published-roster"
     },
     {
-      "id": "197543",
-      "committee": "DROI",
-      "group": "Renew",
-      "role": "coordinator",
-      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
       "id": "197581",
       "committee": "ECON",
       "group": "Renew",
@@ -680,15 +653,6 @@
     {
       "id": "23788",
       "committee": "AFET",
-      "group": "ECR",
-      "role": "coordinator",
-      "source": "https://ecrgroup.eu/ecr/committees",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "257060",
-      "committee": "DROI",
       "group": "ECR",
       "role": "coordinator",
       "source": "https://ecrgroup.eu/ecr/committees",
@@ -1074,15 +1038,6 @@
       "sourceStatus": "historical-nomination"
     },
     {
-      "id": "257437",
-      "committee": "DROI",
-      "group": "Verts/ALE",
-      "role": "coordinator",
-      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
-      "sourceDate": "2024-07-23",
-      "sourceStatus": "historical-nomination"
-    },
-    {
       "id": "257132",
       "committee": "SANT",
       "group": "Verts/ALE",
@@ -1112,15 +1067,6 @@
     {
       "id": "257009",
       "committee": "DEVE",
-      "group": "The Left",
-      "role": "coordinator",
-      "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
-      "sourceDate": "2024-07-24",
-      "sourceStatus": "historical-nomination"
-    },
-    {
-      "id": "257009",
-      "committee": "DROI",
       "group": "The Left",
       "role": "coordinator",
       "source": "https://agenceurope.eu/en/bulletin/article/13460/16/the-left-group-appoints-its-coordinators-for-parliamentary-committees",
@@ -1720,6 +1666,105 @@
       "source": "https://ecrgroup.eu/ecr/committees",
       "sourceDate": "2026-11-13",
       "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197421",
+      "committee": "DROI",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.europarl.europa.eu/cmsdata/301676/20251215%20-%20DROI%20Coordinators.pdf",
+      "sourceDate": "2025-01-30",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "28399",
+      "committee": "DROI",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.europarl.europa.eu/cmsdata/301676/20251215%20-%20DROI%20Coordinators.pdf",
+      "sourceDate": "2025-01-30",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "28307",
+      "committee": "DROI",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://www.europarl.europa.eu/cmsdata/301676/20251215%20-%20DROI%20Coordinators.pdf",
+      "sourceDate": "2025-01-30",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "256875",
+      "committee": "DROI",
+      "group": "PfE",
+      "role": "coordinator",
+      "source": "https://www.europarl.europa.eu/cmsdata/301676/20251215%20-%20DROI%20Coordinators.pdf",
+      "sourceDate": "2025-01-30",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "257060",
+      "committee": "DROI",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://www.europarl.europa.eu/cmsdata/301676/20251215%20-%20DROI%20Coordinators.pdf",
+      "sourceDate": "2025-01-30",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "197773",
+      "committee": "DROI",
+      "group": "ECR",
+      "role": "deputy-coordinator",
+      "source": "https://www.europarl.europa.eu/cmsdata/301676/20251215%20-%20DROI%20Coordinators.pdf",
+      "sourceDate": "2025-01-30",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "197543",
+      "committee": "DROI",
+      "group": "Renew",
+      "role": "coordinator",
+      "source": "https://www.europarl.europa.eu/cmsdata/301676/20251215%20-%20DROI%20Coordinators.pdf",
+      "sourceDate": "2025-01-30",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "257437",
+      "committee": "DROI",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://www.europarl.europa.eu/cmsdata/301676/20251215%20-%20DROI%20Coordinators.pdf",
+      "sourceDate": "2025-01-30",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "256912",
+      "committee": "DROI",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://www.europarl.europa.eu/cmsdata/301676/20251215%20-%20DROI%20Coordinators.pdf",
+      "sourceDate": "2025-01-30",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "257009",
+      "committee": "DROI",
+      "group": "The Left",
+      "role": "deputy-coordinator",
+      "source": "https://www.europarl.europa.eu/cmsdata/301676/20251215%20-%20DROI%20Coordinators.pdf",
+      "sourceDate": "2025-01-30",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "190574",
+      "committee": "DROI",
+      "group": "ESN",
+      "role": "coordinator",
+      "source": "https://www.europarl.europa.eu/cmsdata/301676/20251215%20-%20DROI%20Coordinators.pdf",
+      "sourceDate": "2025-01-30",
+      "sourceStatus": "committee-list"
     }
   ]
 }
