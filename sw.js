@@ -46,7 +46,7 @@ self.addEventListener('fetch',event=>{
  if(request.method!=='GET')return;
  const url=new URL(request.url);
  // Conserver les portraits et voix officiels dans un cache durable, même après mise à jour.
- if(url.origin==='https://www.europarl.europa.eu'&&/^\\/(mepphoto|mepaudio)\\/[0-9]+\\.(jpg|mp3)$/.test(url.pathname)){
+ if(url.origin==='https://www.europarl.europa.eu'&&/^\/(mepphoto|mepaudio)\/[0-9]+\.(jpg|mp3)$/.test(url.pathname)){
   event.respondWith((async()=>{
    const cache=await caches.open(MEDIA);
    const hit=await cache.match(url.href);
