@@ -441,28 +441,47 @@ function startSession(list=filtered){
 let namePronunciationAudio=null;
 function stopNamePronunciation(){
  if(namePronunciationAudio){namePronunciationAudio.pause();namePronunciationAudio.removeAttribute('src');namePronunciationAudio.load();namePronunciationAudio=null}
+ if('speechSynthesis' in window)window.speechSynthesis.cancel();
 }
 function enableNamePronunciation(m){
  const button=$('listenName');
- button.hidden=false;button.disabled=false;button.textContent='🔊 Écouter le nom';
+ button.hidden=false;button.disabled=false;button.textContent='Écouter le nom';
  button.onclick=()=>{
   stopNamePronunciation();
   const audio=new Audio();
   namePronunciationAudio=audio;
-  audio.preload='none';
+  let failedOver=false;
+  // L'enregistrement officiel est prioritaire. Si son décodage ou sa lecture échoue,
+  // la voix du téléphone est une solution de secours, clairement identifiée.
+  const fallback=()=>{
+   if(namePronunciationAudio!==audio||failedOver)return;
+   failedOver=true;
+   if(!('speechSynthesis' in window)||typeof SpeechSynthesisUtterance==='undefined'){
+    button.disabled=true;button.textContent='Audio et voix du téléphone indisponibles';return;
+   }
+   const localeByCountry={Belgium:'fr-BE',France:'fr-FR',Germany:'de-DE',Austria:'de-AT',Italy:'it-IT',Spain:'es-ES',Portugal:'pt-PT',Netherlands:'nl-NL',Poland:'pl-PL',Greece:'el-GR',Hungary:'hu-HU',Romania:'ro-RO',Czechia:'cs-CZ',Slovakia:'sk-SK',Croatia:'hr-HR',Slovenia:'sl-SI',Denmark:'da-DK',Sweden:'sv-SE',Finland:'fi-FI',Estonia:'et-EE',Latvia:'lv-LV',Lithuania:'lt-LT',Bulgaria:'bg-BG',Ireland:'en-IE',Malta:'mt-MT',Cyprus:'el-GR',Luxembourg:'fr-LU'};
+   const speech=new SpeechSynthesisUtterance(m.name);
+   speech.lang=localeByCountry[m.country]||document.documentElement.lang||'fr-FR';
+   speech.rate=0.9;
+   const voices=window.speechSynthesis.getVoices();
+   const match=voices.find(v=>v.lang.toLowerCase()===speech.lang.toLowerCase())||voices.find(v=>v.lang.split('-')[0]===speech.lang.split('-')[0]);
+   if(match)speech.voice=match;
+   speech.onstart=()=>{button.disabled=false;button.textContent='Voix de synthèse · Réécouter'};
+   speech.onend=()=>{button.disabled=false;button.textContent='Voix de synthèse · Réécouter'};
+   speech.onerror=()=>{button.disabled=true;button.textContent='Voix du téléphone indisponible'};
+   try{window.speechSynthesis.speak(speech);button.disabled=false;button.textContent='Voix de synthèse · Réécouter'}
+   catch{button.disabled=true;button.textContent='Voix du téléphone indisponible'}
+  };
+  audio.preload='auto';
   audio.src='https://www.europarl.europa.eu/mepaudio/'+encodeURIComponent(m.id)+'.mp3';
   button.disabled=true;button.textContent='Chargement du nom…';
-  audio.onplaying=()=>{if(namePronunciationAudio===audio){button.disabled=false;button.textContent='🔊 Réécouter le nom'}};
-  audio.onended=()=>{if(namePronunciationAudio===audio){button.disabled=false;button.textContent='🔊 Réécouter le nom'}};
-  audio.onerror=()=>{
-   if(namePronunciationAudio!==audio)return;
-   button.disabled=true;button.textContent='Enregistrement indisponible';
-  };
-  const playback=audio.play();
-  if(playback&&typeof playback.catch==='function')playback.catch(()=>{
-   if(namePronunciationAudio!==audio)return;
-   button.disabled=true;button.textContent='Audio indisponible sur cet appareil';
-  });
+  audio.onplaying=()=>{if(namePronunciationAudio===audio){button.disabled=false;button.textContent='Enregistrement officiel · Réécouter'}};
+  audio.onended=()=>{if(namePronunciationAudio===audio){button.disabled=false;button.textContent='Enregistrement officiel · Réécouter'}};
+  audio.onerror=fallback;
+  try{
+   const playback=audio.play();
+   if(playback&&typeof playback.catch==='function')playback.catch(fallback);
+  }catch{fallback()}
  };
 }
 function showStudy(){
