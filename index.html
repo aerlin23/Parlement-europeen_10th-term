@@ -245,7 +245,7 @@ header.ep-header .term .term-years{font-size:1.08em;letter-spacing:.025em}
  <label class="sg-filter">RECHERCHER <input id="sgSearch" type="search" placeholder="Nom, fonction, direction générale…" autocomplete="off"></label>
  <section id="sgOrgSection"><p class="sg-explainer">Appuie sur la photo ou le nom d'un directeur général pour afficher ses directions, responsables et services.</p><div class="sg-chart" id="sgOrgGrid" aria-label="Organigramme du Secrétariat général"></div></section>
  <p class="sg-intro"><a href="https://the-secretary-general.europarl.europa.eu/en/organisation/directorates-general" target="_blank" rel="noopener">Source officielle : organigramme du Parlement européen</a>.</p>
- </section><section id="training" class="training" hidden><div id="studyIntro"><h2>Reconnais le député</h2><div class="study-actions"><button id="exportProgress" type="button">Exporter ma progression</button><button id="importProgress" type="button">Importer une sauvegarde</button><input id="progressFile" type="file" accept="application/json,.json" hidden></div><p id="backupStatus" class="progress" role="status" aria-live="polite"></p><label class="choice-label">MODE DU QUIZ<select id="quizMode"><option value="name-photo">Nom → Photo</option><option value="photo-name">Photo → Nom</option></select></label><p class="progress">20 questions par session · 4 propositions par question</p><p id="quizAvailability" class="progress"></p><button id="startStudy" class="primary">Commencer</button></div><div id="studySession" hidden><p id="studyProgress" class="progress" aria-live="polite"></p><article class="study-card"><div id="studyPhoto" class="study-photo"></div><div class="answer" id="studyAnswer"></div></article><div id="quizChoices" class="quiz-choices" role="group" aria-label="Choisis la bonne réponse"></div><p id="quizFeedback" class="quiz-feedback" role="status" aria-live="polite"></p><div class="study-actions"><button id="listenName" class="listen-name" type="button" hidden aria-label="Écouter la prononciation officielle du nom">🔊 Écouter le nom</button><button id="nextStudy" class="primary" hidden>Photo suivante →</button><button id="stopStudy">Terminer et voir mon bilan</button></div></div><div id="studyEnd" hidden><h2>Quiz terminé</h2><p id="studyResult" class="intro"></p><div class="study-actions"><button id="retryStudy" class="primary">Rejouer les erreurs</button><button id="restartStudy">Nouveau quiz</button></div></div><div class="quiz-reset-area"><button id="resetQuizStats" type="button">Réinitialiser les statistiques</button><p id="resetQuizStatus" class="progress" role="status" aria-live="polite"></p></div></section><section class="recent-changes"><h2>Derniers changements</h2><ul>
+ </section><section id="training" class="training" hidden><div id="studyIntro"><h2>Reconnais le député</h2><label class="choice-label">MODE DU QUIZ<select id="quizMode"><option value="name-photo">Nom → Photo</option><option value="photo-name">Photo → Nom</option></select></label><p class="progress">20 questions par session · 4 propositions par question</p><p id="quizAvailability" class="progress"></p><button id="startStudy" class="primary">Commencer</button></div><div id="studySession" hidden><p id="studyProgress" class="progress" aria-live="polite"></p><article class="study-card"><div id="studyPhoto" class="study-photo"></div><div class="answer" id="studyAnswer"></div></article><div id="quizChoices" class="quiz-choices" role="group" aria-label="Choisis la bonne réponse"></div><p id="quizFeedback" class="quiz-feedback" role="status" aria-live="polite"></p><div class="study-actions"><button id="listenName" class="listen-name" type="button" hidden aria-label="Écouter la prononciation officielle du nom">🔊 Écouter le nom</button><button id="nextStudy" class="primary" hidden>Photo suivante →</button><button id="stopStudy">Terminer et voir mon bilan</button></div></div><div id="studyEnd" hidden><h2>Quiz terminé</h2><p id="studyResult" class="intro"></p><div class="study-actions"><button id="retryStudy" class="primary">Rejouer les erreurs</button><button id="restartStudy">Nouveau quiz</button></div></div><div class="quiz-reset-area"><button id="resetQuizStats" type="button">Réinitialiser les statistiques</button><p id="resetQuizStatus" class="progress" role="status" aria-live="polite"></p></div></section><section class="recent-changes"><h2>Derniers changements</h2><ul>
 <li><time datetime="2026-11-12">12 novembre 2026</time> · <a href="?person=193292">Tilly Metz</a> élue 11e vice-présidente du Parlement européen, en remplacement de Nicolae Ștefănuță.</li>
 <li><time datetime="2026-10-21">21 octobre 2026</time> · <a href="?person=58766">Nicolae Ștefănuță</a> : fin de mandat de vice-président du Parlement (reste député).</li>
 <li><time datetime="2026-10-21">21 octobre 2026</time> · <a href="?person=23699">Kateřina Konečná</a> passe des non-inscrits aux Patriotes pour l’Europe.</li>
@@ -599,54 +599,6 @@ function readQuizProgress(){
 }
 let quizProgress=readQuizProgress();
 function saveQuizProgress(){try{localStorage.setItem(QUIZ_PROGRESS_KEY,JSON.stringify(quizProgress))}catch{}}
-// Sauvegarde explicite, strictement locale : aucun téléchargement vers un serveur.
-function validBackup(data){
- if(!data||data.format!=='trombinoscope-pe-progress'||data.version!==1||data.repo!==CONFIG.repo)throw Error('Fichier de sauvegarde incompatible.');
- const p=data.progress,e=data.errors;
- if(!p||!Number.isSafeInteger(p.round)||p.round<0||p.round>1000000||!p.people||typeof p.people!=='object'||Array.isArray(p.people))throw Error('Progression invalide.');
- if(!e||typeof e!=='object'||Array.isArray(e))throw Error('Historique des erreurs invalide.');
- if(Object.keys(p.people).length>2000||Object.keys(e).length>2000)throw Error('Sauvegarde trop volumineuse.');
- for(const [id,v] of Object.entries(p.people)){
-  if(!/^\d{1,9}$/.test(id)||!v||typeof v!=='object')throw Error('Fiche de progression invalide.');
-  for(const field of ['seen','misses','streak','due'])if(!Number.isSafeInteger(v[field])||v[field]<0||v[field]>10000000)throw Error('Compteur de progression invalide.');
- }
- for(const [id,v] of Object.entries(e)){
-  if(!/^\d{1,9}$/.test(id)||!v||typeof v.name!=='string'||v.name.length>300||!Number.isSafeInteger(v.count)||v.count<0||v.count>10000000)throw Error('Historique invalide.');
- }
- return {p,e};
-}
-$('exportProgress').onclick=()=>{
- try{
-  const payload={format:'trombinoscope-pe-progress',version:1,repo:CONFIG.repo,exportedAt:new Date().toISOString(),progress:quizProgress,errors:quizErrors};
-  const file=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(file),a=document.createElement('a');
-  a.href=url;a.download='trombinoscope-pe-sauvegarde-'+new Date().toISOString().slice(0,10)+'.json';
-  document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
-  $('backupStatus').textContent='Sauvegarde créée. Conserve ce fichier en lieu sûr.';
- }catch(error){$('backupStatus').textContent='Export impossible : '+error.message}
-};
-$('importProgress').onclick=()=>$('progressFile').click();
-$('progressFile').onchange=async()=>{
- const file=$('progressFile').files?.[0];if(!file)return;
- try{
-  if(file.size>2500000)throw Error('Fichier trop volumineux.');
-  const {p,e}=validBackup(JSON.parse(await file.text()));
-  // Les deux valeurs sont validées avant toute modification.
-  const oldP=localStorage.getItem(QUIZ_PROGRESS_KEY),oldE=localStorage.getItem(QUIZ_ERRORS_KEY);
-  try{
-   localStorage.setItem(QUIZ_PROGRESS_KEY,JSON.stringify(p));
-   localStorage.setItem(QUIZ_ERRORS_KEY,JSON.stringify(e));
-  }catch(error){
-   if(oldP===null)localStorage.removeItem(QUIZ_PROGRESS_KEY);else localStorage.setItem(QUIZ_PROGRESS_KEY,oldP);
-   if(oldE===null)localStorage.removeItem(QUIZ_ERRORS_KEY);else localStorage.setItem(QUIZ_ERRORS_KEY,oldE);
-   throw error;
-  }
-  quizProgress=p;quizErrors=e;
-  $('backupStatus').textContent='Progression restaurée. Tu peux démarrer un nouveau quiz.';
-  render();
- }catch(error){$('backupStatus').textContent='Import refusé : '+error.message}
- $('progressFile').value='';
-};
 function spacedDeck(list){
  const size=Math.min(20,list.length),round=quizProgress.round;
  // Le tirage favorise les erreurs déjà commises, puis les portraits jamais vus.
@@ -832,7 +784,6 @@ $('resetQuizStats').onclick=()=>{
   $('studyIntro').hidden=false;
   $('studySession').hidden=true;
   status.textContent='Statistiques et erreurs réinitialisées. Le prochain quiz repart de zéro.';
-  $('backupStatus').textContent='';
   render();
  }catch(error){
   status.textContent='Réinitialisation impossible : le stockage local du navigateur est inaccessible.';
