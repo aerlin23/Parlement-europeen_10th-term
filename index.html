@@ -369,6 +369,8 @@ body.group-view .directories a[aria-current="page"]{
 .alpha-floating button:hover,.alpha-floating button:focus-visible{background:#386784;outline:none}
 .alpha-floating button:focus-visible{box-shadow:inset 0 0 0 2px #b9ecf4}
 .alpha-floating button:disabled{opacity:.25;cursor:default}
+.alpha-floating .alpha-letters button.alpha-current{font-size:23px;min-width:36px;font-weight:850;color:#fff;background:rgba(255,255,255,.24);border-radius:8px;box-shadow:inset 0 -2px 0 rgba(255,255,255,.8)}
+.alpha-floating .alpha-letters button.alpha-current:disabled{opacity:1}
 .alpha-floating .alpha-top,.alpha-floating .alpha-bottom{font-size:23px;border-left:1px solid rgba(230,240,247,.34);border-radius:0;padding:7px 8px;min-width:40px;min-height:42px}
 @media(min-width:1000px){.alpha-floating .alpha-letters{max-width:unset}.alpha-floating button{min-width:29px;font-size:14px}}
 @media(max-width:650px){.alpha-floating{bottom:calc(10px + env(safe-area-inset-bottom));padding:4px 6px}}
@@ -412,6 +414,34 @@ body.group-view .directories a[aria-current="page"]{
   });
   letters.append(b);
  }
+ // La lettre accentuée correspond au premier député de la rangée visible.
+ // Les noms sont pris dans l'ordre effectivement affiché (filtres inclus).
+ let currentLetter='';
+ function syncCurrentLetter(){
+  if(typeof filtered==='undefined'||!Array.isArray(filtered)||!filtered.length||typeof surname!=='function'||typeof norm!=='function')return;
+  const grid=document.getElementById('grid'),cards=grid?.children;
+  if(!cards?.length)return;
+  const focusLine=window.innerHeight*.28;
+  let visibleIndex=cards.length-1;
+  for(let i=0;i<cards.length;i++){
+   const box=cards[i].getBoundingClientRect();
+   if(box.bottom>=focusLine){visibleIndex=i;break}
+  }
+  const initial=norm(surname(filtered[visibleIndex])).charAt(0).toUpperCase();
+  if(!/^[A-Z]$/.test(initial)||initial===currentLetter)return;
+  currentLetter=initial;
+  for(const button of letters.children){
+   const selected=button.dataset.letter===initial;
+   button.classList.toggle('alpha-current',selected);
+   if(selected)button.setAttribute('aria-current','true');
+   else button.removeAttribute('aria-current');
+  }
+  const selected=letters.querySelector('.alpha-current');
+  if(selected&&letters.scrollWidth>letters.clientWidth){
+   const position=selected.offsetLeft-letters.offsetLeft-(letters.clientWidth-selected.offsetWidth)/2;
+   letters.scrollLeft=Math.max(0,position);
+  }
+ }
  // N'apparaît qu'après un geste de défilement rapide, puis reste accessible
  // brièvement pour permettre de toucher une lettre sans masquer les fiches.
  let showUntil=0,hideTimer=0,lastY=window.scrollY,lastTime=performance.now(),scheduled=false;
@@ -423,7 +453,9 @@ body.group-view .directories a[aria-current="page"]{
   if(!bar.hidden&&typeof filtered!=='undefined'&&Array.isArray(filtered)&&typeof surname==='function'&&typeof norm==='function'){
    const initials=new Set(filtered.map(m=>norm(surname(m)).charAt(0).toUpperCase()));
    for(const b of letters.children)b.disabled=!initials.has(b.dataset.letter);
-  }
+   syncCurrentLetter();
+  }else if(!active||!enough){currentLetter=''}
+
  };
  const schedule=()=>{if(!scheduled){scheduled=true;requestAnimationFrame(()=>{scheduled=false;refresh()})}};
  const onScroll=()=>{
