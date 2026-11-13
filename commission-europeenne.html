@@ -7,41 +7,170 @@ header{background:#003399;border-bottom:5px solid #ffcc00}.ec-logo{background:wh
 .portrait-official-link:hover .portrait img{filter:brightness(.97)}
 .portrait-official-link:focus-visible{outline:3px solid #12a7b9;outline-offset:3px}
 .portrait-official-link .portrait{width:100%}
+
+/* Quiz Commission : deux modes, vignettes réactives et bilan lisible. */
+.quiz-name-prompt{font-size:clamp(20px,5vw,29px);font-weight:800;line-height:1.3;color:#143448;padding:34px 12px 9px}
+.quiz-prompt-label{font-size:13px;line-height:1.5;color:#637b88;margin:0 auto 15px}
+.quiz-choices.photo-answers{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.photo-option{padding:6px;min-height:0;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
+.photo-option .quiz-portrait{width:100%;max-width:none;height:190px;border-radius:7px}
+.photo-option .quiz-portrait img{object-fit:cover;object-position:center 25%}
+.photo-option .quiz-option-name{font-size:11px;line-height:1.3;margin:7px 2px 2px;white-space:normal}
+.photo-option:disabled{opacity:1}
+.quiz-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:9px;margin:15px 0}
+.quiz-stat{border:1px solid #d8e3e8;border-radius:8px;background:#fff;padding:10px 6px}
+.quiz-stat strong{display:block;font-size:22px;color:#143448}
+.quiz-stat span{display:block;font-size:11px;line-height:1.4;color:#56707e}
+.quiz-review{font-size:12px;line-height:1.6}
+.quiz-reset-area{margin:32px auto 8px;padding:15px 8px 0;border-top:1px solid #d8e3e8;text-align:center}
+.quiz-reset-area button{font-size:11px;padding:7px 10px;font-weight:600;background:transparent;color:#587380;border:1px solid #cad8df}
+.quiz-reset-area .progress{font-size:11px;max-width:420px;margin:8px auto}
+@media(max-width:650px){.photo-option .quiz-portrait{height:158px}.quiz-choices.photo-answers{gap:8px}.photo-option{padding:5px}.study-card{margin:10px auto}}
 </style></head><body>
 <header><div class="top"><a href="https://commission.europa.eu/index_fr" target="_blank" rel="noopener"><img class="ec-logo" src="https://aerlin23.github.io/Commission-europeenne/assets/commission-logo.svg" alt="Commission européenne"></a><div class="term">COLLÈGE · 2024–2029</div></div><h1>Commission européenne</h1><p>Retrouver un commissaire. Reconnaître un visage.</p><div class="stats"><div><b id="total">27</b>membres</div><div><b>27</b>pays</div><div><b>2024–2029</b>mandat</div></div></header>
 <main><nav class="directories" aria-label="Annuaires"><a href="./">Tous les députés</a><a href="https://aerlin23.github.io/PPE_10th-term/">PPE</a><a href="https://aerlin23.github.io/S-D_10th-term/">S&amp;D</a><a href="https://aerlin23.github.io/Patriots_10th-term/">Patriotes</a><a href="https://aerlin23.github.io/ECR_10th-term/">ECR</a><a href="https://aerlin23.github.io/Renew_10th-term/">Renew</a><a href="https://aerlin23.github.io/Greens_10th-term/">Verts/ALE</a><a href="https://aerlin23.github.io/The-Left_10-term/">The Left</a><a href="https://aerlin23.github.io/ESN_10th-term/">ESN</a><a href="https://aerlin23.github.io/NI_10th-term/">NI</a><a href="./commission-europeenne.html">Commission européenne</a><a href="./?section=secretariat&nav=20261110b">Secrétariat général</a></nav><div class="tabs" role="group" aria-label="Mode"><button id="directoryTab" class="active" aria-pressed="true">Trombinoscope</button><button id="trainingTab" aria-pressed="false">S’entraîner</button></div>
 <section class="toolbar" aria-label="Filtres"><div class="fields ec-filters"><label>RECHERCHER<input id="search" type="search" placeholder="Nom…" autocomplete="off"></label><label>GENRE<select id="gender"><option value="">Tous</option><option value="MALE">Masculin</option><option value="FEMALE">Féminin</option></select></label><label>PAYS<select id="country"><option value="">Tous les pays</option></select></label><label>FONCTION<select id="function"><option value="">Toutes les fonctions</option><option value="presidency">Présidence et vice-présidences</option><option value="commissioner">Commissaires</option></select></label><label>TRIER PAR<select id="sort"><option value="role">Ordre officiel de la Commission</option><option value="name">Nom de famille · A → Z</option><option value="country">Pays, puis nom</option></select></label></div><div class="tools"><button id="reset">Réinitialiser les filtres</button><label class="sep"><input type="checkbox" id="compact">Affichage compact</label></div></section>
 <p id="count" class="count" aria-live="polite">Chargement des membres…</p><section id="directory"><div id="grid" class="grid"></div><p id="empty" class="empty" hidden>Aucun membre pour ces filtres.</p></section>
-<section id="training" class="training" hidden><div id="studyIntro"><h2>Reconnais le membre du collège</h2><p class="intro">Une photo, plusieurs noms : clique sur la bonne réponse.</p><label class="choice-label">NOMS PROPOSÉS<select id="choiceCount"><option value="4">4 noms</option><option value="3">3 noms</option></select></label><p id="quizAvailability" class="progress"></p><button id="startStudy" class="primary" disabled>Chargement…</button></div><div id="studySession" hidden><p id="studyProgress" class="progress" aria-live="polite"></p><article class="study-card"><div id="studyPhoto"></div><div id="studyAnswer" class="answer"></div></article><div id="quizChoices" class="quiz-choices" role="group" aria-label="Choisis le nom"></div><p id="quizFeedback" class="quiz-feedback" role="status" aria-live="polite"></p><div class="study-actions"><button id="nextStudy" class="primary" hidden>Photo suivante →</button><button id="stopStudy">Arrêter la session</button></div></div><div id="studyEnd" hidden><h2>Quiz terminé</h2><p id="studyResult" class="intro"></p><div class="study-actions"><button id="retryStudy" class="primary">Rejouer les erreurs</button><button id="restartStudy">Nouveau quiz</button></div></div></section>
-<details class="update"><summary>Télécharger les données</summary><div class="tools"><button id="downloadJson">Exporter le fichier JSON</button><button id="downloadCsv">Exporter le tableau CSV</button></div></details>
-<footer>Annuaire indépendant · Mandat du collège : 2024–2029.<br>Source : <a href="https://commission.europa.eu/about/organisation/college-commissioners_fr" target="_blank" rel="noopener">Commission européenne</a>. Pays et civilités : Conseil européen, décision de nomination.<br>Liste et portefeuilles vérifiés le 6 novembre 2026. Les données ne sont pas synchronisées automatiquement.<br>Les résultats du quiz restent dans cet onglet.</footer></main><script>
+<section id="training" class="training" hidden>
+<div id="studyIntro"><h2>Reconnais le commissaire</h2><label class="choice-label">MODE DU QUIZ<select id="quizMode"><option value="name-photo">Nom → Photo</option><option value="photo-name">Photo → Nom</option></select></label><p class="progress">20 questions maximum par session · 4 propositions par question</p><p id="quizAvailability" class="progress"></p><button id="startStudy" class="primary" disabled>Chargement…</button></div>
+<div id="studySession" hidden><p id="studyProgress" class="progress" aria-live="polite"></p><article class="study-card"><div id="studyPhoto"></div><div id="studyAnswer" class="answer"></div></article><div id="quizChoices" class="quiz-choices" role="group" aria-label="Choisis la bonne réponse"></div><p id="quizFeedback" class="quiz-feedback" role="status" aria-live="polite"></p><div class="study-actions"><button id="nextStudy" class="primary" hidden>Question suivante →</button><button id="stopStudy">Terminer et voir mon bilan</button></div></div>
+<div id="studyEnd" hidden><h2>Quiz terminé</h2><div id="studyResult" class="intro"></div><div class="study-actions"><button id="retryStudy" class="primary">Rejouer les erreurs</button><button id="restartStudy">Nouveau quiz</button></div></div>
+<div class="quiz-reset-area"><button id="resetQuizStats" type="button">Réinitialiser les statistiques</button><p id="resetQuizStatus" class="progress" role="status" aria-live="polite"></p></div></section>
+<footer>Annuaire indépendant · Mandat du collège : 2024–2029.<br>Source : <a href="https://commission.europa.eu/about/organisation/college-commissioners_fr" target="_blank" rel="noopener">Commission européenne</a>. Pays et civilités : Conseil européen, décision de nomination.<br>Liste et portefeuilles vérifiés le 6 novembre 2026. Les données ne sont pas synchronisées automatiquement.<br>La progression du quiz est enregistrée localement sur cet appareil.</footer></main><script>
 'use strict';
 const $=id=>document.getElementById(id), norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
-let members=[],filtered=[],session=null,errors=[],lastErrors=[],mode='directory';
+let members=[],filtered=[],session=null,lastErrors=[],mode='directory';
+const COMMISSION_QUIZ_KEY='vademecum-pe-commission-quiz-v1';
+function defaultQuizStats(){return {round:0,people:{},errors:{}}}
+function readQuizStats(){
+ try{const data=JSON.parse(localStorage.getItem(COMMISSION_QUIZ_KEY)||'null');
+  if(data&&Number.isSafeInteger(data.round)&&data.round>=0&&data.people&&typeof data.people==='object'&&!Array.isArray(data.people)&&data.errors&&typeof data.errors==='object'&&!Array.isArray(data.errors))return data;
+ }catch{}return defaultQuizStats();
+}
+let quizStats=readQuizStats();
+function saveQuizStats(){try{localStorage.setItem(COMMISSION_QUIZ_KEY,JSON.stringify(quizStats))}catch{}}
+function historicErrors(){return Object.values(quizStats.errors).reduce((n,v)=>n+(Number(v)||0),0)}
 const collator=new Intl.Collator('fr',{sensitivity:'base'});
 const el=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e};
 function image(m,quiz=false){const box=el('div',quiz?'quiz-portrait':'portrait'),img=el('img');img.src=m.localPhoto;img.alt=quiz?'Portrait à reconnaître':m.name;img.loading=quiz?'eager':'lazy';img.decoding='async';img.addEventListener('error',()=>{if(img.dataset.fallback!=='1'){img.dataset.fallback='1';img.src=m.photo}else{img.remove();box.append(el('span','photo-missing','Portrait indisponible'))}});box.append(img);if(quiz)return box;const link=el('a','portrait-official-link');link.href=m.url;link.target='_blank';link.rel='noopener noreferrer';link.title='Ouvrir la page officielle de '+m.name+' sur le site de la Commission européenne';link.setAttribute('aria-label',link.title);link.append(box);return link}
 const COMMISSION_OFFICIAL_ORDER=["Ursula von der Leyen","Teresa Ribera","Henna Virkkunen","Stéphane Séjourné","Kaja Kallas","Roxana Mînzatu","Raffaele Fitto","Maroš Šefčovič","Valdis Dombrovskis","Dubravka Šuica","Olivér Várhelyi","Wopke Hoekstra","Andrius Kubilius","Marta Kos","Jozef Síkela","Costas Kadis","Maria Luís Albuquerque","Hadja Lahbib","Magnus Brunner","Jessika Roswall","Piotr Serafin","Dan Jørgensen","Ekaterina Zaharieva","Michael McGrath","Apostolos Tzitzikostas","Christophe Hansen","Glenn Micallef"];
 const commissionOrder=new Map(COMMISSION_OFFICIAL_ORDER.map((name,index)=>[name,index]));
 function selectMembers(){const q=norm($('search').value);return members.filter(m=>(!$('gender').value||m.gender===$('gender').value)&&(!$('country').value||m.country===$('country').value)&&(!$('function').value||($('function').value==='presidency'?m.role!=='COMMISSIONER':m.role==='COMMISSIONER'))&&norm(m.name).includes(q)).sort((a,b)=>($('sort').value==='role'?(commissionOrder.get(a.name)??999)-(commissionOrder.get(b.name)??999):$('sort').value==='country'?collator.compare(a.country,b.country):0)||collator.compare(a.lastName,b.lastName)||collator.compare(a.name,b.name))}
-function render(){filtered=selectMembers();$('grid').replaceChildren();for(const m of filtered){const card=el('article','card'),info=el('div','info'),badges=el('div','badges');badges.append(el('span','badge',m.roleLabel));const name=el('div','name',m.name);info.append(badges,name,el('div','country',m.country),el('p','portfolio',m.portfolio));const source=el('details','sources');source.append(el('summary','','Sources et date'));for(const [label,url]of [['Fonctions et portrait',m.url],['Pays',m.countrySource],['Civilité pour le quiz',m.genderSource]]){const p=el('p'),a=el('a','',label);a.href=url;a.target='_blank';a.rel='noopener';p.append(a);source.append(p)}source.append(el('p','','Vérifié le 06/11/2026.'));info.append(source);card.append(image(m),info);$('grid').append(card)}$('count').textContent=filtered.length+' membre'+(filtered.length>1?'s':'')+' sur '+members.length;$('empty').hidden=!!filtered.length;const eligible=filtered.filter(canQuiz);$('startStudy').disabled=!eligible.length;$('startStudy').textContent='Commencer · '+eligible.length+' portrait'+(eligible.length>1?'s':'');$('quizAvailability').textContent='Les portraits suivent les filtres ; les noms proposés proviennent du collège et sont du même genre.'}
-function canQuiz(m){return ['MALE','FEMALE'].includes(m.gender)&&members.filter(x=>x.gender===m.gender).length>=3}
+function render(){filtered=selectMembers();$('grid').replaceChildren();for(const m of filtered){const card=el('article','card'),info=el('div','info'),badges=el('div','badges');badges.append(el('span','badge',m.roleLabel));const name=el('div','name',m.name);info.append(badges,name,el('div','country',m.country),el('p','portfolio',m.portfolio));const source=el('details','sources');source.append(el('summary','','Sources et date'));for(const [label,url]of [['Fonctions et portrait',m.url],['Pays',m.countrySource],['Civilité pour le quiz',m.genderSource]]){const p=el('p'),a=el('a','',label);a.href=url;a.target='_blank';a.rel='noopener';p.append(a);source.append(p)}source.append(el('p','','Vérifié le 06/11/2026.'));info.append(source);card.append(image(m),info);$('grid').append(card)}$('count').textContent=filtered.length+' membre'+(filtered.length>1?'s':'')+' sur '+members.length;$('empty').hidden=!!filtered.length;const eligible=filtered.filter(canQuiz);$('startStudy').disabled=!eligible.length;$('startStudy').textContent='Commencer · '+eligible.length+' portrait'+(eligible.length>1?'s':'');$('quizAvailability').textContent='20 questions maximum · 4 propositions. Les erreurs sont plus souvent proposées ; les réussites sont espacées.'}
+function canQuiz(m){return ['MALE','FEMALE'].includes(m.gender)&&members.filter(x=>x.gender===m.gender).length>=4}
 function shuffled(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
-function quizOptions(m,count){return shuffled([m,...shuffled(members.filter(x=>x.id!==m.id&&x.gender===m.gender)).slice(0,count-1)])}
+function quizOptions(m){return shuffled([m,...shuffled(members.filter(x=>x.id!==m.id&&x.gender===m.gender)).slice(0,3)])}
 function setMode(next){if(session)stopQuiz();mode=next;$('directory').hidden=next!=='directory';$('training').hidden=next!=='training';$('directoryTab').classList.toggle('active',next==='directory');$('trainingTab').classList.toggle('active',next==='training');$('directoryTab').setAttribute('aria-pressed',String(next==='directory'));$('trainingTab').setAttribute('aria-pressed',String(next==='training'))}
-function startQuiz(pool){const queue=shuffled(pool.filter(canQuiz));if(!queue.length)return;session={queue,index:0,score:0,answered:false};errors=[];$('studyIntro').hidden=true;$('studyEnd').hidden=true;$('studySession').hidden=false;showQuestion()}
-function showQuestion(){const m=session.queue[session.index];session.answered=false;$('studyProgress').textContent='Portrait '+(session.index+1)+' / '+session.queue.length+' · Score '+session.score;$('studyPhoto').replaceChildren(image(m,true));$('studyAnswer').replaceChildren();$('quizFeedback').textContent='';$('quizFeedback').className='quiz-feedback';$('nextStudy').hidden=true;$('quizChoices').replaceChildren();for(const option of quizOptions(m,Number($('choiceCount').value))){const button=el('button','quiz-option',option.name);button.type='button';button.dataset.id=option.id;button.onclick=()=>answer(option.id);$('quizChoices').append(button)}}
-function answer(id){if(!session||session.answered)return;session.answered=true;const m=session.queue[session.index],correct=id===m.id;if(correct)session.score++;else errors.push(m);for(const button of $('quizChoices').querySelectorAll('button')){button.disabled=true;if(button.dataset.id===m.id)button.classList.add('correct');else if(button.dataset.id===id)button.classList.add('incorrect')}$('studyAnswer').append(el('h3','',m.name),el('p','',m.country+' · '+m.roleLabel),el('p','',m.portfolio));$('quizFeedback').textContent=correct?'Bonne réponse !':'La bonne réponse est '+m.name+'.';$('quizFeedback').className='quiz-feedback '+(correct?'success':'error');$('nextStudy').hidden=false;$('nextStudy').focus()}
-function finishQuiz(){lastErrors=[...errors];$('studySession').hidden=true;$('studyEnd').hidden=false;$('studyResult').textContent=session.score+' bonne'+(session.score>1?'s':'')+' réponse'+(session.score>1?'s':'')+' sur '+session.queue.length+'.';$('retryStudy').hidden=!lastErrors.length;session=null}
+function spacedQuizDeck(pool){
+ const round=quizStats.round, candidates=shuffled(pool.filter(canQuiz)).map(m=>{
+  const p=quizStats.people[String(m.id)]||{},misses=Number(p.misses)||0;
+  const seen=Number(p.seen)||0,due=Number(p.due)||0,overdue=due<=round;
+  let weight=!seen?3:overdue?2:0.08;
+  if(misses&&overdue)weight+=Math.min(12,3+misses*1.6);
+  if(misses&&!overdue)weight=Math.max(weight,0.2);
+  return {m,weight};
+ });
+ const deck=[];
+ while(deck.length<20&&candidates.length){
+  const total=candidates.reduce((n,x)=>n+x.weight,0);let ticket=Math.random()*total,index=0;
+  for(;index<candidates.length-1;index++){ticket-=candidates[index].weight;if(ticket<=0)break}
+  deck.push(candidates.splice(index,1)[0].m);
+ }
+ return deck;
+}
+function recordAnswer(m,correct){
+ const key=String(m.id),previous=quizStats.people[key]||{};
+ const streak=correct?(Number(previous.streak)||0)+1:0;
+ const delay=correct?Math.min(16,2**Math.min(streak,4)):1;
+ quizStats.people[key]={seen:(Number(previous.seen)||0)+1,misses:(Number(previous.misses)||0)+(correct?0:1),streak,due:quizStats.round+delay};
+ if(!correct)quizStats.errors[key]=(Number(quizStats.errors[key])||0)+1;
+ saveQuizStats();
+}
+function startQuiz(pool=filtered){
+ if(session)return;
+ const deck=spacedQuizDeck(pool);if(!deck.length)return;
+ quizStats.round++;saveQuizStats();
+ session={queue:deck,index:0,score:0,missed:[],answered:false,mode:$('quizMode').value};
+ $('studyIntro').hidden=true;$('studyEnd').hidden=true;$('studySession').hidden=false;
+ showQuestion();$('training').scrollIntoView({block:'start'});
+}
+function showQuestion(){
+ if(!session)return;const m=session.queue[session.index],isPhotoAnswer=session.mode==='name-photo';
+ session.answered=false;
+ $('studyProgress').textContent='Question '+(session.index+1)+' / '+session.queue.length+' · Réussites : '+session.score+' · Historique des erreurs : '+historicErrors();
+ $('studyPhoto').replaceChildren();
+ if(isPhotoAnswer){
+  $('studyPhoto').append(el('div','quiz-name-prompt',m.name),el('p','quiz-prompt-label','Choisis sa photo parmi les quatre portraits.'));
+ }else{
+  $('studyPhoto').append(image(m,true));
+ }
+ $('studyAnswer').replaceChildren();$('quizFeedback').textContent='';$('quizFeedback').className='quiz-feedback';
+ $('nextStudy').hidden=true;$('quizChoices').replaceChildren();
+ $('quizChoices').classList.toggle('photo-answers',isPhotoAnswer);
+ $('quizChoices').setAttribute('aria-label',isPhotoAnswer?'Choisis la bonne photographie':'Choisis le bon nom');
+ for(const option of quizOptions(m)){
+  const button=el('button','quiz-option');button.type='button';button.dataset.id=String(option.id);
+  if(isPhotoAnswer){
+   button.classList.add('photo-option');button.setAttribute('aria-label','Sélectionner le portrait de '+option.name);
+   button.append(image(option,true));
+   const label=el('span','answer-mark quiz-option-name',option.name);label.hidden=true;button.append(label);
+  }else button.textContent=option.name;
+  button.onclick=()=>answer(option.id);$('quizChoices').append(button);
+ }
+}
+function answer(id){
+ if(!session||session.answered)return;
+ const m=session.queue[session.index],correct=String(id)===String(m.id);
+ session.answered=true;if(correct)session.score++;else session.missed.push(m);
+ recordAnswer(m,correct);
+ for(const button of $('quizChoices').querySelectorAll('button.quiz-option')){
+  button.disabled=true;
+  if(button.dataset.id===String(m.id))button.classList.add('correct');
+  else if(button.dataset.id===String(id))button.classList.add('incorrect');
+  const label=button.querySelector('.quiz-option-name');if(label)label.hidden=false;
+ }
+ $('studyAnswer').append(el('h3','',m.name),el('p','',m.country+' · '+m.roleLabel),el('p','',m.portfolio));
+ $('quizFeedback').textContent=correct?'Bonne réponse !':'La bonne réponse est '+m.name+'.';
+ $('quizFeedback').className='quiz-feedback '+(correct?'success':'error');
+ $('nextStudy').hidden=false;
+}
+function finishQuiz(){
+ if(!session)return;
+ const done=session.index+(session.answered?1:0),correct=session.score,misses=session.missed.length;
+ lastErrors=[...new Map(session.missed.map(m=>[String(m.id),m])).values()];
+ $('studySession').hidden=true;$('studyEnd').hidden=false;
+ $('studyResult').replaceChildren();
+ const box=el('div','quiz-summary');
+ for(const [label,value] of [['Questions répondues',done],['Bonnes réponses',correct],['Fautes',misses],['Réussite',done?Math.round(correct/done*100)+' %':'0 %'],['Erreurs enregistrées',historicErrors()]]){
+  const item=el('div','quiz-stat');item.append(el('strong','',String(value)),el('span','',label));box.append(item);
+ }
+ $('studyResult').append(box);
+ if(lastErrors.length)$('studyResult').append(el('p','quiz-review','À revoir : '+lastErrors.map(m=>m.name).join(', ')+'.'));
+ $('retryStudy').hidden=!lastErrors.length;
+ session=null;$('training').scrollIntoView({block:'start'});
+}
 function stopQuiz(){session=null;$('studySession').hidden=true;$('studyEnd').hidden=true;$('studyIntro').hidden=false}
 $('directoryTab').onclick=()=>setMode('directory');$('trainingTab').onclick=()=>setMode('training');
 for(const id of ['search','gender','country','function','sort'])$(id).addEventListener(id==='search'?'input':'change',()=>{if(session||!$('studyEnd').hidden)stopQuiz();render()});
 $('reset').onclick=()=>{for(const id of ['search','gender','country','function'])$(id).value='';$('sort').value='role';stopQuiz();render()};
 $('compact').onchange=()=>document.body.classList.toggle('compact',$('compact').checked);
-$('startStudy').onclick=()=>startQuiz(filtered);$('stopStudy').onclick=stopQuiz;$('nextStudy').onclick=()=>{if(!session||!session.answered)return;if(++session.index<session.queue.length)showQuestion();else finishQuiz()};
-$('retryStudy').onclick=()=>startQuiz(lastErrors);$('restartStudy').onclick=()=>startQuiz(filtered);
-function download(name,text,type){const url=URL.createObjectURL(new Blob([text],{type})),a=el('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
-$('downloadJson').onclick=()=>download('commissaires-europeens.json',JSON.stringify(members,null,2)+'\n','application/json');
-$('downloadCsv').onclick=()=>{const cell=x=>'"'+String(x??'').replace(/^[=+@\-\t\r]/,"'$&").replace(/"/g,'""')+'"';download('commissaires-europeens.csv','\ufeff'+[['nom','pays','fonction','portefeuille','fiche_officielle'],...members.map(m=>[m.name,m.country,m.roleLabel,m.portfolio,m.url])].map(row=>row.map(cell).join(';')).join('\r\n'),'text/csv;charset=utf-8')};
+$('startStudy').onclick=()=>startQuiz(filtered);
+$('stopStudy').onclick=()=>finishQuiz();
+$('nextStudy').onclick=()=>{if(!session||!session.answered)return;if(++session.index<session.queue.length)showQuestion();else finishQuiz()};
+$('retryStudy').onclick=()=>startQuiz(lastErrors);
+$('restartStudy').onclick=()=>startQuiz(filtered);
+$('resetQuizStats').onclick=()=>{
+ const status=$('resetQuizStatus');
+ if(session){status.textContent='Termine le quiz en cours avant de réinitialiser les statistiques.';return}
+ if(!confirm('Effacer définitivement la progression, les bonnes et mauvaises réponses, et l’historique des erreurs du quiz Commission sur cet appareil ?'))return;
+ try{
+  localStorage.removeItem(COMMISSION_QUIZ_KEY);
+  quizStats=defaultQuizStats();lastErrors=[];
+  $('studySession').hidden=true;$('studyEnd').hidden=true;$('studyIntro').hidden=false;
+  $('retryStudy').hidden=true;
+  status.textContent='Statistiques et erreurs réinitialisées. Le prochain quiz repart de zéro.';
+  render();
+ }catch{status.textContent='Impossible de réinitialiser les statistiques sur cet appareil.'}
+};
 fetch('./commission-members.json').then(r=>{if(!r.ok)throw Error('Chargement');return r.json()}).then(data=>{if(!Array.isArray(data)||data.length!==27||new Set(data.map(m=>m.id)).size!==data.length)throw Error('Données invalides');members=data;for(const country of [...new Set(members.map(m=>m.country))].sort(collator.compare)){const o=el('option','',country);o.value=country;$('country').append(o)}$('total').textContent=members.length;render()}).catch(()=>{$('count').textContent='Impossible de charger les données. Actualise la page.';$('startStudy').disabled=true});
 </script></body></html>
