@@ -1,6 +1,6 @@
 {
   "updated": "2026-11-13",
-  "description": "Coordinateurs des groupes politiques dans les commissions du PE. Les nominations de 2024 sont historiques et ne prouvent pas une fonction toujours en cours.",
+  "description": "Coordinateurs des groupes politiques au sein des commissions. Sources propres aux commissions privilégiées; les nominations historiques sont signalées et ne constituent pas une preuve de mandat actuel.",
   "entries": [
     {
       "id": "2341",
@@ -133,9 +133,9 @@
       "committee": "REGI",
       "group": "PPE",
       "role": "coordinator",
-      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
-      "sourceDate": "2024-07-17",
-      "sourceStatus": "historical-nomination"
+      "source": "https://www.europarl.europa.eu/cmsdata/305372/LIST%20Coordinators%20REGI_10th%20term_15_04_2026.pdf",
+      "sourceDate": "2026-04-15",
+      "sourceStatus": "committee-list"
     },
     {
       "id": "96787",
@@ -358,9 +358,9 @@
       "committee": "REGI",
       "group": "S&D",
       "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
+      "source": "https://www.europarl.europa.eu/cmsdata/305372/LIST%20Coordinators%20REGI_10th%20term_15_04_2026.pdf",
+      "sourceDate": "2026-04-15",
+      "sourceStatus": "committee-list"
     },
     {
       "id": "197722",
@@ -376,9 +376,9 @@
       "committee": "EUDS",
       "group": "S&D",
       "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
+      "source": "https://www.europarl.europa.eu/committees/en/euds-coordinators_10th-parliamentary-ter/product-details/20250205CPU46101",
+      "sourceDate": "2025-02-05",
+      "sourceStatus": "committee-list"
     },
     {
       "id": "257084",
@@ -520,9 +520,9 @@
       "committee": "EUDS",
       "group": "Renew",
       "role": "coordinator",
-      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
+      "source": "https://www.europarl.europa.eu/committees/en/euds-coordinators_10th-parliamentary-ter/product-details/20250205CPU46101",
+      "sourceDate": "2025-02-05",
+      "sourceStatus": "committee-list"
     },
     {
       "id": "197400",
@@ -619,9 +619,9 @@
       "committee": "REGI",
       "group": "Renew",
       "role": "coordinator",
-      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
+      "source": "https://www.europarl.europa.eu/cmsdata/305372/LIST%20Coordinators%20REGI_10th%20term_15_04_2026.pdf",
+      "sourceDate": "2026-04-15",
+      "sourceStatus": "committee-list"
     },
     {
       "id": "257112",
@@ -763,9 +763,9 @@
       "committee": "REGI",
       "group": "ECR",
       "role": "coordinator",
-      "source": "https://ecrgroup.eu/ecr/committees",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
+      "source": "https://www.europarl.europa.eu/cmsdata/305372/LIST%20Coordinators%20REGI_10th%20term_15_04_2026.pdf",
+      "sourceDate": "2026-04-15",
+      "sourceStatus": "committee-list"
     },
     {
       "id": "96810",
@@ -1240,9 +1240,9 @@
       "committee": "EUDS",
       "group": "ESN",
       "role": "coordinator",
-      "source": "https://esn-group.eu/committees/",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
+      "source": "https://www.europarl.europa.eu/committees/en/euds-coordinators_10th-parliamentary-ter/product-details/20250205CPU46101",
+      "sourceDate": "2025-02-05",
+      "sourceStatus": "committee-list"
     },
     {
       "id": "256951",
@@ -1402,9 +1402,9 @@
       "committee": "REGI",
       "group": "PPE",
       "role": "deputy-coordinator",
-      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
-      "sourceDate": "2024-07-17",
-      "sourceStatus": "historical-nomination"
+      "source": "https://www.europarl.europa.eu/cmsdata/305372/LIST%20Coordinators%20REGI_10th%20term_15_04_2026.pdf",
+      "sourceDate": "2026-04-15",
+      "sourceStatus": "committee-list"
     },
     {
       "id": "257034",
@@ -1609,9 +1609,9 @@
       "committee": "REGI",
       "group": "ECR",
       "role": "deputy-coordinator",
-      "source": "https://ecrgroup.eu/ecr/committees",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
+      "source": "https://www.europarl.europa.eu/cmsdata/305372/LIST%20Coordinators%20REGI_10th%20term_15_04_2026.pdf",
+      "sourceDate": "2026-04-15",
+      "sourceStatus": "committee-list"
     },
     {
       "id": "197773",
@@ -1774,6 +1774,123 @@
       "source": "Document « Coordinators - 10th legislature » AFET fourni par l’utilisateur (photographie)",
       "sourceDate": "date non lisible",
       "sourceStatus": "user-provided-document"
+    },
+    {
+      "id": "197690",
+      "committee": "REGI",
+      "group": "PfE",
+      "role": "coordinator",
+      "source": "https://www.europarl.europa.eu/cmsdata/305372/LIST%20Coordinators%20REGI_10th%20term_15_04_2026.pdf",
+      "sourceDate": "2026-04-15",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "256853",
+      "committee": "REGI",
+      "group": "PfE",
+      "role": "deputy-coordinator",
+      "source": "https://www.europarl.europa.eu/cmsdata/305372/LIST%20Coordinators%20REGI_10th%20term_15_04_2026.pdf",
+      "sourceDate": "2026-04-15",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "256970",
+      "committee": "REGI",
+      "group": "Renew",
+      "role": "deputy-coordinator",
+      "source": "https://www.europarl.europa.eu/cmsdata/305372/LIST%20Coordinators%20REGI_10th%20term_15_04_2026.pdf",
+      "sourceDate": "2026-04-15",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "256813",
+      "committee": "REGI",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://www.europarl.europa.eu/cmsdata/305372/LIST%20Coordinators%20REGI_10th%20term_15_04_2026.pdf",
+      "sourceDate": "2026-04-15",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "257130",
+      "committee": "REGI",
+      "group": "Verts/ALE",
+      "role": "deputy-coordinator",
+      "source": "https://www.europarl.europa.eu/cmsdata/305372/LIST%20Coordinators%20REGI_10th%20term_15_04_2026.pdf",
+      "sourceDate": "2026-04-15",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "257135",
+      "committee": "REGI",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://www.europarl.europa.eu/cmsdata/305372/LIST%20Coordinators%20REGI_10th%20term_15_04_2026.pdf",
+      "sourceDate": "2026-04-15",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "256810",
+      "committee": "EUDS",
+      "group": "PPE",
+      "role": "coordinator",
+      "source": "https://www.europarl.europa.eu/committees/en/euds-coordinators_10th-parliamentary-ter/product-details/20250205CPU46101",
+      "sourceDate": "2025-02-05",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "124713",
+      "committee": "EUDS",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.europarl.europa.eu/committees/en/euds-coordinators_10th-parliamentary-ter/product-details/20250205CPU46101",
+      "sourceDate": "2025-02-05",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "260724",
+      "committee": "EUDS",
+      "group": "PfE",
+      "role": "coordinator",
+      "source": "https://www.europarl.europa.eu/committees/en/euds-coordinators_10th-parliamentary-ter/product-details/20250205CPU46101",
+      "sourceDate": "2025-02-05",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "197553",
+      "committee": "EUDS",
+      "group": "ECR",
+      "role": "coordinator",
+      "source": "https://www.europarl.europa.eu/committees/en/euds-coordinators_10th-parliamentary-ter/product-details/20250205CPU46101",
+      "sourceDate": "2025-02-05",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "197469",
+      "committee": "EUDS",
+      "group": "ECR",
+      "role": "deputy-coordinator",
+      "source": "https://www.europarl.europa.eu/committees/en/euds-coordinators_10th-parliamentary-ter/product-details/20250205CPU46101",
+      "sourceDate": "2025-02-05",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "183916",
+      "committee": "EUDS",
+      "group": "Verts/ALE",
+      "role": "coordinator",
+      "source": "https://www.europarl.europa.eu/committees/en/euds-coordinators_10th-parliamentary-ter/product-details/20250205CPU46101",
+      "sourceDate": "2025-02-05",
+      "sourceStatus": "committee-list"
+    },
+    {
+      "id": "197701",
+      "committee": "EUDS",
+      "group": "The Left",
+      "role": "coordinator",
+      "source": "https://www.europarl.europa.eu/committees/en/euds-coordinators_10th-parliamentary-ter/product-details/20250205CPU46101",
+      "sourceDate": "2025-02-05",
+      "sourceStatus": "committee-list"
     }
   ]
 }
