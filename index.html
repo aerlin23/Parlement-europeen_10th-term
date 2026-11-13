@@ -450,13 +450,14 @@ body.group-view .directories a[aria-current="page"]{
  const refresh=()=>{
   const section=document.getElementById('directory'),active=section&&!section.hidden&&document.getElementById('secretariatPanel')?.hidden;
   const enough=document.documentElement.scrollHeight>window.innerHeight+500;
+  const enoughCards=typeof filtered!=='undefined'&&Array.isArray(filtered)&&filtered.length>=10;
   const atBottom=window.scrollY+window.innerHeight>=document.documentElement.scrollHeight-100;
-  bar.hidden=!active||!enough||atBottom||performance.now()>=showUntil;
+  bar.hidden=!active||!enough||!enoughCards||atBottom||performance.now()>=showUntil;
   if(!bar.hidden&&typeof filtered!=='undefined'&&Array.isArray(filtered)&&typeof surname==='function'&&typeof norm==='function'){
    const initials=new Set(filtered.map(m=>norm(surname(m)).charAt(0).toUpperCase()));
    for(const b of letters.children)b.disabled=!initials.has(b.dataset.letter);
    syncCurrentLetter();
-  }else if(!active||!enough){currentLetter=''}
+  }else if(!active||!enough||!enoughCards){currentLetter=''}
 
  };
  const schedule=()=>{if(!scheduled){scheduled=true;requestAnimationFrame(()=>{scheduled=false;refresh()})}};
