@@ -20,7 +20,7 @@
 <li><time datetime="2026-09-18">18 septembre 2026</time> · <a href="?person=198471">Robert Gabel</a> remplace <a href="https://www.europarl.europa.eu/meps/fr/256961/_/home" target="_blank" rel="noopener">Sebastian Everding</a> (Allemagne) ; <a href="?person=280663">Balázs Orbán</a> remplace <a href="https://www.europarl.europa.eu/meps/fr/256855/_/home" target="_blank" rel="noopener">Pál Szekeres</a> (Hongrie).</li>
 <li><time datetime="2026-06-30">30 juin 2026</time> · <a href="?person=278815">Ufuk Kâhya</a> entre au Parlement après le départ de <a href="https://www.europarl.europa.eu/meps/fr/96725/BAS_EICKHOUT/home" target="_blank" rel="noopener">Bas Eickhout</a> (20 juin).</li>
 <li><time datetime="2026-06-11">11 juin 2026</time> · <a href="?person=278406">Norbert Herhammer</a> entre au Parlement après le départ de <a href="https://www.europarl.europa.eu/meps/fr/197422/_/home" target="_blank" rel="noopener">Christine Schneider</a> (25 mai).</li>
-</ul><p class="recent-source">Sélection de changements, mise à jour manuelle. Sources : <a href="https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming" target="_blank" rel="noopener">arrivées</a>, <a href="https://www.europarl.europa.eu/meps/en/incoming-outgoing/outgoing" target="_blank" rel="noopener">départs</a> et <a href="https://oeil.europarl.europa.eu/oeil/fr/procedure-file?reference=2026%2F2952%28RSO%29" target="_blank" rel="noopener">vice-présidence</a>.</p></section><section id="offlineManager" style="margin:20px 0 10px;padding:10px 12px;border:1px solid #d8e3e8;border-radius:8px;background:#f8fafb;text-align:center;font-size:11px;line-height:1.6"><button id="downloadOffline" type="button" style="font-size:11px;padding:6px 9px;font-weight:600">Mode hors ligne : télécharger les médias</button><span id="offlineStatus" role="status" aria-live="polite" style="display:block;margin-top:5px;color:#627b88">Wi-Fi recommandé. Députés et secrétariat général ; la Commission européenne dispose d’un site distinct.</span></section><footer>Vademecum indépendant · Données : <a href="https://www.europarl.europa.eu/meps/fr/full-list" target="_blank" rel="noopener">Parlement européen</a>.<br>Les changements sont vérifiés et publiés manuellement.</footer></main><script>
+</ul><p class="recent-source">Sélection de changements, mise à jour manuelle. Sources : <a href="https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming" target="_blank" rel="noopener">arrivées</a>, <a href="https://www.europarl.europa.eu/meps/en/incoming-outgoing/outgoing" target="_blank" rel="noopener">départs</a> et <a href="https://oeil.europarl.europa.eu/oeil/fr/procedure-file?reference=2026%2F2952%28RSO%29" target="_blank" rel="noopener">vice-présidence</a>.</p></section><section id="offlineManager" style="margin:20px 0 10px;padding:10px 12px;border:1px solid #d8e3e8;border-radius:8px;background:#f8fafb;text-align:center;font-size:11px;line-height:1.6"><button id="downloadOffline" type="button" style="font-size:11px;padding:6px 9px;font-weight:600">Mode hors ligne : télécharger les médias</button><span id="offlineStatus" role="status" aria-live="polite" style="display:block;margin-top:5px;color:#627b88">Wi-Fi recommandé. Députés, Commission européenne et Secrétariat général.</span></section><footer>Vademecum indépendant · Données : <a href="https://www.europarl.europa.eu/meps/fr/full-list" target="_blank" rel="noopener">Parlement européen</a>.<br>Les changements sont vérifiés et publiés manuellement.</footer></main><script>
 'use strict';
 const CONFIG={general:true,repo:'Parlement-europeen_10th-term',short:'PE',localPhotos:false,updated:'2026-11-06'};
 const $=id=>document.getElementById(id),norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ß/gi,'ss').toLocaleLowerCase('fr');
@@ -561,6 +561,15 @@ async function downloadOfficialOfflineMedia(){
  const base='https://www.europarl.europa.eu/';
  const urls=ids.flatMap(id=>[base+'mepphoto/'+id+'.jpg',base+'mepaudio/'+id+'.mp3']);
  for(const url of Object.values(SG_PE_PHOTOS)){if(url.startsWith('https://the-secretary-general.europarl.europa.eu/'))urls.push(url)}
+  try{
+   const response=await fetch('./commission-members.json');
+   if(response.ok){
+    const commissioners=await response.json();
+    for(const member of commissioners)urls.push('https://aerlin23.github.io/Commission-europeenne/photos/'+encodeURIComponent(member.id)+'.png');
+    urls.push('https://aerlin23.github.io/Commission-europeenne/assets/commission-logo.svg');
+   }
+  }catch(error){console.warn('Médias de la Commission indisponibles pour téléchargement',error)}
+
  let done=0,failed=0,already=0,next=0;
  try{
   const cache=await caches.open('pe-offline-official-media-v1');
