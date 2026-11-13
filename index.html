@@ -11,7 +11,7 @@
  <section id="sgDeputies"><h3>Secrétaires généraux adjoints</h3><div class="grid" id="sgDeputyGrid"></div></section>
  <section id="sgDirectors"><h3>Directeurs généraux et jurisconsulte</h3><div class="grid" id="sgDirectorGrid"></div></section>
  <section id="sgOrgSection"><h3>Organigramme administratif simplifié</h3><div class="sg-chart" id="sgOrgGrid" aria-label="Organigramme du Secrétariat général"></div></section>
- <p class="sg-intro"><a href="https://the-secretary-general.europarl.europa.eu/en/organisation/directorates-general" target="_blank" rel="noopener">Source officielle : organigramme du Parlement européen</a> · Schéma simplifié adapté du document SFP-Europa (15 août 2026).</p>
+ <p class="sg-intro"><a href="https://the-secretary-general.europarl.europa.eu/en/organisation/directorates-general" target="_blank" rel="noopener">Source officielle : organigramme du Parlement européen</a>.</p>
  </section><section id="training" class="training" hidden><div id="studyIntro"><h2>Reconnais le député</h2><div class="study-actions"><button id="exportProgress" type="button">Exporter ma progression</button><button id="importProgress" type="button">Importer une sauvegarde</button><input id="progressFile" type="file" accept="application/json,.json" hidden></div><p id="backupStatus" class="progress" role="status" aria-live="polite"></p><label class="choice-label">MODE DU QUIZ<select id="quizMode"><option value="name-photo">Nom → Photo</option><option value="photo-name">Photo → Nom</option></select></label><p class="progress">20 questions par session · 4 propositions par question</p><p id="quizAvailability" class="progress"></p><button id="startStudy" class="primary">Commencer</button></div><div id="studySession" hidden><p id="studyProgress" class="progress" aria-live="polite"></p><article class="study-card"><div id="studyPhoto" class="study-photo"></div><div class="answer" id="studyAnswer"></div></article><div id="quizChoices" class="quiz-choices" role="group" aria-label="Choisis la bonne réponse"></div><p id="quizFeedback" class="quiz-feedback" role="status" aria-live="polite"></p><div class="study-actions"><button id="listenName" class="listen-name" type="button" hidden aria-label="Écouter la prononciation officielle du nom">🔊 Écouter le nom</button><button id="nextStudy" class="primary" hidden>Photo suivante →</button><button id="stopStudy">Terminer et voir mon bilan</button></div></div><div id="studyEnd" hidden><h2>Quiz terminé</h2><p id="studyResult" class="intro"></p><div class="study-actions"><button id="retryStudy" class="primary">Rejouer les erreurs</button><button id="restartStudy">Nouveau quiz</button></div></div></section><section class="recent-changes"><h2>Derniers changements</h2><ul>
 <li><time datetime="2026-11-12">12 novembre 2026</time> · <a href="?person=193292">Tilly Metz</a> élue 11e vice-présidente du Parlement européen, en remplacement de Nicolae Ștefănuță.</li>
 <li><time datetime="2026-10-21">21 octobre 2026</time> · <a href="?person=58766">Nicolae Ștefănuță</a> : fin de mandat de vice-président du Parlement (reste député).</li>
@@ -160,7 +160,7 @@ const GROUP_THEMES={
 };
 function applyGroupTheme(){
  const selected=field('group'),theme=GROUP_THEMES[selected],root=document.documentElement;
- $('offlineManager').hidden=!!theme;
+ $('offlineManager').hidden=false;
  document.body.classList.toggle('group-view',!!theme);
  for(const [key,val] of Object.entries({'--group-primary':theme?.primary||'#003399','--group-accent':theme?.accent||'#ffcc00','--group-soft':theme?.soft||'#f3f6f8'}))root.style.setProperty(key,val);
  const logo=$('identityLogo'),mark=$('identityText'),link=document.querySelector('.ep-logo');
@@ -290,7 +290,7 @@ function showSecretariat(changeUrl=true){
  $('identityLogo').alt='Parlement européen';$('identityText').hidden=true;
  $('identityTitle').textContent='Secrétariat général';
  $('identityBrand').textContent='VADEMECUM · ADMINISTRATION';
- $('offlineManager').hidden=true;
+ $('offlineManager').hidden=false;
  if(changeUrl)history.pushState({section:'secretariat'},'',new URL('?section=secretariat',location.href));
 }
 $('secretariatNav').addEventListener('click',event=>{event.preventDefault();showSecretariat()});
