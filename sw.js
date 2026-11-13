@@ -1,10 +1,10 @@
 /* Vademecum PE : ressources critiques hors-ligne et mises à jour consenties. */
-const VERSION='pe-pwa-v113';
+const VERSION='pe-pwa-v114';
 const MEDIA='pe-offline-official-media-v1';
 const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
 const OFFLINE=['./','./index.html','./secretariat-general.html','./commission-europeenne.html','./institutions-agences.html','./assets/presidences-conseil-ue-2026-2030.svg','./presidences-cinema.html','./assets/presidences-conseil-ue-cinema.avif','./commission-members.json','./members.json','./coordinators.json','./changes.json','./hemicycle-seats.json','./hemicycle-str-coordinates.json','./hemicycle-bru-coordinates.json','./committees.json','./photo-assets.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png','./assets/sg-juan-carlos-jimenez-marin.webp','./assets/sg-markus-winkler.webp','./assets/sg-alessandro-chiocchetti-user.webp','./assets/sg-markus-winkler-official.webp'];
 self.addEventListener('install',event=>{
- event.waitUntil(caches.open(CORE).then(cache=>cache.addAll(OFFLINE)));
+ event.waitUntil((async()=>{const cache=await caches.open(CORE);await cache.addAll(['./index.html','./members.json','./committees.json','./coordinators.json']);await Promise.allSettled(OFFLINE.filter(url=>!['./index.html','./members.json','./committees.json','./coordinators.json'].includes(url)).map(url=>cache.add(url)));})());
 });
 self.addEventListener('message',event=>{
  if(event.data?.type==='SKIP_WAITING')self.skipWaiting();
@@ -61,7 +61,7 @@ self.addEventListener('fetch',event=>{
  }
  if(url.origin!==self.location.origin)return;
  const isDocument=request.mode==='navigate';
- const isData=/\/(members|commission-members|committees|photo-assets|hemicycle-seats|changes)\.json$/.test(url.pathname);
+ const isData=/\/(members|commission-members|committees|coordinators|photo-assets|hemicycle-seats|hemicycle-str-coordinates|hemicycle-bru-coordinates|changes)\.json$/.test(url.pathname);
  if(isDocument||isData){event.respondWith(fromNetworkOrCache(request,isDocument));return}
  if(/\/(photos|thumbs)\/[0-9]+\.(jpg|webp)$/.test(url.pathname)){
   event.respondWith(cachePhoto(request));return;
