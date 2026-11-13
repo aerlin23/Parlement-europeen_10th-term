@@ -557,7 +557,7 @@ async function downloadOfficialOfflineMedia(){
  if(!navigator.onLine){status.textContent='Connecte-toi à Internet pour commencer le téléchargement.';return}
  if(!members.length){status.textContent='La liste des députés doit d’abord être chargée.';return}
  button.disabled=true;
- const ids=[...new Set(members.map(m=>String(m.id)).filter(id=>/^\\d+$/.test(id)))];
+ const ids=[...new Set(members.map(m=>String(m.id)).filter(id=>/^\d+$/.test(id)))];
  const base='https://www.europarl.europa.eu/';
  const urls=ids.flatMap(id=>[base+'mepphoto/'+id+'.jpg',base+'mepaudio/'+id+'.mp3']);
  let done=0,failed=0,already=0,next=0;
