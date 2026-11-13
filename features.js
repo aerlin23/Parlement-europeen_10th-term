@@ -7,10 +7,14 @@ try{const parsed=JSON.parse(localStorage.getItem(key)||'[]');if(Array.isArray(pa
 window.vademecumFavoritesOnly=false;
 window.vademecumIsFavorite=id=>favorites.has(String(id));
 const banner=document.createElement('div');banner.className='vf-toolbar';
+const favPanel=document.createElement('div');favPanel.className='vf-fav-committees';favPanel.hidden=true;
 const toggle=document.createElement('button');toggle.type='button';toggle.className='vf-favorites-toggle';toggle.setAttribute('aria-pressed','false');
-function updateToggle(){toggle.textContent='☆ Favoris ('+favorites.size+')';toggle.setAttribute('aria-pressed',String(window.vademecumFavoritesOnly))}
+function updateToggle(){toggle.textContent='☆ Favoris ('+favorites.size+')';toggle.setAttribute('aria-pressed',String(window.vademecumFavoritesOnly));refreshFavPanel()}
+function refreshFavPanel(){favPanel.replaceChildren();if(!window.vademecumFavoritesOnly){favPanel.hidden=true;return}for(const code of [...favorites].filter(id=>id.startsWith('C:')).map(id=>id.slice(2))){const btn=document.createElement('button');btn.type='button';btn.className='vf-fav-committee';btn.textContent=code+' — '+(committeeDefs?.[code]?.name||'Commission');btn.addEventListener('click',()=>{window.vademecumFavoritesOnly=false;updateToggle();if($('committee'))$('committee').value=code;if($('sort'))$('sort').value='role';changeFilters()});favPanel.append(btn)}favPanel.hidden=!favPanel.children.length}
 updateToggle();banner.append(toggle);
 const filters=$('filters');if(filters)filters.after(banner);
+banner.after(favPanel);
+window.vademecumShowAll=()=>{if(window.vademecumFavoritesOnly){window.vademecumFavoritesOnly=false;updateToggle()}};
 toggle.addEventListener('click',()=>{
  window.vademecumFavoritesOnly=!window.vademecumFavoritesOnly;updateToggle();
  if(window.vademecumFavoritesOnly){
@@ -48,16 +52,19 @@ window.vademecumCardActions=m=>{
   if(window.vademecumFavoritesOnly)changeFilters();
   else{star.textContent=favorites.has(id)?'★':'☆';star.title=favorites.has(id)?'Retirer des favoris':'Ajouter aux favoris';star.setAttribute('aria-label',star.title);star.setAttribute('aria-pressed',String(favorites.has(id)))}
  });
- const sharing=document.createElement('button');sharing.type='button';sharing.className='vf-action';sharing.textContent='Partager';sharing.title='Partager le lien vers cette fiche';sharing.addEventListener('click',()=>share(m.name+' · Vademecum PE',internalUrl(m)));
- const correction=document.createElement('button');correction.type='button';correction.className='vf-action vf-report';correction.textContent='Signaler';correction.title='Préparer un courriel de signalement';correction.addEventListener('click',()=>report(m));
+ const sharing=document.createElement('button');sharing.type='button';sharing.className='vf-action';sharing.textContent='↗';sharing.title='Partager le lien vers cette fiche';sharing.setAttribute('aria-label',sharing.title);sharing.addEventListener('click',()=>share(m.name+' · Vademecum PE',internalUrl(m)));
+ const correction=document.createElement('button');correction.type='button';correction.className='vf-action vf-report';correction.textContent='⚑';correction.title='Préparer un courriel de signalement';correction.setAttribute('aria-label',correction.title);correction.addEventListener('click',()=>report(m));
  row.append(star,sharing,correction);return row;
 };
 // Lien vers un filtre de commission, séparé de la fiche du député.
 const committee=$('committee');if(committee){
+ const favCommittee=document.createElement('button');favCommittee.type='button';favCommittee.className='vf-share-committee';favCommittee.hidden=true;favCommittee.setAttribute('aria-label','Ajouter ou retirer la commission des favoris');banner.append(favCommittee);
  const shareCommittee=document.createElement('button');shareCommittee.type='button';shareCommittee.className='vf-share-committee';shareCommittee.textContent='Partager cette commission';shareCommittee.hidden=true;
  banner.append(shareCommittee);
- const refresh=()=>{shareCommittee.hidden=!committee.value};
+ const refresh=()=>{const code=committee.value;shareCommittee.hidden=!code;favCommittee.hidden=!code;if(code){favCommittee.textContent=(favorites.has('C:'+code)?'★':'☆')+' Commission';favCommittee.setAttribute('aria-pressed',String(favorites.has('C:'+code)))}};
+ window.vademecumRefreshCommitteeShare=refresh;
  committee.addEventListener('change',refresh);refresh();
+ favCommittee.addEventListener('click',()=>{if(!committee.value)return;const id='C:'+committee.value;if(favorites.has(id))favorites.delete(id);else favorites.add(id);save();updateToggle();refresh()});
  shareCommittee.addEventListener('click',()=>{
   if(!committee.value)return;
   const url=new URL(location.pathname,location.origin);url.searchParams.set('committee',committee.value);
