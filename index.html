@@ -645,12 +645,13 @@ function stopNamePronunciation(){
 }
 function enableNamePronunciation(m){
  const button=$('listenName');
- button.hidden=false;button.disabled=false;button.textContent='Écouter le nom';
+ button.hidden=false;button.disabled=false;button.textContent='🔊 Écouter le nom';
  button.onclick=()=>{
   stopNamePronunciation();
   const audio=new Audio();
   namePronunciationAudio=audio;
   let failedOver=false;
+  button.title='Lecture du nom : enregistrement officiel si disponible, sinon synthèse vocale';
   // L'enregistrement officiel est prioritaire. Si son décodage ou sa lecture échoue,
   // la voix du téléphone est une solution de secours, clairement identifiée.
   const fallback=()=>{
@@ -666,17 +667,17 @@ function enableNamePronunciation(m){
    const voices=window.speechSynthesis.getVoices();
    const match=voices.find(v=>v.lang.toLowerCase()===speech.lang.toLowerCase())||voices.find(v=>v.lang.split('-')[0]===speech.lang.split('-')[0]);
    if(match)speech.voice=match;
-   speech.onstart=()=>{button.disabled=false;button.textContent='Voix de synthèse · Réécouter'};
-   speech.onend=()=>{button.disabled=false;button.textContent='Voix de synthèse · Réécouter'};
+   speech.onstart=()=>{button.title='Voix de synthèse';button.disabled=false;button.textContent='🔊 Réécouter le nom'};
+   speech.onend=()=>{button.disabled=false;button.textContent='🔊 Réécouter le nom'};
    speech.onerror=()=>{button.disabled=true;button.textContent='Voix du téléphone indisponible'};
-   try{window.speechSynthesis.speak(speech);button.disabled=false;button.textContent='Voix de synthèse · Réécouter'}
+   try{window.speechSynthesis.speak(speech);button.disabled=false;button.textContent='🔊 Réécouter le nom'}
    catch{button.disabled=true;button.textContent='Voix du téléphone indisponible'}
   };
   audio.preload='auto';
   audio.src='https://www.europarl.europa.eu/mepaudio/'+encodeURIComponent(m.id)+'.mp3';
-  button.disabled=true;button.textContent='Chargement du nom…';
-  audio.onplaying=()=>{if(namePronunciationAudio===audio){button.disabled=false;button.textContent='Enregistrement officiel · Réécouter'}};
-  audio.onended=()=>{if(namePronunciationAudio===audio){button.disabled=false;button.textContent='Enregistrement officiel · Réécouter'}};
+  button.disabled=true;button.textContent='🔊 Chargement…';
+  audio.onplaying=()=>{if(namePronunciationAudio===audio){button.title='Enregistrement officiel du Parlement européen';button.disabled=false;button.textContent='🔊 Réécouter le nom'}};
+  audio.onended=()=>{if(namePronunciationAudio===audio){button.disabled=false;button.textContent='🔊 Réécouter le nom'}};
   audio.onerror=fallback;
   try{
    const playback=audio.play();
