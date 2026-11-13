@@ -478,19 +478,19 @@ function render(){
  if(directoryObserver)directoryObserver.disconnect();
  $('grid').replaceChildren();
  appendDirectoryPage();
- $('count').textContent=`${filtered.length} député${filtered.length>1?'s':''} sur ${members.length}`;$('empty').hidden=!!filtered.length;const coverageMembers=field('group')?members.filter(m=>m.group===field('group')):members;const n=t=>coverageMembers.reduce((total,m)=>total+afs(m).filter(f=>f.type===t).length,0);const coverage=$('coverage');const coverageLine=(label,description)=>{const line=document.createElement('span');line.className='coverage-line';const name=document.createElement('span');name.className='coverage-label';name.textContent=label+' : ';line.append(name,document.createTextNode(description));return line};coverage.replaceChildren(coverageLine('Parlement',`${n('EP_PRESIDENT')} présidence · ${n('EP_VICE_PRESIDENT')} vice-présidences · ${n('EP_QUAESTOR')} questeurs`),coverageLine('Commissions',`${n('COMMITTEE_CHAIR')} présidences · ${n('COMMITTEE_VICE_CHAIR')} vice-présidences`));const eligible=filtered.filter(canQuiz);$('startStudy').disabled=!eligible.length;$('startStudy').textContent=`Commencer · ${eligible.length} photo${eligible.length>1?'s':''}`;$('quizAvailability').textContent='Session de 20 questions maximum. Les erreurs reviennent plus souvent, les bonnes réponses sont espacées.';}
+ $('count').textContent=`${filtered.length} député${filtered.length>1?'s':''} sur ${members.length}`;$('empty').hidden=!!filtered.length;const coverageMembers=field('group')?members.filter(m=>m.group===field('group')):members;const n=t=>coverageMembers.reduce((total,m)=>total+afs(m).filter(f=>f.type===t).length,0);const coverage=$('coverage');const coverageLine=(label,items)=>{const available=items.filter(([count])=>count>0);if(!available.length)return null;const line=document.createElement('span');line.className='coverage-line';const name=document.createElement('span');name.className='coverage-label';name.textContent=label+' : ';line.append(name,document.createTextNode(available.map(([count,singular,plural])=>count+' '+(count===1?singular:plural)).join(' · ')));return line};const lines=[coverageLine('Parlement',[[n('EP_PRESIDENT'),'présidence','présidences'],[n('EP_VICE_PRESIDENT'),'vice-présidence','vice-présidences'],[n('EP_QUAESTOR'),'questeur','questeurs']]),coverageLine('Commissions',[[n('COMMITTEE_CHAIR'),'présidence','présidences'],[n('COMMITTEE_VICE_CHAIR'),'vice-présidence','vice-présidences']])].filter(Boolean);coverage.replaceChildren(...lines);const eligible=filtered.filter(canQuiz);$('startStudy').disabled=!eligible.length;$('startStudy').textContent=`Commencer · ${eligible.length} photo${eligible.length>1?'s':''}`;$('quizAvailability').textContent='Session de 20 questions maximum. Les erreurs reviennent plus souvent, les bonnes réponses sont espacées.';}
 
 
 const GROUP_THEMES={
- 'PPE':{name:'PPE',title:'Parti populaire européen',repo:'PPE_10th-term',file:'group-logo.png',primary:'#0155a0',accent:'#fbb034',soft:'#f2f5f7'},
- 'S&D':{name:'S&D',title:'Socialistes et démocrates',repo:'S-D_10th-term',file:'group-logo.svg',primary:'#923e4b',accent:'#c27882',soft:'#f8f5f6'},
- 'PfE':{name:'Patriotes',title:'Patriotes pour l’Europe',repo:'Patriots_10th-term',file:'group-logo.svg',primary:'#05174b',accent:'#00e4ff',soft:'#edf4fb'},
- 'ECR':{name:'ECR',title:'Conservateurs et réformistes européens',repo:'ECR_10th-term',file:'group-logo.svg',primary:'#1066a8',accent:'#86c6f2',soft:'#eff6fc'},
- 'Renew':{name:'Renew',title:'Renew Europe',repo:'Renew_10th-term',file:'group-logo.svg',primary:'#0039bf',accent:'#00aeef',soft:'#e0f3fa'},
- 'Verts/ALE':{name:'Verts/ALE',title:'Verts / Alliance libre européenne',repo:'Greens_10th-term',file:'group-logo.svg',primary:'#428207',accent:'#f7bd33',soft:'#f1f7ec'},
- 'The Left':{name:'The Left',title:'La Gauche',repo:'The-Left_10-term',file:'group-logo.png',primary:'#b51d20',accent:'#2ba187',soft:'#fff1f1'},
- 'ESN':{name:'ESN',title:'Europe des nations souveraines',repo:'ESN_10th-term',file:'group-logo.png',primary:'#19345a',accent:'#5293a7',soft:'#eef4f7'},
- 'NI':{name:'NI',title:'Non-inscrits',primary:'#4b5563',accent:'#aeb8c5',soft:'#f3f4f6'}
+ 'PPE':{name:'PPE',title:'Parti populaire européen',repo:'PPE_10th-term',file:'group-logo.png',primary:'#0155a0',accent:'#fbb034',soft:'#e8f1fb'},
+ 'S&D':{name:'S&D',title:'Socialistes et démocrates',repo:'S-D_10th-term',file:'group-logo.svg',primary:'#923e4b',accent:'#c27882',soft:'#faebef'},
+ 'PfE':{name:'Patriotes',title:'Patriotes pour l’Europe',repo:'Patriots_10th-term',file:'group-logo.svg',primary:'#05174b',accent:'#00e4ff',soft:'#e9f0fb'},
+ 'ECR':{name:'ECR',title:'Conservateurs et réformistes européens',repo:'ECR_10th-term',file:'group-logo.svg',primary:'#1066a8',accent:'#86c6f2',soft:'#e9f4fc'},
+ 'Renew':{name:'Renew',title:'Renew Europe',repo:'Renew_10th-term',file:'group-logo.svg',primary:'#0039bf',accent:'#00aeef',soft:'#e4f5fc'},
+ 'Verts/ALE':{name:'Verts/ALE',title:'Verts / Alliance libre européenne',repo:'Greens_10th-term',file:'group-logo.svg',primary:'#428207',accent:'#f7bd33',soft:'#edf6e7'},
+ 'The Left':{name:'The Left',title:'La Gauche',repo:'The-Left_10-term',file:'group-logo.png',primary:'#b51d20',accent:'#2ba187',soft:'#fce9ea'},
+ 'ESN':{name:'ESN',title:'Europe des nations souveraines',repo:'ESN_10th-term',file:'group-logo.png',primary:'#19345a',accent:'#5293a7',soft:'#e9f1f7'},
+ 'NI':{name:'NI',title:'Non-inscrits',primary:'#4b5563',accent:'#aeb8c5',soft:'#eceef2'}
 };
 document.addEventListener('click',event=>{const details=document.getElementById('mobileInstitutions');if(details?.open&&!details.contains(event.target))details.open=false});
 // Le sous-menu des groupes reflète la sélection sans prendre de place sur mobile.
