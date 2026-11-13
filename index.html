@@ -572,6 +572,8 @@ async function downloadOfficialOfflineMedia(){
    }
   }catch(error){console.warn('Médias de la Commission indisponibles pour téléchargement',error)}
 
+ const failedFiles=[];
+ const memberById=new Map(members.map(m=>[String(m.id),m.name]));
  let done=0,failed=0,already=0,next=0;
  try{
   const cache=await caches.open('pe-offline-official-media-v1');
@@ -584,7 +586,14 @@ async function downloadOfficialOfflineMedia(){
      const response=await fetch(url,{mode:'no-cors',credentials:'omit',cache:'no-store'});
      if(!(response.ok||response.type==='opaque'))throw Error('réponse invalide');
      await cache.put(url,response);
-    }catch(error){failed++}
+    }catch(error){
+     failed++;
+     const photoOrAudio=url.match(/\/(mepphoto|mepaudio)\/([0-9]+)\./);
+     const label=photoOrAudio
+       ? (photoOrAudio[1]==='mepaudio'?'Audio':'Photo')+' : '+(memberById.get(photoOrAudio[2])||photoOrAudio[2])
+       : (url.includes('secretary-general')?'Secrétariat général':'Commission européenne')+' : '+decodeURIComponent(url.split('/').pop().split('?')[0]);
+     failedFiles.push(label+' ('+(error?.message||'erreur de réseau')+')');
+    }
     done++;
     if(done%12===0||done===urls.length)status.textContent=
       'Téléchargement '+done+'/'+urls.length+' · erreurs : '+failed;
@@ -592,7 +601,7 @@ async function downloadOfficialOfflineMedia(){
   };
   await Promise.all(Array.from({length:4},()=>worker()));
   status.textContent=failed
-   ? 'Terminé : '+(done-failed)+'/'+done+' fichiers conservés ('+already+' déjà présents). '+failed+' échecs : certains fichiers officiels sont peut-être indisponibles. Vérifie le fonctionnement en mode avion.'
+   ? 'Terminé : '+(done-failed)+'/'+done+' fichiers conservés ('+already+' déjà présents). '+failed+' échec(s) : '+failedFiles.slice(0,5).join(' ; ')+(failedFiles.length>5?' ; …':'')+'. Vérifie le fonctionnement en mode avion.'
    : 'Terminé : '+done+' ressources conservées ('+already+' déjà présents). Vérifie le fonctionnement en mode avion.';
  }catch(error){status.textContent='Échec du stockage : espace insuffisant, navigateur incompatible ou accès réseau bloqué.'}
  finally{button.disabled=false;button.textContent='Compléter / actualiser les fichiers hors ligne'}
