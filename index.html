@@ -443,13 +443,14 @@ function hemicycleMarker(){
  return icon;
 }
 
-const seatPlanURL={str:'https://www.europarl.europa.eu/sedcms/pubfile/HEMICYCLE/PLAN_STR.pdf',bru:'https://www.europarl.europa.eu/sedcms/pubfile/HEMICYCLE/PLAN_BRU.pdf'};
-let strSeatMapPromise;
-async function getStrSeatMap(){
- if(!strSeatMapPromise)strSeatMapPromise=(async()=>{
+const seatPlanURL={str:'https://www.europarl.europa.eu/plenary/fr/hemicycle.html',bru:'https://www.europarl.europa.eu/plenary/fr/hemicycle.html'};
+const seatMapPromises={};
+async function getSeatMap(city){
+ if(!['str','bru'].includes(city))throw Error('Hémicycle inconnu');
+ if(!seatMapPromises[city])seatMapPromises[city]=(async()=>{
   if(!('DecompressionStream' in window))throw Error('Décompression non disponible');
-  const response=await fetch('./hemicycle-str-coordinates.json');
-  if(!response.ok)throw Error('Plan non disponible');
+  const response=await fetch('./hemicycle-'+city+'-coordinates.json');
+  if(!response.ok)throw Error('Coordonnées non disponibles');
   const data=await response.json();
   const raw=Uint8Array.from(atob(data.data),c=>c.charCodeAt(0));
   const stream=new Blob([raw]).stream().pipeThrough(new DecompressionStream('deflate'));
@@ -457,8 +458,8 @@ async function getStrSeatMap(){
   if(bytes.length!==863*4)throw Error('Coordonnées incomplètes');
   const view=new DataView(bytes.buffer);
   return Array.from({length:863},(_,i)=>[view.getUint16(i*4),view.getUint16(i*4+2)]);
- })().catch(error=>{strSeatMapPromise=null;throw error});
- return strSeatMapPromise;
+ })().catch(error=>{delete seatMapPromises[city];throw error});
+ return seatMapPromises[city];
 }
 function seatSVG(name,attributes={},content){
  const node=document.createElementNS('http://www.w3.org/2000/svg',name);
@@ -476,53 +477,41 @@ async function showSeatOnPlan(city,number,memberName){
  const close=el('button','', '×');close.type='button';close.setAttribute('aria-label','Fermer le plan');
  head.append(heading,close);
  const detail=el('p','seat-map-caption',memberName+' · Plan de l’hémicycle');
- const area=el('div','',city==='str'?'Chargement du plan…':'Le repérage graphique précis de Bruxelles reste à valider avec le plan officiel récent.');
+ const area=el('div','','Chargement du plan…');
  const controls=el('div','seat-map-controls');
- const original=el('a','', 'Consulter le plan PDF officiel');original.href=seatPlanURL[city];original.target='_blank';original.rel='noopener noreferrer';
+ const original=el('a','', 'Consulter le plan officiel actualisé');original.href=seatPlanURL[city];original.target='_blank';original.rel='noopener noreferrer';
  controls.append(original);
  dialog.append(head,detail,area,controls);backdrop.append(dialog);document.body.append(backdrop);
  const previousFocus=document.activeElement;
  const dismiss=()=>{backdrop.remove();document.removeEventListener('keydown',escape);if(previousFocus?.focus)previousFocus.focus()};
  const escape=e=>{if(e.key==='Escape')dismiss()};
  close.onclick=dismiss;backdrop.addEventListener('click',e=>{if(e.target===backdrop)dismiss()});document.addEventListener('keydown',escape);close.focus();
- if(city==='bru'){
-  area.replaceChildren();
-  const message=el('p','seat-map-caption','Place B'+number+' · Le plan graphique de Bruxelles n’a pas encore été géoréférencé. Utilise le plan interactif officiel pour localiser précisément ce siège.');
-  const actions=el('div','seat-map-controls');
-  const interactive=el('a','','Ouvrir le plan interactif de Bruxelles');
-  interactive.href='https://www.europarl.europa.eu/hemicycle/index.htm?lang=fr&loc=bru';
-  interactive.target='_blank';interactive.rel='noopener noreferrer';
-  const copy=el('button','','Copier le numéro B'+number);
-  copy.type='button';
-  copy.onclick=async()=>{try{await navigator.clipboard.writeText(String(number));copy.textContent='Numéro '+number+' copié'}catch{copy.textContent='Numéro à chercher : '+number}};
-  actions.append(interactive,copy);area.append(message,actions);
-  return;
- }
+
  try{
-  const positions=await getStrSeatMap();
+  const positions=await getSeatMap(city);
   if(!backdrop.isConnected)return;
   const point=positions[number-1];
-  if(!point||!point[0]||!point[1]){area.textContent='Position non disponible sur ce plan. Utilise le PDF officiel.';return}
+  if(!point||!point[0]||!point[1]){area.textContent='Cette place ne possède pas de position graphique fiable sur le plan du '+(city==='bru'?'11 novembre 2026':'19 octobre 2026')+'. Consulte le plan officiel pour la vérifier.';return}
   area.replaceChildren();
-  const svg=seatSVG('svg',{viewBox:'340 350 510 355',class:'seat-map-canvas',role:'img','aria-label':'Plan des sièges de Strasbourg, place '+number+' repérée en bleu foncé'});
+  const fullView=city==='bru'?'335 350 525 375':'340 350 510 355';const svg=seatSVG('svg',{viewBox:fullView,class:'seat-map-canvas',role:'img','aria-label':'Plan des sièges de '+(city==='bru'?'Bruxelles':'Strasbourg')+', place '+number+' repérée en bleu foncé'});
   const background=seatSVG('g');
   for(let i=0;i<positions.length;i++){const [x,y]=positions[i];if(!x||!y)continue;background.append(seatSVG('circle',{cx:x,cy:y,r:2.45,fill:'#a4b4c4'}))}
   const [x,y]=point;
   const marker=seatSVG('g');
   marker.append(seatSVG('circle',{cx:x,cy:y,r:13,fill:'#1e4b8b','fill-opacity':'.17',stroke:'#1e4b8b','stroke-width':1.2}));
   marker.append(seatSVG('circle',{cx:x,cy:y,r:5,fill:'#073b7e',stroke:'white','stroke-width':2}));
-  const labelX=Math.max(365,Math.min(x,815));
+  const labelX=Math.max(city==='bru'?365:365,Math.min(x,city==='bru'?830:815));
   const labelY=Math.max(367,y-27);
   marker.append(seatSVG('path',{d:`M${x} ${y-8} L${labelX} ${labelY+9}`,stroke:'#164b86','stroke-width':1.3}));
   marker.append(seatSVG('rect',{x:labelX-25,y:labelY-12,width:50,height:21,rx:8,fill:'#073b7e'}));
-  marker.append(seatSVG('text',{x:labelX,y:labelY+2,'text-anchor':'middle',fill:'#fff','font-size':12,'font-weight':700},'S'+number));
+  marker.append(seatSVG('text',{x:labelX,y:labelY+2,'text-anchor':'middle',fill:'#fff','font-size':12,'font-weight':700},(city==='bru'?'B':'S')+number));
   svg.append(background,marker);area.append(svg);
-  const caption=el('p','seat-map-caption','Position issue du plan officiel de Strasbourg du 19 octobre 2026. Les places peuvent évoluer selon la session.');
+  const caption=el('p','seat-map-caption',city==='bru'?'Position relevée sur le plan de Bruxelles du 11 novembre 2026. Les places peuvent changer selon la session.':'Position issue du plan officiel de Strasbourg du 19 octobre 2026. Les places peuvent évoluer selon la session.');
   area.append(caption);
   let zoom=false;
   const zoomBtn=el('button','','Agrandir autour du siège');
   zoomBtn.type='button';
-  zoomBtn.onclick=()=>{zoom=!zoom;svg.setAttribute('viewBox',zoom?`${Math.max(340,Math.min(x-95,660))} ${Math.max(350,Math.min(y-78,565))} 190 145`:'340 350 510 355');zoomBtn.textContent=zoom?'Vue entière':'Agrandir autour du siège'};
+  zoomBtn.onclick=()=>{zoom=!zoom;svg.setAttribute('viewBox',zoom?`${Math.max(city==='bru'?335:340,Math.min(x-95,city==='bru'?670:660))} ${Math.max(350,Math.min(y-78,city==='bru'?580:565))} 190 145`:fullView);zoomBtn.textContent=zoom?'Vue entière':'Agrandir autour du siège'};
   controls.prepend(zoomBtn);
  }catch(error){if(backdrop.isConnected)area.textContent='Plan indisponible sur cet appareil. Ouvre le PDF officiel pour consulter la place.';console.warn('Carte des places',error)}
 }
