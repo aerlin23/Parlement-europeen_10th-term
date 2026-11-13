@@ -97,8 +97,8 @@ header{background:#003399;border-bottom:5px solid #ffcc00}.ec-logo{background:wh
   <defs>
     <filter id="ec-soft-blue" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
       <!-- Conserve les visages et vêtements, n'éclaircit que le fond bleu saturé. -->
-      <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0.91 0 0 0 0 0.94 0 0 0 0 0.97 0 0 0 1 0" result="pale"/>
-      <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -2 -1 3 0 -1.4" result="blueOnly"/>
+      <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0.84 0 0 0 0 0.90 0 0 0 0 0.97 0 0 0 1 0" result="pale"/>
+      <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1.4 -0.6 2 0 -0.4" result="blueOnly"/>
       <feComposite in="pale" in2="blueOnly" operator="in" result="softBackground"/>
       <feComposite in="softBackground" in2="SourceGraphic" operator="over"/>
     </filter>
