@@ -356,7 +356,7 @@ body.group-view .directories a[aria-current="page"]{
 
 /* Navigation alphabétique flottante : centrée, discrète et accessible. */
 .admin-data-attribution{border-top:1px solid #d8e3e8;margin:10px auto 0;padding-top:10px;font-size:10px;color:#657d89;line-height:1.75}
-.alpha-floating{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));z-index:90;display:flex;align-items:center;gap:4px;background:#143448;color:#fff;border:1px solid #7291a2;border-radius:999px;padding:6px 8px;box-shadow:0 5px 18px #14344844;max-width:calc(100vw - 22px);width:max-content}
+.alpha-floating{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));z-index:90;display:flex;align-items:center;gap:4px;background:rgba(20,52,72,.63);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);color:#fff;border:1px solid rgba(178,207,223,.43);border-radius:999px;padding:6px 8px;box-shadow:0 5px 18px rgba(20,52,72,.16);max-width:calc(100vw - 22px);width:max-content;transition:background .2s}.alpha-floating:hover,.alpha-floating:focus-within{background:rgba(20,52,72,.85)}
 .alpha-floating[hidden]{display:none!important}
 .alpha-floating .alpha-letters{display:flex;align-items:center;gap:1px;overflow-x:auto;scrollbar-width:none;max-width:calc(100vw - 90px);overscroll-behavior-x:contain}
 .alpha-floating .alpha-letters::-webkit-scrollbar{display:none}
@@ -407,20 +407,36 @@ body.group-view .directories a[aria-current="page"]{
   });
   letters.append(b);
  }
+ // N'apparaît qu'après un geste de défilement rapide, puis reste accessible
+ // brièvement pour permettre de toucher une lettre sans masquer les fiches.
+ let showUntil=0,hideTimer=0,lastY=window.scrollY,lastTime=performance.now(),scheduled=false;
  const refresh=()=>{
   const section=document.getElementById('directory'),active=section&&!section.hidden&&document.getElementById('secretariatPanel')?.hidden;
   const enough=document.documentElement.scrollHeight>window.innerHeight+500;
   const atBottom=window.scrollY+window.innerHeight>=document.documentElement.scrollHeight-100;
-  bar.hidden=!active||!enough||atBottom;
+  const interacting=bar.matches(':hover')||bar.contains(document.activeElement);
+  bar.hidden=!active||!enough||atBottom||(!interacting&&performance.now()>=showUntil);
   if(!bar.hidden&&typeof filtered!=='undefined'&&Array.isArray(filtered)&&typeof surname==='function'&&typeof norm==='function'){
    const initials=new Set(filtered.map(m=>norm(surname(m)).charAt(0).toUpperCase()));
    for(const b of letters.children)b.disabled=!initials.has(b.dataset.letter);
   }
  };
- let scheduled=false;
  const schedule=()=>{if(!scheduled){scheduled=true;requestAnimationFrame(()=>{scheduled=false;refresh()})}};
+ const onScroll=()=>{
+  const now=performance.now(),y=window.scrollY,dy=Math.abs(y-lastY),dt=Math.max(now-lastTime,1);
+  // Seuil en vitesse ou en distance pour les gestes rapides sur mobile.
+  if((dy/dt>=0.7&&dy>=12)||dy>=95){
+   showUntil=now+2300;
+   clearTimeout(hideTimer);
+   hideTimer=setTimeout(schedule,2400);
+  }
+  lastY=y;lastTime=now;
+  schedule();
+ };
  bottom.addEventListener('click',()=>window.scrollTo({top:document.documentElement.scrollHeight,behavior:reduce.matches?'instant':'smooth'}));
- window.addEventListener('scroll',schedule,{passive:true});
+ bar.addEventListener('pointerleave',schedule);
+ bar.addEventListener('focusout',()=>requestAnimationFrame(schedule));
+ window.addEventListener('scroll',onScroll,{passive:true});
  window.addEventListener('resize',schedule,{passive:true});
  window.addEventListener('load',schedule);
  if('ResizeObserver' in window)new ResizeObserver(schedule).observe(document.body);
