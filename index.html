@@ -944,7 +944,7 @@ function render(){
   return line;
  };
  const lines=[
-  coverageLine('Parlement',[[n('EP_PRESIDENT'),'présidence','présidences','president'],[n('EP_VICE_PRESIDENT'),'vice-présidence','vice-présidences','vice'],...(field('group')?[]:[[n('EP_QUAESTOR'),'questeur','questeurs','quaestor']][0])]),
+  coverageLine('Parlement',[[n('EP_PRESIDENT'),'présidence','présidences','president'],[n('EP_VICE_PRESIDENT'),'vice-présidence','vice-présidences','vice'],...(field('group')?[]:[[n('EP_QUAESTOR'),'questeur','questeurs','quaestor']])]),
   coverageLine('Commissions',[[n('COMMITTEE_CHAIR')+n('COMMITTEE_VICE_CHAIR'),'présidence ou vice-présidence','présidences ou vice-présidences','commissionbureau']])
  ].filter(Boolean);
  coverage.replaceChildren(...lines);const eligible=filtered.filter(canQuiz);$('startStudy').disabled=!eligible.length;$('startStudy').textContent=`Commencer · ${eligible.length} photo${eligible.length>1?'s':''}`;$('quizAvailability').textContent='Session de 20 questions maximum. Les erreurs reviennent plus souvent, les bonnes réponses sont espacées.';}
