@@ -458,7 +458,16 @@ async function getSeatMap(city){
   const bytes=new Uint8Array(await new Response(stream).arrayBuffer());
   if(bytes.length!==863*4)throw Error('Coordonnées incomplètes');
   const view=new DataView(bytes.buffer);
-  return Array.from({length:863},(_,i)=>[view.getUint16(i*4),view.getUint16(i*4+2)]);
+  const positions=Array.from({length:863},(_,i)=>[view.getUint16(i*4),view.getUint16(i*4+2)]);
+  if(city==='bru'&&data.verifiedOverrides&&typeof data.verifiedOverrides==='object'){
+   for(const [seat,position] of Object.entries(data.verifiedOverrides)){
+    const index=Number(seat)-1;
+    if(!Number.isInteger(index)||index<0||index>=positions.length||positions[index][0]||positions[index][1])continue;
+    if(!Array.isArray(position)||position.length!==2||!position.every(v=>Number.isInteger(v)&&v>0&&v<=1191))continue;
+    positions[index]=position;
+   }
+  }
+  return positions;
  })().catch(error=>{delete seatMapPromises[city];throw error});
  return seatMapPromises[city];
 }
