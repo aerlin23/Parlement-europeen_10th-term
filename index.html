@@ -352,6 +352,11 @@ body.group-view .directories a[aria-current="page"]{
 .seat-map-canvas{width:100%;border-radius:10px;display:block;background:#f0f4f8;border:1px solid #d7e1e9}
 .seat-map-controls{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px;font-size:12px}
 .seat-map-controls a{color:#14558a;font-weight:650}.seat-map-controls button{padding:8px 11px}
+.seat-group-toggle[aria-pressed="true"]{background:#173f62;color:#fff;border-color:#173f62}
+.seat-group-legend{display:flex;flex-wrap:wrap;gap:6px 11px;margin:10px 0 4px;padding:9px 11px;border:1px solid #dbe5ec;border-radius:8px;background:#f8fafc}
+.seat-group-legend[hidden]{display:none!important}
+.seat-group-legend-item{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:#345162;white-space:nowrap}
+.seat-group-dot{display:inline-block;width:9px;height:9px;flex:none;border-radius:50%;border:1px solid #0002}
 @media(max-width:650px){.fields label:not(:first-child),.advanced .extra label{font-size:0;letter-spacing:0;line-height:0}.fields label:not(:first-child) select,.advanced .extra label select{font-size:13px;line-height:1.35;min-width:0;margin-top:0;letter-spacing:normal}.fields label:not(:first-child),.advanced .extra label{min-width:0}.fields label:not(:first-child) select,.advanced .extra label select{width:100%}}
 
 /* Navigation alphabétique flottante : centrée, discrète et accessible. */
@@ -574,6 +579,19 @@ function seatSVG(name,attributes={},content){
  if(content!==undefined)node.textContent=content;
  return node;
 }
+// Couleurs dédiées aux sièges : lisibles et distinctes sur le fond clair.
+const SEAT_GROUP_COLORS={'PPE':'#2177bd','S&D':'#d7576e','PfE':'#414da0','ECR':'#4196c7','Renew':'#e3af2e','Verts/ALE':'#65a64c','The Left':'#b64584','ESN':'#53667f','NI':'#8f969f'};
+const SEAT_GROUP_LABELS={'PPE':'PPE','S&D':'S&D','PfE':'Patriotes','ECR':'ECR','Renew':'Renew','Verts/ALE':'Verts/ALE','The Left':'The Left','ESN':'ESN','NI':'Non-inscrits'};
+function seatGroupsForCity(city){
+ const assigned=new Map();
+ for(const m of members){
+  const seat=hemicycleSeats[String(m.id)]?.[city];
+  if(Number.isInteger(seat)&&seat>=1&&seat<=863&&Object.hasOwn(SEAT_GROUP_COLORS,m.group)){
+   assigned.set(seat,m.group);
+  }
+ }
+ return assigned;
+}
 async function showSeatOnPlan(city,number,memberName){
  const existing=document.querySelector('.seat-map-backdrop');
  if(existing)existing.remove();
@@ -602,7 +620,13 @@ async function showSeatOnPlan(city,number,memberName){
   area.replaceChildren();
   const fullView=city==='bru'?'335 350 525 375':'340 350 510 355';const svg=seatSVG('svg',{viewBox:fullView,class:'seat-map-canvas',role:'img','aria-label':'Plan des sièges de '+(city==='bru'?'Bruxelles':'Strasbourg')+', place '+number+' repérée en bleu foncé'});
   const background=seatSVG('g');
-  for(let i=0;i<positions.length;i++){const [x,y]=positions[i];if(!x||!y)continue;background.append(seatSVG('circle',{cx:x,cy:y,r:2.45,fill:'#a4b4c4'}))}
+  const assignedGroups=seatGroupsForCity(city),seatCircles=[];
+  for(let i=0;i<positions.length;i++){
+   const [x,y]=positions[i];if(!x||!y)continue;
+   const seat=seatSVG('circle',{cx:x,cy:y,r:2.45,fill:'#a4b4c4'});
+   background.append(seat);
+   seatCircles.push([seat,assignedGroups.get(i+1)]);
+  }
   const [x,y]=point;
   const marker=seatSVG('g');
   marker.append(seatSVG('circle',{cx:x,cy:y,r:13,fill:'#1e4b8b','fill-opacity':'.17',stroke:'#1e4b8b','stroke-width':1.2}));
@@ -613,8 +637,28 @@ async function showSeatOnPlan(city,number,memberName){
   marker.append(seatSVG('rect',{x:labelX-25,y:labelY-12,width:50,height:21,rx:8,fill:'#073b7e'}));
   marker.append(seatSVG('text',{x:labelX,y:labelY+2,'text-anchor':'middle',fill:'#fff','font-size':12,'font-weight':700},(city==='bru'?'B':'S')+number));
   svg.append(background,marker);area.append(svg);
+  const legend=el('div','seat-group-legend');legend.hidden=true;legend.setAttribute('aria-label','Légende des groupes politiques');
+  for(const [group,color] of Object.entries(SEAT_GROUP_COLORS)){
+   if(![...assignedGroups.values()].includes(group))continue;
+   const entry=el('span','seat-group-legend-item');
+   const dot=el('span','seat-group-dot');dot.style.backgroundColor=color;
+   entry.append(dot,document.createTextNode(SEAT_GROUP_LABELS[group]));legend.append(entry);
+  }
+  const unassigned=assignedGroups.size<positions.filter(p=>p[0]&&p[1]).length;
+  if(unassigned){const entry=el('span','seat-group-legend-item');const dot=el('span','seat-group-dot');dot.style.backgroundColor='#a4b4c4';entry.append(dot,document.createTextNode('Non attribué / non renseigné'));legend.append(entry)}
+  area.append(legend);
   const caption=el('p','seat-map-caption',city==='bru'?'Position relevée sur le plan de Bruxelles du 11 novembre 2026. Les places peuvent changer selon la session.':'Position issue du plan officiel de Strasbourg du 19 octobre 2026. Les places peuvent évoluer selon la session.');
   area.append(caption);
+  const groupBtn=el('button','seat-group-toggle','Vue groupes');groupBtn.type='button';groupBtn.setAttribute('aria-pressed','false');
+  groupBtn.onclick=()=>{
+   const groupsOn=groupBtn.getAttribute('aria-pressed')!=='true';
+   groupBtn.setAttribute('aria-pressed',String(groupsOn));
+   groupBtn.textContent=groupsOn?'Vue simple':'Vue groupes';
+   for(const [circle,group] of seatCircles)circle.setAttribute('fill',groupsOn&&group?SEAT_GROUP_COLORS[group]:'#a4b4c4');
+   legend.hidden=!groupsOn;
+   svg.setAttribute('aria-label','Plan des sièges de '+(city==='bru'?'Bruxelles':'Strasbourg')+(groupsOn?', couleurs par groupe politique':'')+', place '+number+' repérée en bleu foncé');
+  };
+  controls.prepend(groupBtn);
   let zoom=false;
   const zoomBtn=el('button','','Agrandir autour du siège');
   zoomBtn.type='button';
