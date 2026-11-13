@@ -726,7 +726,7 @@ function seatGroupsForCity(city){
 }
 async function showSeatOnPlan(city,number,memberName,memberGroup){
  const existing=document.querySelector('.seat-map-backdrop');
- if(existing)existing.remove();
+ if(existing)existing.querySelector('[aria-label="Fermer le plan"]')?.click();
  const backdrop=el('div','seat-map-backdrop'),dialog=el('section','seat-map-dialog');
  dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');
  dialog.setAttribute('aria-label','Localisation de la place en hémicycle');
