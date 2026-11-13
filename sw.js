@@ -1,5 +1,5 @@
 /* Vademecum PE : ressources critiques hors-ligne et mises à jour consenties. */
-const VERSION='pe-pwa-v39';
+const VERSION='pe-pwa-v40';
 const MEDIA='pe-offline-official-media-v1';
 const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
 const OFFLINE=['./','./index.html','./secretariat-general.html','./members.json','./hemicycle-seats.json','./committees.json','./photo-assets.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png','./assets/sg-juan-carlos-jimenez-marin.webp','./assets/sg-markus-winkler.webp'];
@@ -46,7 +46,7 @@ self.addEventListener('fetch',event=>{
  if(request.method!=='GET')return;
  const url=new URL(request.url);
  // Conserver les portraits et voix officiels dans un cache durable, même après mise à jour.
- if(url.origin==='https://www.europarl.europa.eu'&&/^\/(mepphoto|mepaudio)\/[0-9]+\.(jpg|mp3)$/.test(url.pathname)){
+ if((url.origin==='https://www.europarl.europa.eu'&&/^\/(mepphoto|mepaudio)\/[0-9]+\.(jpg|mp3)$/.test(url.pathname))||(url.origin==='https://the-secretary-general.europarl.europa.eu'&&url.pathname.startsWith('/files/live/sites/secretarygeneral/files/images/'))){
   event.respondWith((async()=>{
    const cache=await caches.open(MEDIA);
    const hit=await cache.match(url.href);
