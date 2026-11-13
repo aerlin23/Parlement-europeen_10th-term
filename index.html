@@ -961,7 +961,7 @@ document.getElementById('downloadOffline').addEventListener('click',downloadOffi
 if('serviceWorker' in navigator){
  window.addEventListener('load',async()=>{
   try{
-   const registration=await navigator.serviceWorker.register('./sw.js?v=64',{scope:'./',updateViaCache:'none'});
+   const registration=await navigator.serviceWorker.register('./sw.js?v=65',{scope:'./',updateViaCache:'none'});
    const notice=$('appUpdateNotice'),apply=$('applyAppUpdate');
    const displayUpdate=()=>{
     if(registration.waiting&&navigator.serviceWorker.controller)notice.hidden=false;
