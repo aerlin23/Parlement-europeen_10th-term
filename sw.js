@@ -1,8 +1,8 @@
 /* Vademecum PE : ressources critiques hors-ligne et mises à jour consenties. */
-const VERSION='pe-pwa-v55';
+const VERSION='pe-pwa-v56';
 const MEDIA='pe-offline-official-media-v1';
 const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
-const OFFLINE=['./','./index.html','./secretariat-general.html','./commission-europeenne.html','./institutions-agences.html','./commission-members.json','./members.json','./hemicycle-seats.json','./committees.json','./photo-assets.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png','./assets/sg-juan-carlos-jimenez-marin.webp','./assets/sg-markus-winkler.webp','./assets/sg-alessandro-chiocchetti-user.webp','./assets/sg-markus-winkler-official.webp'];
+const OFFLINE=['./','./index.html','./secretariat-general.html','./commission-europeenne.html','./institutions-agences.html','./assets/presidences-conseil-ue-2026-2030.svg','./commission-members.json','./members.json','./hemicycle-seats.json','./committees.json','./photo-assets.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png','./assets/sg-juan-carlos-jimenez-marin.webp','./assets/sg-markus-winkler.webp','./assets/sg-alessandro-chiocchetti-user.webp','./assets/sg-markus-winkler-official.webp'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CORE).then(cache=>cache.addAll(OFFLINE)));
 });
