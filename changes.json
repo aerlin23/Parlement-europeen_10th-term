@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "updatedManually": "2026-11-13",
+  "notice": "Historique éditorial, dates des événements distinctes de la date de mise à jour. Sources à vérifier avant tout usage institutionnel.",
+  "items": [
+    {
+      "date": "2026-11-12",
+      "category": "fonctions",
+      "kind": "Nouvelle fonction",
+      "name": "Tilly Metz",
+      "person": "193292",
+      "description": "Élue 11e vice-présidente du Parlement européen, en remplacement de Nicolae Ștefănuță.",
+      "source": "https://oeil.europarl.europa.eu/oeil/fr/procedure-file?reference=2026%2F2952%28RSO%29"
+    },
+    {
+      "date": "2026-10-21",
+      "category": "fonctions",
+      "kind": "Fin de fonction",
+      "name": "Nicolae Ștefănuță",
+      "person": "58766",
+      "description": "Fin de mandat de vice-président du Parlement. Il conserve son mandat de député.",
+      "source": "https://oeil.europarl.europa.eu/oeil/fr/procedure-file?reference=2026%2F2952%28RSO%29"
+    },
+    {
+      "date": "2026-10-21",
+      "category": "groupes",
+      "kind": "Changement de groupe",
+      "name": "Kateřina Konečná",
+      "person": "23699",
+      "oldValue": "Non-inscrits",
+      "newValue": "Patriotes pour l’Europe",
+      "description": "Changement d’appartenance au groupe politique."
+    },
+    {
+      "date": "2026-10-08",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Brice Hortefeux",
+      "person": "5565",
+      "description": "Remplace Laurent Castillo (France).",
+      "related": {
+        "name": "Laurent Castillo",
+        "url": "https://www.europarl.europa.eu/meps/fr/256921/_/home"
+      },
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2026-09-18",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Robert Gabel",
+      "person": "198471",
+      "description": "Remplace Sebastian Everding (Allemagne).",
+      "related": {
+        "name": "Sebastian Everding",
+        "url": "https://www.europarl.europa.eu/meps/fr/256961/_/home"
+      },
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2026-09-18",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Balázs Orbán",
+      "person": "280663",
+      "description": "Remplace Pál Szekeres (Hongrie).",
+      "related": {
+        "name": "Pál Szekeres",
+        "url": "https://www.europarl.europa.eu/meps/fr/256855/_/home"
+      },
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2026-06-30",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Ufuk Kâhya",
+      "person": "278815",
+      "description": "Entre au Parlement après le départ de Bas Eickhout, le 20 juin.",
+      "related": {
+        "name": "Bas Eickhout",
+        "url": "https://www.europarl.europa.eu/meps/fr/96725/BAS_EICKHOUT/home"
+      },
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2026-06-11",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Norbert Herhammer",
+      "person": "278406",
+      "description": "Entre au Parlement après le départ de Christine Schneider, le 25 mai.",
+      "related": {
+        "name": "Christine Schneider",
+        "url": "https://www.europarl.europa.eu/meps/fr/197422/_/home"
+      },
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    }
+  ]
+}
