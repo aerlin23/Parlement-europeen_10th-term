@@ -1,5 +1,6 @@
 /* Vademecum PE : ressources critiques hors-ligne et mises à jour consenties. */
-const VERSION='pe-pwa-v38';
+const VERSION='pe-pwa-v39';
+const MEDIA='pe-offline-official-media-v1';
 const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
 const OFFLINE=['./','./index.html','./secretariat-general.html','./members.json','./hemicycle-seats.json','./committees.json','./photo-assets.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png','./assets/sg-juan-carlos-jimenez-marin.webp','./assets/sg-markus-winkler.webp'];
 self.addEventListener('install',event=>{
@@ -44,7 +45,20 @@ self.addEventListener('fetch',event=>{
  const request=event.request;
  if(request.method!=='GET')return;
  const url=new URL(request.url);
- // Les portraits officiels externes ne sont pas interceptés : Safari les gère directement.
+ // Conserver les portraits et voix officiels dans un cache durable, même après mise à jour.
+ if(url.origin==='https://www.europarl.europa.eu'&&/^\\/(mepphoto|mepaudio)\\/[0-9]+\\.(jpg|mp3)$/.test(url.pathname)){
+  event.respondWith((async()=>{
+   const cache=await caches.open(MEDIA);
+   const hit=await cache.match(url.href);
+   if(hit)return hit;
+   try{
+    const response=await fetch(request);
+    if(response.ok||response.type==='opaque')await cache.put(url.href,response.clone());
+    return response;
+   }catch{return Response.error()}
+  })());
+  return;
+ }
  if(url.origin!==self.location.origin)return;
  const isDocument=request.mode==='navigate';
  const isData=/\/(members|committees|photo-assets|hemicycle-seats)\.json$/.test(url.pathname);
