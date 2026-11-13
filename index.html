@@ -414,8 +414,7 @@ body.group-view .directories a[aria-current="page"]{
   const section=document.getElementById('directory'),active=section&&!section.hidden&&document.getElementById('secretariatPanel')?.hidden;
   const enough=document.documentElement.scrollHeight>window.innerHeight+500;
   const atBottom=window.scrollY+window.innerHeight>=document.documentElement.scrollHeight-100;
-  const interacting=bar.matches(':hover')||bar.contains(document.activeElement);
-  bar.hidden=!active||!enough||atBottom||(!interacting&&performance.now()>=showUntil);
+  bar.hidden=!active||!enough||atBottom||performance.now()>=showUntil;
   if(!bar.hidden&&typeof filtered!=='undefined'&&Array.isArray(filtered)&&typeof surname==='function'&&typeof norm==='function'){
    const initials=new Set(filtered.map(m=>norm(surname(m)).charAt(0).toUpperCase()));
    for(const b of letters.children)b.disabled=!initials.has(b.dataset.letter);
@@ -425,10 +424,13 @@ body.group-view .directories a[aria-current="page"]{
  const onScroll=()=>{
   const now=performance.now(),y=window.scrollY,dy=Math.abs(y-lastY),dt=Math.max(now-lastTime,1);
   // Seuil en vitesse ou en distance pour les gestes rapides sur mobile.
-  if((dy/dt>=0.7&&dy>=12)||dy>=95){
-   showUntil=now+2300;
+  const fast=(dy/dt>=0.7&&dy>=12)||dy>=95;
+  // Une fois révélée par un défilement rapide, la barre reste visible
+  // uniquement tant que le défilement continue et disparaît 700 ms après l'arrêt.
+  if(fast||showUntil>now){
+   showUntil=now+700;
    clearTimeout(hideTimer);
-   hideTimer=setTimeout(schedule,2400);
+   hideTimer=setTimeout(schedule,720);
   }
   lastY=y;lastTime=now;
   schedule();
