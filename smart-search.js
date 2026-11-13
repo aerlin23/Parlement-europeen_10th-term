@@ -48,7 +48,7 @@ function search(value){
  return out.sort((a,b)=>a.weight-b.weight||order[a.kind]-order[b.kind]||a.title.localeCompare(b.title,'fr')).slice(0,5);
 }
 function choose(choice){
- close();
+ close();window.vademecumShowAll?.();
  for(const id of ['search','group','committee','function','country','gender','assignment','kind']){
   const el=document.getElementById(id);if(el)el.value='';
  }
