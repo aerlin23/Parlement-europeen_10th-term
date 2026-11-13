@@ -1,0 +1,36 @@
+name: Audit Vademecum PE
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'sw.js'
+      - 'members.json'
+      - 'committees.json'
+      - 'coordinators.json'
+      - 'hemicycle-seats.json'
+      - 'scripts/audit.cjs'
+      - '.github/workflows/audit.yml'
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'sw.js'
+      - 'members.json'
+      - 'committees.json'
+      - 'coordinators.json'
+      - 'hemicycle-seats.json'
+      - 'scripts/audit.cjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Valider les données et les scripts
+        run: node scripts/audit.cjs
