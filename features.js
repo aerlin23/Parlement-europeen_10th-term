@@ -55,7 +55,7 @@ window.vademecumCardActions=m=>{
 // Lien vers un filtre de commission, séparé de la fiche du député.
 const committee=$('committee');if(committee){
  const shareCommittee=document.createElement('button');shareCommittee.type='button';shareCommittee.className='vf-share-committee';shareCommittee.textContent='Partager cette commission';shareCommittee.hidden=true;
- committee.closest('label')?.after(shareCommittee);
+ banner.append(shareCommittee);
  const refresh=()=>{shareCommittee.hidden=!committee.value};
  committee.addEventListener('change',refresh);refresh();
  shareCommittee.addEventListener('click',()=>{
