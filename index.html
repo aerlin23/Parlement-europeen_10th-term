@@ -435,8 +435,14 @@ body.group-view .directories a[aria-current="page"]{
   lastY=y;lastTime=now;
   schedule();
  };
- top.addEventListener('click',()=>window.scrollTo({top:0,behavior:reduce.matches?'instant':'smooth'}));
- bottom.addEventListener('click',()=>window.scrollTo({top:document.documentElement.scrollHeight,behavior:reduce.matches?'instant':'smooth'}));
+ const scrollByThird=direction=>{
+  const maxScroll=Math.max(0,document.documentElement.scrollHeight-window.innerHeight);
+  const step=maxScroll/3;
+  const destination=Math.max(0,Math.min(maxScroll,window.scrollY+direction*step));
+  window.scrollTo({top:destination,behavior:reduce.matches?'instant':'smooth'});
+ };
+ top.addEventListener('click',()=>scrollByThird(-1));
+ bottom.addEventListener('click',()=>scrollByThird(1));
  bar.addEventListener('pointerleave',schedule);
  bar.addEventListener('focusout',()=>requestAnimationFrame(schedule));
  window.addEventListener('scroll',onScroll,{passive:true});
