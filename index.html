@@ -571,7 +571,84 @@ function sources(m){const list=fnEntries(m);const cs=committeesOf(m).filter(c=>c
 function populate(){for(const [id,values,label] of [['group',[...new Set(members.map(m=>m.group))],v=>v],['country',[...new Set(members.map(m=>m.country))],v=>fr[v]||v],['committee',[...new Set(members.flatMap(m=>committeesOf(m).filter(c=>c.status==='MEMBER').map(c=>c.code)))],v=>v+' — '+(committeeDefs[v]?.name||v)+(committeeDefs[v]?.type==='subcommittee'?' (sous-commission)':committeeDefs[v]?.type==='special'?' (spéciale)':'')]]){if(!$(id))continue;const selected=$(id).value;$(id).replaceChildren($(id).options[0]);for(const v of values.filter(Boolean).sort((a,b)=>id==='group'?((a==='NI')-(b==='NI')||members.filter(m=>m.group===b).length-members.filter(m=>m.group===a).length||label(a).localeCompare(label(b),'fr')):label(a).localeCompare(label(b),'fr'))){const o=el('option','',label(v));o.value=v;$(id).append(o)}$(id).value=values.includes(selected)?selected:''}$('total').textContent=members.length;$('countries').textContent=new Set(members.map(m=>m.country)).size;$('localBanner').hidden=!imported}
 function protocolRank(m){if(afs(m).some(f=>f.type==='EP_PRESIDENT'))return 0;const vice=afs(m).find(f=>f.type==='EP_VICE_PRESIDENT');if(vice)return Number.isInteger(vice.protocolRank)?vice.protocolRank:99;return 100;}
 function groupSizeOrder(a,b,sizes){if(a.group===b.group)return 0;if(a.group==='NI')return 1;if(b.group==='NI')return -1;return (sizes[b.group]||0)-(sizes[a.group]||0)||(a.group||'').localeCompare(b.group||'','fr')}
-function selectMembers(){const groupSizes=members.reduce((sizes,m)=>{sizes[m.group]=(sizes[m.group]||0)+1;return sizes},{});const rawSearch=field('search').trim(),q=norm(rawSearch),seatQuery=/^([sb])\s*[- ]?\s*(\d{1,3})$/i.exec(rawSearch),f=field('function'),c=field('committee'),status=field('assignment'),kind=field('kind');return members.filter(m=>(!field('group')||m.group===field('group'))&&(!field('gender')||m.gender===field('gender'))&&(!field('country')||m.country===field('country'))&&matchesFunction(m,f)&&(!(c||status||kind)||committeesOf(m).some(x=>(!c||(x.code===c&&x.status==='MEMBER'))&&(!status||x.status===status)&&(!kind||committeeDefs[x.code]?.type===kind)))&&(seatQuery?hemicycleSeats[String(m.id)]?.[seatQuery[1].toLowerCase()==='s'?'str':'bru']===Number(seatQuery[2]):norm(m.name).includes(q))).sort((a,b)=>{let by=0;if(f==='presidencype')by=protocolRank(a)-protocolRank(b);else if(f==='grouppresident')by=groupSizeOrder(a,b,groupSizes);else if(field('sort')==='role')by=rank(a)-rank(b)||(protocolRank(a)<100&&protocolRank(b)<100?protocolRank(a)-protocolRank(b):groupSizeOrder(a,b,groupSizes));if(field('sort')==='country')by=(fr[a.country]||a.country).localeCompare(fr[b.country]||b.country,'fr');if(field('sort')==='group')by=(a.group||'').localeCompare(b.group||'','fr');return by||surname(a).localeCompare(surname(b),'fr',{sensitivity:'base'})||a.name.localeCompare(b.name,'fr')})}
+// Recherche tolérante : correspondance exacte d'abord, puis fautes proches uniquement.
+function nameEditDistance(a,b,limit){
+ if(Math.abs(a.length-b.length)>limit)return limit+1;
+ let previous=Array.from({length:b.length+1},(_,i)=>i),previousPrevious=null;
+ for(let i=1;i<=a.length;i++){
+  const current=[i];let lowest=i;
+  for(let j=1;j<=b.length;j++){
+   let value=Math.min(previous[j]+1,current[j-1]+1,previous[j-1]+(a[i-1]===b[j-1]?0:1));
+   if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1]&&previousPrevious)value=Math.min(value,previousPrevious[j-2]+1);
+   current[j]=value;lowest=Math.min(lowest,value);
+  }
+  if(lowest>limit)return limit+1;
+  previousPrevious=previous;previous=current;
+ }
+ return previous[b.length];
+}
+function fuzzyNameScore(name,query){
+ const words=norm(name).split(/[\s\-'’]+/).filter(Boolean);
+ const compact=norm(name).replace(/[^a-z]/g,'');
+ const compactQuery=query.replace(/[^a-z]/g,'');
+ const candidates=[norm(name),compact,...words,...words.flatMap((_,i)=>words.slice(i).map((__,j)=>words.slice(i,i+j+1).join(' ')))];
+ const length=compactQuery.length;
+ const limit=length>=9?3:length>=5?2:length>=3?1:0;
+ if(!limit)return Infinity;
+ let best=Infinity;
+ for(const candidate of candidates){
+  const trimmed=candidate.trim();
+  if(!trimmed)continue;
+  // Comparer aussi avec le début d'un prénom/nom plus long.
+  for(const part of [trimmed,trimmed.slice(0,Math.min(trimmed.length,query.length)),trimmed.slice(0,Math.min(trimmed.length,compactQuery.length))]){
+   if(!part)continue;
+   const distance=nameEditDistance(compactQuery,part.replace(/[^a-z]/g,''),limit);
+   if(distance<best)best=distance;
+  }
+ }
+ return best<=limit?best:Infinity;
+}
+let fuzzySearchUsed=false;
+function selectMembers(){
+ const groupSizes=members.reduce((sizes,m)=>{sizes[m.group]=(sizes[m.group]||0)+1;return sizes},{});
+ const rawSearch=field('search').trim(),q=norm(rawSearch).trim();
+ const seatQuery=/^([sb])\s*[- ]?\s*(\d{1,3})$/i.exec(rawSearch);
+ const f=field('function'),c=field('committee'),status=field('assignment'),kind=field('kind');
+ const pool=members.filter(m=>
+  (!field('group')||m.group===field('group'))&&
+  (!field('gender')||m.gender===field('gender'))&&
+  (!field('country')||m.country===field('country'))&&
+  matchesFunction(m,f)&&
+  (!(c||status||kind)||committeesOf(m).some(x=>(!c||(x.code===c&&x.status==='MEMBER'))&&(!status||x.status===status)&&(!kind||committeeDefs[x.code]?.type===kind)))
+ );
+ let results;
+ fuzzySearchUsed=false;
+ if(seatQuery){
+  results=pool.filter(m=>hemicycleSeats[String(m.id)]?.[seatQuery[1].toLowerCase()==='s'?'str':'bru']===Number(seatQuery[2]));
+ }else if(!q)results=pool;
+ else{
+  results=pool.filter(m=>norm(m.name).includes(q));
+  if(!results.length&&q.replace(/[^a-z]/g,'').length>=3){
+   const scored=pool.map(m=>({m,score:fuzzyNameScore(m.name,q)})).filter(x=>Number.isFinite(x.score)).sort((a,b)=>a.score-b.score);
+   if(scored.length){
+    const best=scored[0].score;
+    results=scored.filter(x=>x.score<=best+1).slice(0,12).map(x=>x.m);
+    fuzzySearchUsed=true;
+   }
+  }
+ }
+ return results.sort((a,b)=>{
+  let by=0;
+  if(fuzzySearchUsed){by=fuzzyNameScore(a.name,q)-fuzzyNameScore(b.name,q)}
+  if(by)return by;
+  if(f==='presidencype')by=protocolRank(a)-protocolRank(b);
+  else if(f==='grouppresident')by=groupSizeOrder(a,b,groupSizes);
+  else if(field('sort')==='role')by=rank(a)-rank(b)||(protocolRank(a)<100&&protocolRank(b)<100?protocolRank(a)-protocolRank(b):groupSizeOrder(a,b,groupSizes));
+  if(field('sort')==='country')by=(fr[a.country]||a.country).localeCompare(fr[b.country]||b.country,'fr');
+  if(field('sort')==='group')by=(a.group||'').localeCompare(b.group||'','fr');
+  return by||surname(a).localeCompare(surname(b),'fr',{sensitivity:'base'})||a.name.localeCompare(b.name,'fr');
+ });
+}
 const DIRECTORY_PAGE_SIZE=40;
 let directoryVisible=0,directoryObserver=null;
 function hemicycleMarker(){
@@ -752,7 +829,7 @@ function render(){
  if(directoryObserver)directoryObserver.disconnect();
  $('grid').replaceChildren();
  appendDirectoryPage();
- $('count').textContent=`${filtered.length} député${filtered.length>1?'s':''} sur ${members.length}`;$('empty').hidden=!!filtered.length;const coverageMembers=field('group')?members.filter(m=>m.group===field('group')):members;
+ $('count').textContent=(fuzzySearchUsed?'Résultats approchés · ':'')+`${filtered.length} député${filtered.length>1?'s':''} sur ${members.length}`;$('empty').hidden=!!filtered.length;const coverageMembers=field('group')?members.filter(m=>m.group===field('group')):members;
  const n=t=>coverageMembers.filter(m=>afs(m).some(f=>f.type===t)).length;
  const coverage=$('coverage');
  const coverageLine=(label,items)=>{
