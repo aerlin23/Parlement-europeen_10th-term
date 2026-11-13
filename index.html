@@ -526,10 +526,10 @@ function surname(m){if(m.lastName)return m.lastName;const words=m.name.trim().sp
 function coords(m){return Array.isArray(m.coordinators)?m.coordinators:[]}
 function committeeCoordinatorEntries(m,committee=field('committee')){
  const id=String(m.id);
- const records=coordinatorAssignments.filter(a=>a.id===id&&a.group===m.group&&(!committee||a.committee===committee)&&['coordinator','co-coordinator'].includes(a.role));
+ const records=coordinatorAssignments.filter(a=>a.id===id&&a.group===m.group&&committeesOf(m).some(c=>c.code===a.committee)&&(!committee||a.committee===committee)&&['coordinator','co-coordinator'].includes(a.role));
  if(records.length)return records;
  // Données présentes dans la fiche MEP, lorsque la base externe est indisponible.
- return coords(m).filter(c=>(!committee||c.committee===committee)).map(c=>({id,committee:c.committee,group:m.group,role:'coordinator',source:c.source,sourceDate:c.sourceDate}));
+ return coords(m).filter(c=>committeesOf(m).some(x=>x.code===c.committee)&&(!committee||c.committee===committee)).map(c=>({id,committee:c.committee,group:m.group,role:'coordinator',source:c.source,sourceDate:c.sourceDate}));
 }
 let committeeDefs={},publishedCommitteeDefs={};
 function committeesOf(m){return Array.isArray(m.committees)?m.committees:[]}
@@ -898,7 +898,7 @@ function renderCommitteeLeadership(){
  for(const {m,f} of institutional){const span=el('span','leader-entry'),link=el('a','',m.name);link.href='https://www.europarl.europa.eu/meps/fr/'+m.id+'/_/home';link.target='_blank';link.rel='noopener';const ordinal=f.type==='COMMITTEE_CHAIR'?'Président':Number.isInteger(f.protocolRank)?(f.protocolRank===1?'1re':' '+f.protocolRank+'e')+' vice-présidence':'Vice-présidence (rang à vérifier)';span.append(el('small','',ordinal+' · '+m.group+' · '),link);institution.body.append(span)}
  if(institutional.length)panel.append(institution.section);
  const listing=make('Coordinateurs des groupes politiques','group-coordinators');
- const relevant=coordinatorAssignments.filter(x=>x.committee===committee&&x.role!=='deputy-coordinator'&&(!chosen||x.group===chosen)).map(a=>({a,m:members.find(m=>String(m.id)===a.id)})).filter(({a,m})=>m&&m.group===a.group).sort((x,y)=>groups.indexOf(x.a.group)-groups.indexOf(y.a.group)||x.m.name.localeCompare(y.m.name,'fr'));
+ const relevant=coordinatorAssignments.filter(x=>x.committee===committee&&x.role!=='deputy-coordinator'&&(!chosen||x.group===chosen)).map(a=>({a,m:members.find(m=>String(m.id)===a.id)})).filter(({a,m})=>m&&m.group===a.group&&committeesOf(m).some(c=>c.code===a.committee)).sort((x,y)=>groups.indexOf(x.a.group)-groups.indexOf(y.a.group)||x.m.name.localeCompare(y.m.name,'fr'));
  let historical=false;
  for(const {a,m} of relevant){const span=el('span','leader-entry'),link=el('a','',m.name);link.href='https://www.europarl.europa.eu/meps/fr/'+m.id+'/_/home';link.target='_blank';link.rel='noopener';link.title='Source : '+a.source+' · '+a.sourceDate;span.append(el('small','',a.group+(a.role==='deputy-coordinator'?' · adjoint':a.role==='co-coordinator'?' · co-coordinateur':'')+' · '),link);if(a.sourceStatus==='historical-nomination'){span.append(el('small','',' (2024*)'));historical=true}listing.body.append(span)}
  if(relevant.length){panel.append(listing.section);if(historical)listing.section.append(el('p','leader-note','* Nominations de 2024 : maintien en fonction à confirmer.'))}
@@ -944,7 +944,7 @@ function render(){
   return line;
  };
  const lines=[
-  coverageLine('Parlement',[[n('EP_PRESIDENT'),'présidence','présidences','president'],[n('EP_VICE_PRESIDENT'),'vice-présidence','vice-présidences','vice'],[n('EP_QUAESTOR'),'questeur','questeurs','quaestor']]),
+  coverageLine('Parlement',[[n('EP_PRESIDENT'),'présidence','présidences','president'],[n('EP_VICE_PRESIDENT'),'vice-présidence','vice-présidences','vice'],...(field('group')?[]:[[n('EP_QUAESTOR'),'questeur','questeurs','quaestor']][0])]),
   coverageLine('Commissions',[[n('COMMITTEE_CHAIR')+n('COMMITTEE_VICE_CHAIR'),'présidence ou vice-présidence','présidences ou vice-présidences','commissionbureau']])
  ].filter(Boolean);
  coverage.replaceChildren(...lines);const eligible=filtered.filter(canQuiz);$('startStudy').disabled=!eligible.length;$('startStudy').textContent=`Commencer · ${eligible.length} photo${eligible.length>1?'s':''}`;$('quizAvailability').textContent='Session de 20 questions maximum. Les erreurs reviennent plus souvent, les bonnes réponses sont espacées.';}
@@ -1439,7 +1439,7 @@ document.getElementById('downloadOffline').addEventListener('click',downloadOffi
 if('serviceWorker' in navigator){
  window.addEventListener('load',async()=>{
   try{
-   const registration=await navigator.serviceWorker.register('./sw.js?v=71',{scope:'./',updateViaCache:'none'});
+   const registration=await navigator.serviceWorker.register('./sw.js?v=72',{scope:'./',updateViaCache:'none'});
    const notice=$('appUpdateNotice'),apply=$('applyAppUpdate');
    const displayUpdate=()=>{
     if(registration.waiting&&navigator.serviceWorker.controller)notice.hidden=false;
