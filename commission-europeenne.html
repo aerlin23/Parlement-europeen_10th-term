@@ -26,6 +26,14 @@ header{background:#003399;border-bottom:5px solid #ffcc00}.ec-logo{background:wh
 .quiz-reset-area button{font-size:11px;padding:7px 10px;font-weight:600;background:transparent;color:#587380;border:1px solid #cad8df}
 .quiz-reset-area .progress{font-size:11px;max-width:420px;margin:8px auto}
 @media(max-width:650px){.photo-option .quiz-portrait{height:158px}.quiz-choices.photo-answers{gap:8px}.photo-option{padding:5px}.study-card{margin:10px auto}}
+
+/* Navigation active : surlignage discret de la section courante. */
+.directories a[aria-current="page"]{
+ background:#e8eefb;border-color:#6d88ce;color:#173d84;
+ font-weight:800;box-shadow:inset 0 -3px 0 #315cb4;
+}
+.directories a:hover:not([aria-current="page"]){background:#f0f5fa;border-color:#8da8ba}
+.tabs button.active{box-shadow:inset 0 -3px 0 #ffcc00}
 </style></head><body>
 <header><div class="top"><a href="https://commission.europa.eu/index_fr" target="_blank" rel="noopener"><img class="ec-logo" src="https://aerlin23.github.io/Commission-europeenne/assets/commission-logo.svg" alt="Commission européenne"></a><div class="term">COLLÈGE · 2024–2029</div></div><h1>Commission européenne</h1><p>Retrouver un commissaire. Reconnaître un visage.</p><div class="stats"><div><b id="total">27</b>membres</div><div><b>27</b>pays</div><div><b>2024–2029</b>mandat</div></div></header>
 <main><nav class="directories" aria-label="Annuaires"><a href="./">Tous les députés</a><a href="https://aerlin23.github.io/PPE_10th-term/">PPE</a><a href="https://aerlin23.github.io/S-D_10th-term/">S&amp;D</a><a href="https://aerlin23.github.io/Patriots_10th-term/">Patriotes</a><a href="https://aerlin23.github.io/ECR_10th-term/">ECR</a><a href="https://aerlin23.github.io/Renew_10th-term/">Renew</a><a href="https://aerlin23.github.io/Greens_10th-term/">Verts/ALE</a><a href="https://aerlin23.github.io/The-Left_10-term/">The Left</a><a href="https://aerlin23.github.io/ESN_10th-term/">ESN</a><a href="https://aerlin23.github.io/NI_10th-term/">NI</a><a href="./commission-europeenne.html">Commission européenne</a><a href="./?section=secretariat&nav=20261110b">Secrétariat général</a></nav><div class="tabs" role="group" aria-label="Mode"><button id="directoryTab" class="active" aria-pressed="true">Trombinoscope</button><button id="trainingTab" aria-pressed="false">S’entraîner</button></div>
@@ -150,6 +158,7 @@ function finishQuiz(){
  session=null;$('training').scrollIntoView({block:'start'});
 }
 function stopQuiz(){session=null;$('studySession').hidden=true;$('studyEnd').hidden=true;$('studyIntro').hidden=false}
+document.querySelectorAll('.directories a').forEach(a=>{if(new URL(a.href,location.href).pathname===location.pathname)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
 $('directoryTab').onclick=()=>setMode('directory');$('trainingTab').onclick=()=>setMode('training');
 for(const id of ['search','gender','country','function','sort'])$(id).addEventListener(id==='search'?'input':'change',()=>{if(session||!$('studyEnd').hidden)stopQuiz();render()});
 $('reset').onclick=()=>{for(const id of ['search','gender','country','function'])$(id).value='';$('sort').value='role';stopQuiz();render()};
