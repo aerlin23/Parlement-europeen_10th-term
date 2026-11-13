@@ -485,7 +485,19 @@ async function showSeatOnPlan(city,number,memberName){
  const dismiss=()=>{backdrop.remove();document.removeEventListener('keydown',escape);if(previousFocus?.focus)previousFocus.focus()};
  const escape=e=>{if(e.key==='Escape')dismiss()};
  close.onclick=dismiss;backdrop.addEventListener('click',e=>{if(e.target===backdrop)dismiss()});document.addEventListener('keydown',escape);close.focus();
- if(city!=='str')return;
+ if(city==='bru'){
+  area.replaceChildren();
+  const message=el('p','seat-map-caption','Place B'+number+' · Le plan graphique de Bruxelles n’a pas encore été géoréférencé. Utilise le plan interactif officiel pour localiser précisément ce siège.');
+  const actions=el('div','seat-map-controls');
+  const interactive=el('a','','Ouvrir le plan interactif de Bruxelles');
+  interactive.href='https://www.europarl.europa.eu/hemicycle/index.htm?lang=fr&loc=bru';
+  interactive.target='_blank';interactive.rel='noopener noreferrer';
+  const copy=el('button','','Copier le numéro B'+number);
+  copy.type='button';
+  copy.onclick=async()=>{try{await navigator.clipboard.writeText(String(number));copy.textContent='Numéro '+number+' copié'}catch{copy.textContent='Numéro à chercher : '+number}};
+  actions.append(interactive,copy);area.append(message,actions);
+  return;
+ }
  try{
   const positions=await getStrSeatMap();
   if(!backdrop.isConnected)return;
