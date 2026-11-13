@@ -1342,6 +1342,384 @@
       "source": "https://www.europarl.europa.eu/cmsdata/303774/2026%2001%2027%20Coordinators%20results.pdf",
       "sourceDate": "2026-01-27",
       "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257081",
+      "committee": "AFET",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197840",
+      "committee": "SEDE",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197621",
+      "committee": "INTA",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197679",
+      "committee": "BUDG",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "96780",
+      "committee": "CONT",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "257027",
+      "committee": "ECON",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "256889",
+      "committee": "EMPL",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197404",
+      "committee": "ENVI",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "256864",
+      "committee": "SANT",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "98341",
+      "committee": "ITRE",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "96808",
+      "committee": "IMCO",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "257031",
+      "committee": "TRAN",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "197647",
+      "committee": "REGI",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "257034",
+      "committee": "AGRI",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "256920",
+      "committee": "PECH",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "202036",
+      "committee": "CULT",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "257043",
+      "committee": "JURI",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "257045",
+      "committee": "LIBE",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "125204",
+      "committee": "AFCO",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "113523",
+      "committee": "PETI",
+      "group": "PPE",
+      "role": "deputy-coordinator",
+      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
+      "sourceDate": "2024-07-17",
+      "sourceStatus": "historical-nomination"
+    },
+    {
+      "id": "256841",
+      "committee": "AFET",
+      "group": "Renew",
+      "role": "deputy-coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257438",
+      "committee": "ECON",
+      "group": "Renew",
+      "role": "deputy-coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "256976",
+      "committee": "EMPL",
+      "group": "Renew",
+      "role": "deputy-coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "214839",
+      "committee": "ENVI",
+      "group": "Renew",
+      "role": "deputy-coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "204419",
+      "committee": "IMCO",
+      "group": "Renew",
+      "role": "deputy-coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257038",
+      "committee": "ITRE",
+      "group": "Renew",
+      "role": "deputy-coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257301",
+      "committee": "PETI",
+      "group": "Renew",
+      "role": "deputy-coordinator",
+      "source": "https://www.reneweuropegroup.eu/president-and-bureau",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "220871",
+      "committee": "AFET",
+      "group": "ECR",
+      "role": "deputy-coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257025",
+      "committee": "DEVE",
+      "group": "ECR",
+      "role": "deputy-coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197493",
+      "committee": "INTA",
+      "group": "ECR",
+      "role": "deputy-coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257104",
+      "committee": "BUDG",
+      "group": "ECR",
+      "role": "deputy-coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257094",
+      "committee": "ECON",
+      "group": "ECR",
+      "role": "deputy-coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257116",
+      "committee": "EMPL",
+      "group": "ECR",
+      "role": "deputy-coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197572",
+      "committee": "ENVI",
+      "group": "ECR",
+      "role": "deputy-coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257115",
+      "committee": "IMCO",
+      "group": "ECR",
+      "role": "deputy-coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257119",
+      "committee": "REGI",
+      "group": "ECR",
+      "role": "deputy-coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197773",
+      "committee": "AGRI",
+      "group": "ECR",
+      "role": "deputy-coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197773",
+      "committee": "PECH",
+      "group": "ECR",
+      "role": "deputy-coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257147",
+      "committee": "LIBE",
+      "group": "ECR",
+      "role": "deputy-coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257095",
+      "committee": "FEMM",
+      "group": "ECR",
+      "role": "deputy-coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "197794",
+      "committee": "PETI",
+      "group": "ECR",
+      "role": "deputy-coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
+    },
+    {
+      "id": "257116",
+      "committee": "HOUS",
+      "group": "ECR",
+      "role": "deputy-coordinator",
+      "source": "https://ecrgroup.eu/ecr/committees",
+      "sourceDate": "2026-11-13",
+      "sourceStatus": "published-roster"
     }
   ]
 }
