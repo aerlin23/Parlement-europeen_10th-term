@@ -16042,12 +16042,11 @@
       {
         "type": "EP_VICE_PRESIDENT",
         "label": "Vice-présidente du Parlement européen",
-        "source": "https://oeil.europarl.europa.eu/oeil/fr/procedure-file?reference=2026%2F2952%28RSO%29",
+        "source": "https://www.greens-efa.eu/en/article/press/tilly-metz-elected-european-parliament-vice-president",
         "startDate": "2026-11-12",
-        "verificationStatus": "Élection signalée le 12 novembre 2026, publication du résultat officiel en attente",
         "protocolRank": 11,
-        "protocolRankSource": "https://www.europarl.europa.eu/news/en/press-room/20240710IPR22814/parlament-si-zvolil-nove-predsednictvo",
-        "protocolRankStatus": "Rang 11 provisoire : remplacement de Nicolae Ștefănuță, en attente de publication officielle"
+        "protocolRankSource": "https://www.brusselstimes.com/eu-affairs/2404266/greens-mep-secures-vice-president-role-with-majority-in-eu-parliament",
+        "checkedAt": "2026-11-13"
       },
       {
         "type": "COMMITTEE_VICE_CHAIR",
