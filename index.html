@@ -847,11 +847,11 @@ body.reading-large header.ep-header #identityTitle{font-size:clamp(26px,6vw,32px
   // Seuil en vitesse ou en distance pour les gestes rapides sur mobile.
   const fast=(dy/dt>=0.7&&dy>=12)||dy>=95;
   // Une fois révélée par un défilement rapide, la barre reste visible
-  // uniquement tant que le défilement continue et disparaît 700 ms après l'arrêt.
+  // uniquement tant que le défilement continue et disparaît 1,8 seconde après l'arrêt.
   if(fast||showUntil>now){
-   showUntil=now+700;
+   showUntil=now+1800;
    clearTimeout(hideTimer);
-   hideTimer=setTimeout(schedule,720);
+   hideTimer=setTimeout(schedule,1820);
   }
   lastY=y;lastTime=now;
   schedule();
