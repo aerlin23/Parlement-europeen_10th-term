@@ -2154,14 +2154,22 @@ document.getElementById('downloadOffline').addEventListener('click',downloadOffi
 if('serviceWorker' in navigator){
  window.addEventListener('load',async()=>{
   try{
-   const registration=await navigator.serviceWorker.register('./sw.js?v=144',{scope:'./',updateViaCache:'none'});
+   // URL stable : seule la version interne du service worker change à chaque publication.
+   const registration=await navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'});
    const notice=$('appUpdateNotice'),apply=$('applyAppUpdate');
+   let applying=false;
    const displayUpdate=()=>{
-    if(registration.waiting&&navigator.serviceWorker.controller)notice.hidden=false;
+    if(registration.waiting&&navigator.serviceWorker.controller&&!applying)notice.hidden=false;
    };
    apply.onclick=()=>{
-    if(session){$('appUpdateNotice').firstChild.textContent='Termine le quiz avant la mise à jour. ';return}
-    if(registration.waiting)registration.waiting.postMessage({type:'SKIP_WAITING'});
+    if(session){notice.firstChild.textContent='Termine le quiz avant la mise à jour. ';return}
+    const worker=registration.waiting;
+    if(!worker||applying)return;
+    applying=true;apply.disabled=true;apply.textContent='Mise à jour…';
+    worker.addEventListener('statechange',()=>{
+     if(worker.state==='redundant'&&applying){applying=false;apply.disabled=false;apply.textContent='Mettre à jour';notice.firstChild.textContent='Mise à jour interrompue. Réessaie. ';displayUpdate()}
+    });
+    worker.postMessage({type:'SKIP_WAITING'});
    };
    registration.addEventListener('updatefound',()=>{
     const installing=registration.installing;
