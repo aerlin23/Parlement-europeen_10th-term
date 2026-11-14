@@ -41,11 +41,11 @@ if(committee){
 // Historique : réutiliser changes.json et ne jamais inventer de changements.
 const history=$('vfHistory');
 if(history){
- const category=$('vfChangeCategory'),list=$('vfChangeList'),more=$('vfChangeMore'),date=$('vfChangesDate');
+ const list=$('vfChangeList'),more=$('vfChangeMore'),date=$('vfChangesDate');
  let items=[],limit=5;
  function draw(){
   list.replaceChildren();
-  const current=items.filter(x=>!category.value||x.category===category.value);
+  const current=items;
   for(const event of current.slice(0,limit)){
    const li=document.createElement('li'),time=document.createElement('time');time.dateTime=event.date;time.textContent=new Date(event.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
    const kind=document.createElement('span');kind.className='vf-change-kind';kind.textContent=event.kind||event.category;
@@ -57,9 +57,8 @@ if(history){
    list.append(li);
   }
   more.hidden=current.length<=limit;
-  if(!current.length){const li=document.createElement('li');li.textContent='Aucun changement enregistré pour cette catégorie.';list.append(li)}
+  if(!current.length){const li=document.createElement('li');li.textContent='Aucun changement enregistré.';list.append(li)}
  }
- category.addEventListener('change',()=>{limit=5;draw()});
  more.addEventListener('click',()=>{limit+=10;draw()});
  fetch('./changes.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Historique');return r.json()}).then(data=>{
   if(!Array.isArray(data.items))throw Error('Format');
