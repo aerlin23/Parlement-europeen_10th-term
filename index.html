@@ -427,7 +427,7 @@ body.group-view .directories a[aria-current="page"]{
 .vf-status{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#173548;color:white;padding:10px 13px;border-radius:9px;z-index:12000;font-size:12px;text-align:center;max-width:90vw}
 .vf-history-tools{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:8px}.vf-history-tools label{font-size:11px}.vf-history-tools select{width:auto;max-width:100%;margin:0;font-size:12px;padding:7px}
 .vf-change-kind{display:inline-block;padding:2px 5px;background:#e6eef5;border-radius:4px;font-size:10px;color:#345a76;font-weight:650}.vf-source{margin-left:5px}.seat-map-pick{cursor:pointer;touch-action:manipulation}
- .seat-map-pick:focus-visible{outline:none;stroke:#0e375c;stroke-width:2}.seat-map-view-person{display:inline-flex;align-items:center;justify-content:center;padding:8px 11px;background:#e5f2fa;color:#174f7d;border-radius:7px;font-size:12px;font-weight:700;text-decoration:none}
+ .seat-map-pick:focus{outline:none}.seat-map-pick:focus-visible{outline:none}.seat-map-pick:focus-visible:not(text){stroke:#0e375c;stroke-width:1.5;vector-effect:non-scaling-stroke}.seat-map-pick{-webkit-tap-highlight-color:transparent}.seat-map-view-person{display:inline-flex;align-items:center;justify-content:center;padding:8px 11px;background:#e5f2fa;color:#174f7d;border-radius:7px;font-size:12px;font-weight:700;text-decoration:none}
 
 /* v139 : la carte occupe réellement la fenêtre, sans bande blanche. */
 .seat-map-dialog{position:relative;display:flex;flex-direction:column;box-sizing:border-box;width:min(98vw,1060px);height:min(94dvh,920px);max-height:94dvh;padding:10px;gap:5px;overflow:hidden}
@@ -1177,7 +1177,7 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
     svg.classList.toggle('seat-numbers-visible',visible);
     if(visible){const large=document.body.classList.contains('reading-large');seatNumberLabels.setAttribute('font-size',String(Math.min(large?3.4:2.8,(large?16:12)/scale)))}
    }
-   if(previewRing){const px=svg.getBoundingClientRect().width/Math.max(view.w,1);previewRing.setAttribute('r',String(Math.max(2.8,Math.min(5,8/Math.max(px,.1)))))}
+   if(previewRing){const px=svg.getBoundingClientRect().width/Math.max(view.w,1);previewRing.setAttribute('r',String((2.45+2/Math.max(px,.1))))}
    if(selectedMarker){
     const px=svg.getBoundingClientRect().width/Math.max(view.w,1);
     const large=document.body.classList.contains('reading-large');
@@ -1277,7 +1277,7 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
    background.append(seat);
    seatCircles.push([seat,assignedGroups.get(i+1)]);
    const owner=seatOwners.get(i+1);
-   if(owner){const hit=seatSVG('circle',{cx:x,cy:y,r:3.1,fill:'transparent',class:'seat-map-pick',tabindex:i+1===number?0:-1,role:'button','aria-label':'Place '+(i+1)+' : '+owner.name+' · '+owner.group});const tooltip=seatSVG('title',{},'Place '+(i+1)+' · '+owner.name+' · '+owner.group);hit.append(tooltip);const pick=()=>showPreview(owner,i+1);hit.addEventListener('click',pick);hit.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();pick()}});background.append(hit)}
+   if(owner){const hit=seatSVG('circle',{cx:x,cy:y,r:3.1,fill:'transparent',class:'seat-map-pick',tabindex:i+1===number?0:-1,role:'button','aria-label':'Place '+(i+1)+' : '+owner.name+' · '+owner.group});const tooltip=seatSVG('title',{},'Place '+(i+1)+' · '+owner.name+' · '+owner.group);hit.append(tooltip);const pick=()=>showPreview(owner,i+1);hit.addEventListener('click',()=>{hit.blur();pick()});hit.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();pick()}});background.append(hit)}
   }
   const normalizeSeatText=value=>String(value).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
   const searchMatches=()=>{
@@ -1309,7 +1309,7 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
   for(let i=0;i<positions.length;i++){
    const p=positions[i];if(!p||!p[0]||!p[1])continue;
    const label=seatSVG('text',{x:p[0],y:p[1],'text-anchor':'middle','dominant-baseline':'central','font-weight':700,fill:'#173548'},String(i+1));
-   const owner=seatOwners.get(i+1);if(owner){label.setAttribute('pointer-events','all');label.setAttribute('class','seat-map-pick');label.addEventListener('click',()=>showPreview(owner,i+1))}else label.setAttribute('pointer-events','none');
+   const owner=seatOwners.get(i+1);if(owner){label.setAttribute('pointer-events','all');label.setAttribute('class','seat-map-pick');label.addEventListener('click',()=>{label.blur?.();showPreview(owner,i+1)})}else label.setAttribute('pointer-events','none');
    seatNumberLabels.append(label);
   }
   seatNumberLabels.style.display='none';
@@ -2054,7 +2054,7 @@ document.getElementById('downloadOffline').addEventListener('click',downloadOffi
 if('serviceWorker' in navigator){
  window.addEventListener('load',async()=>{
   try{
-   const registration=await navigator.serviceWorker.register('./sw.js?v=129',{scope:'./',updateViaCache:'none'});
+   const registration=await navigator.serviceWorker.register('./sw.js?v=130',{scope:'./',updateViaCache:'none'});
    const notice=$('appUpdateNotice'),apply=$('applyAppUpdate');
    const displayUpdate=()=>{
     if(registration.waiting&&navigator.serviceWorker.controller)notice.hidden=false;
