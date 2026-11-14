@@ -966,7 +966,8 @@ async function showSeatOnPlan(city,number,memberName,memberGroup){
   const onDragEnd=()=>{dragging=null};
   window.addEventListener('mousemove',onDragMove);
   window.addEventListener('mouseup',onDragEnd);
-  releaseCameraListeners=()=>{window.removeEventListener('mousemove',onDragMove);window.removeEventListener('mouseup',onDragEnd)};
+  const cleanupViewport=releaseCameraListeners;
+  releaseCameraListeners=()=>{cleanupViewport();window.removeEventListener('mousemove',onDragMove);window.removeEventListener('mouseup',onDragEnd)};
   svg.addEventListener('dblclick',event=>{const p=svgPosition(event.clientX,event.clientY);zoomAt(1.7,p.x,p.y)});
   renderCamera();
   const background=seatSVG('g');
