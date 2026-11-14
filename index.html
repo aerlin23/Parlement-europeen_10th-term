@@ -2137,7 +2137,7 @@ async function downloadOfficialOfflineMedia(){
    const response=await fetch('./commission-members.json');
    if(response.ok){
     const commissioners=await response.json();
-    for(const member of commissioners)urls.push('https://aerlin23.github.io/Commission-europeenne/photos/'+encodeURIComponent(member.id)+'.png');
+    for(const member of commissioners){if(member.localPhoto)urls.push(member.localPhoto);else if(member.photo)urls.push(member.photo)}
     urls.push('https://aerlin23.github.io/Commission-europeenne/assets/commission-logo.svg');
    }
   }catch(error){console.warn('Médias de la Commission indisponibles pour téléchargement',error)}
