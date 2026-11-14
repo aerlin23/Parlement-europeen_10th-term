@@ -541,9 +541,8 @@ body.group-view .directories a[aria-current="page"]{
 .seat-preview-photo{flex:0 0 46px;width:46px;height:58px;overflow:hidden;border-radius:5px}
 .seat-preview-photo .portrait{width:100%!important;height:100%!important;aspect-ratio:auto!important;margin:0!important}
 .seat-preview-photo img{width:100%;height:100%;object-fit:cover}
-.seat-whole-header,.seat-last-header{display:none}
-.seat-map-expanded .seat-whole-header,.seat-map-expanded .seat-last-header:not([hidden]){display:inline-flex}
-.seat-last-header[hidden]{display:none!important}
+.seat-whole-header{display:none}
+.seat-map-expanded .seat-whole-header{display:inline-flex}
 .seat-map-expanded .seat-map-head-actions{max-width:calc(100vw - 235px);flex-wrap:wrap}
 @media(max-width:600px) and (orientation:portrait){.seat-map-expanded .seat-map-head-actions{max-width:55vw}.seat-map-expanded .seat-map-head-actions button{font-size:10px!important;padding:5px 4px!important}.seat-preview-photo{flex-basis:38px;width:38px;height:48px}}
 
@@ -1016,11 +1015,10 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
  groupHeader.setAttribute('aria-pressed','false');
  groupHeader.hidden=true;
  const wholeHeader=el('button','seat-map-expand seat-whole-header','Vue entière');wholeHeader.type='button';wholeHeader.onclick=()=>camera?.fit(1,false);
- const lastHeader=el('button','seat-map-expand seat-last-header','Dernier siège');lastHeader.type='button';lastHeader.hidden=true;
  const readingMap=el('button','seat-map-expand seat-reading-toggle','A+');readingMap.type='button';readingMap.title='Lecture agrandie du plan';
  const syncReadingMap=()=>{const on=document.body.classList.contains('reading-large');readingMap.setAttribute('aria-pressed',String(on));readingMap.textContent=on?'A':'A+';camera?.render()};
  readingMap.onclick=()=>{setReadingMode(document.body.classList.contains('reading-large')?'normal':'large');syncReadingMap()};
- const headActions=el('div','seat-map-head-actions');headActions.append(readingMap,wholeHeader,lastHeader,groupHeader,rotate,expand,close);
+ const headActions=el('div','seat-map-head-actions');headActions.append(readingMap,wholeHeader,groupHeader,rotate,expand,close);
  head.append(heading,headActions);
  let orientationLocked=previous?.orientationLocked||false,camera=null,cinema=false;
  const setCinema=on=>{
@@ -1276,13 +1274,9 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
    if(seat){const target=seat[1]==='s'?'str':seat[1]==='b'?'bru':city;const n=Number(seat[2]);const m=members.find(m=>hemicycleSeats[String(m.id)]?.[target]===n);return m?[{m,n,target}]:[]}
    return members.filter(m=>normalizeSeatText(m.name).includes(q)&&Number.isInteger(hemicycleSeats[String(m.id)]?.[city])).slice(0,6).map(m=>({m,n:hemicycleSeats[String(m.id)][city],target:city}));
   };
-  let lastSearch=null;
-  try{lastSearch=JSON.parse(sessionStorage.getItem('pe-last-seat-'+city)||'null')}catch{}
-  const updateLast=()=>{lastHeader.hidden=!lastSearch;lastHeader.title=lastSearch?'Revenir au siège '+lastSearch.n:''};
   const pickSearch=({m,n,target})=>{
    if(target!==city){showSeatOnPlan(target,n,m.name,m.group,{keepMode:true,expanded:dialog.classList.contains('seat-map-expanded'),cinema:cinema});return}
    const p=positions[n-1];if(!p||!p[0]||!p[1]){searchResults.replaceChildren(el('span','','Position non disponible'));searchResults.hidden=false;return}
-   lastSearch={n,id:String(m.id)};try{sessionStorage.setItem('pe-last-seat-'+city,JSON.stringify(lastSearch))}catch{}updateLast();
    searchInput.value='';searchResults.hidden=true;searchResults.replaceChildren();searchInput.blur();
    if(selectedMarker)selectedMarker.setAttribute('visibility','hidden');
    suppressClickUntil=0;
@@ -1297,7 +1291,6 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
     showPreview(m,n);
    });
   };
-  lastHeader.onclick=()=>{if(!lastSearch)return;const m=seatOwners.get(lastSearch.n);if(m)pickSearch({m,n:lastSearch.n,target:city})};updateLast();
   searchInput.oninput=()=>{searchResults.replaceChildren();const matches=searchMatches();for(const item of matches){const btn=el('button','',item.m.name+' · '+(item.target==='str'?'S':'B')+item.n+' · '+item.m.group);btn.type='button';btn.onclick=()=>pickSearch(item);searchResults.append(btn)}if(searchInput.value.trim()&&!matches.length)searchResults.append(el('span','','Aucun résultat'));searchResults.hidden=!searchInput.value.trim()};
   searchInput.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();const item=searchMatches()[0];if(item)pickSearch(item)}};
   seatNumberLabels=seatSVG('g',{class:'seat-number-labels','aria-hidden':'true'});
