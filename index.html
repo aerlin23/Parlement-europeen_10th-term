@@ -1494,9 +1494,9 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
   };
   controls.prepend(groupBtn);
   groupBtn.click();
-  const zoomBtn=el('button','',overview?'Vue entière':'Centrer sur le siège');
+  const zoomBtn=el('button','','Vue entière');
   zoomBtn.type='button';
-  zoomBtn.onclick=()=>{if(overview){camera.fit(1,false);return}view.w=Math.min(190,bounds.w/2);view.h=view.w/viewportRatio();view.x=x-view.w/2;view.y=y-view.h/2;renderCamera()};
+  zoomBtn.onclick=()=>camera.fit(1,false);
   controls.prepend(zoomBtn);
   const zoomControls=el('div','seat-map-zoom');
   for(const [label,factor] of [['−',1/1.5],['+',1.5]]){const btn=el('button','',label);btn.type='button';btn.setAttribute('aria-label',factor>1?'Zoom avant':'Zoom arrière');btn.onclick=()=>camera.zoomAt(factor);zoomControls.append(btn)}
