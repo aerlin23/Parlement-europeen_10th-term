@@ -1165,11 +1165,13 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
     const visible=scale>=3.4;
     seatNumberLabels.style.display=visible?'':'none';
     svg.classList.toggle('seat-numbers-visible',visible);
-    if(visible){const large=document.body.classList.contains('reading-large');seatNumberLabels.setAttribute('font-size',String(Math.min(large?3:2.5,(large?14:11)/scale)))}
+    if(visible){const large=document.body.classList.contains('reading-large');seatNumberLabels.setAttribute('font-size',String(Math.min(large?3.4:2.8,(large?16:12)/scale)))}
    }
    if(previewRing){const px=svg.getBoundingClientRect().width/Math.max(view.w,1);previewRing.setAttribute('r',String(Math.max(2.8,Math.min(5,8/Math.max(px,.1)))))}
    if(selectedMarker){
-    const markerScale=.78/Math.max(1,zoomLevel());
+    const px=svg.getBoundingClientRect().width/Math.max(view.w,1);
+    const large=document.body.classList.contains('reading-large');
+    const markerScale=(large?17:13)/(12*Math.max(px,.1));
     selectedMarker.setAttribute('transform','translate('+x+' '+y+') scale('+markerScale+') translate('+(-x)+' '+(-y)+')');
    }
   };
@@ -2043,7 +2045,7 @@ document.getElementById('downloadOffline').addEventListener('click',downloadOffi
 if('serviceWorker' in navigator){
  window.addEventListener('load',async()=>{
   try{
-   const registration=await navigator.serviceWorker.register('./sw.js?v=125',{scope:'./',updateViaCache:'none'});
+   const registration=await navigator.serviceWorker.register('./sw.js?v=126',{scope:'./',updateViaCache:'none'});
    const notice=$('appUpdateNotice'),apply=$('applyAppUpdate');
    const displayUpdate=()=>{
     if(registration.waiting&&navigator.serviceWorker.controller)notice.hidden=false;
