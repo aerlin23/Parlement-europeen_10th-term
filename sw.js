@@ -1,5 +1,5 @@
 /* Vademecum PE : ressources critiques hors-ligne et mises à jour consenties. */
-const VERSION='pe-pwa-v132';
+const VERSION='pe-pwa-v133';
 const MEDIA='pe-offline-official-media-v1';
 const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
 const OFFLINE=['./','./index.html','./smart-search.js','./features.js','./secretariat-general.html','./commission-europeenne.html','./institutions-agences.html','./assets/presidences-conseil-ue-2026-2030.svg','./presidences-cinema.html','./assets/presidences-conseil-ue-cinema.avif','./commission-members.json','./members.json','./coordinators.json','./changes.json','./hemicycle-seats.json','./hemicycle-str-coordinates.json','./hemicycle-bru-coordinates.json','./committees.json','./photo-assets.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png','./assets/sg-juan-carlos-jimenez-marin.webp','./assets/sg-markus-winkler.webp','./assets/sg-alessandro-chiocchetti-user.webp','./assets/sg-markus-winkler-official.webp'];
