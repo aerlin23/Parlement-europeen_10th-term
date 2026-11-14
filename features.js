@@ -42,7 +42,7 @@ if(committee){
 const history=$('vfHistory');
 if(history){
  const list=$('vfChangeList'),more=$('vfChangeMore'),date=$('vfChangesDate');
- let items=[],limit=5;
+ let items=[],limit=3;
  function draw(){
   list.replaceChildren();
   const current=items;
@@ -50,9 +50,9 @@ if(history){
    const li=document.createElement('li'),time=document.createElement('time');time.dateTime=event.date;time.textContent=new Date(event.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
    const kind=document.createElement('span');kind.className='vf-change-kind';kind.textContent=event.kind||event.category;
    li.append(time,document.createTextNode(' · '),kind,document.createTextNode(' · '));
-   if(event.person){const link=document.createElement('a');link.href='?person='+encodeURIComponent(event.person);link.textContent=event.name||'Député';li.append(link,document.createTextNode(' — '))}
-   else if(event.name)li.append(document.createTextNode(event.name+' — '));
-   li.append(document.createTextNode(event.description||''));
+   if(event.person){const link=document.createElement('a');link.href='?person='+encodeURIComponent(event.person);link.textContent=event.name||'Député';li.append(link);if(event.description)li.append(document.createTextNode(' — '))}
+   else if(event.name)li.append(document.createTextNode(event.name+(event.description?' — ':'')));
+   if(event.description)li.append(document.createTextNode(event.description));
    if(event.source){const proof=document.createElement('a');proof.href=event.source;proof.target='_blank';proof.rel='noopener noreferrer';proof.textContent=' Source';proof.className='vf-source';li.append(proof)}
    list.append(li);
   }
@@ -63,7 +63,7 @@ if(history){
  fetch('./changes.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Historique');return r.json()}).then(data=>{
   if(!Array.isArray(data.items))throw Error('Format');
   items=data.items.filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.date)).sort((a,b)=>b.date.localeCompare(a.date));
-  if(date)date.textContent='Historique éditorial · '+items.length+' événements enregistrés';draw();
+  if(date)date.hidden=true;draw();
  }).catch(()=>{if(date)date.textContent='Historique temporairement indisponible';more.hidden=true});
 }
 })();
