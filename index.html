@@ -1096,6 +1096,8 @@ function seatGroupsForCity(city){
 }
 async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',options={}){
  const overview=number===null;
+ // Conserver l'identité du député, pas le numéro de siège propre à une ville.
+ let selectedMep=options.memberId?members.find(m=>String(m.id)===String(options.memberId)):(!overview?members.find(m=>hemicycleSeats[String(m.id)]?.[city]===number):null);
  const existing=document.querySelector('.seat-map-backdrop');
  const reuse=!!(existing&&options.keepMode&&existing.seatMapDetach);
  const previous=reuse?existing.seatMapDetach():null;
@@ -1202,7 +1204,12 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
  const citySwitch=el('div','seat-city-switch');
  {
   for(const [key,label] of [['str','Strasbourg'],['bru','Bruxelles']]){
-   const button=el('button','seat-city-button',label);button.dataset.city=key;button.type='button';button.setAttribute('aria-pressed',String(key===city));button.onclick=()=>{if(key!==city)showSeatOnPlan(key,null,'','',{keepMode:true,expanded:dialog.classList.contains('seat-map-expanded'),cinema:cinema})};citySwitch.append(button);
+   const button=el('button','seat-city-button',label);button.dataset.city=key;button.type='button';button.setAttribute('aria-pressed',String(key===city));button.onclick=()=>{
+    if(key===city)return;
+    const seat=selectedMep?hemicycleSeats[String(selectedMep.id)]?.[key]:null;
+    const hasSeat=Number.isInteger(seat)&&seat>0;
+    showSeatOnPlan(key,hasSeat?seat:null,hasSeat?selectedMep.name:'',hasSeat?selectedMep.group:'',{keepMode:true,expanded:dialog.classList.contains('seat-map-expanded'),cinema:cinema,memberId:selectedMep?.id});
+   };citySwitch.append(button);
   }
   if(overview)dialog.classList.add('seat-map-overview');
  }
@@ -1355,7 +1362,7 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
   previewRing=seatSVG('circle',{r:3.1,fill:'none',stroke:city==='bru'?'#a0802b':'#073b7e','stroke-width':1.5,'vector-effect':'non-scaling-stroke','pointer-events':'none',visibility:'hidden'});
   const showPreview=(m,n)=>{
    if(Date.now()<suppressClickUntil)return;
-   previewSeat=n;
+   previewSeat=n;selectedMep=m;
    const p=positions[n-1];if(p){previewRing.setAttribute('cx',p[0]);previewRing.setAttribute('cy',p[1]);previewRing.setAttribute('visibility','visible')}
    if(selectedMarker)selectedMarker.setAttribute('visibility','hidden');
    renderCamera();
@@ -1387,7 +1394,7 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
    return members.filter(m=>normalizeSeatText(m.name).includes(q)&&Number.isInteger(hemicycleSeats[String(m.id)]?.[city])).slice(0,6).map(m=>({m,n:hemicycleSeats[String(m.id)][city],target:city}));
   };
   const pickSearch=({m,n,target})=>{
-   if(target!==city){showSeatOnPlan(target,n,m.name,m.group,{keepMode:true,expanded:dialog.classList.contains('seat-map-expanded'),cinema:cinema});return}
+   if(target!==city){showSeatOnPlan(target,n,m.name,m.group,{keepMode:true,expanded:dialog.classList.contains('seat-map-expanded'),cinema:cinema,memberId:m.id});return}
    const p=positions[n-1];if(!p||!p[0]||!p[1]){searchResults.replaceChildren(el('span','','Position non disponible'));searchResults.hidden=false;return}
    searchInput.value='';searchResults.hidden=true;searchResults.replaceChildren();searchInput.blur();
    if(selectedMarker)selectedMarker.setAttribute('visibility','hidden');
