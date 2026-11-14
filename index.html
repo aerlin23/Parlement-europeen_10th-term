@@ -362,7 +362,7 @@ body.group-view .directories a[aria-current="page"]{
 .seat-map-dialog.seat-map-expanded .seat-map-controls button,.seat-map-dialog.seat-map-expanded .seat-map-controls a{font-size:11px;padding:6px 9px}
 .seat-map-dialog.seat-map-expanded .seat-map-caption{margin:2px 0;font-size:11px}
 .seat-map-dialog.seat-map-expanded .seat-map-zoom{display:flex}
-.seat-map-zoom{display:none;gap:5px;align-items:center}
+.seat-map-zoom{display:none;gap:5px;align-items:center}.seat-map-canvas{touch-action:none;user-select:none}
 .seat-map-zoom button{min-width:31px}
 .seat-map-dialog.seat-map-cinema,.seat-map-dialog.seat-map-cinema:fullscreen{background:#13273a;color:#fff;padding:0;gap:0}
 .seat-map-dialog.seat-map-cinema .seat-map-head{position:absolute;z-index:5;right:8px;top:max(6px,env(safe-area-inset-top));margin:0;pointer-events:none}
@@ -433,7 +433,7 @@ body.group-view .directories a[aria-current="page"]{
  <label class="sg-filter">RECHERCHER <input id="sgSearch" type="search" placeholder="Nom, fonction, direction générale…" autocomplete="off"></label>
  <section id="sgOrgSection"><p class="sg-explainer">Appuie sur la photo ou le nom d'un directeur général pour afficher ses directions, responsables et services.</p><div class="sg-chart" id="sgOrgGrid" aria-label="Organigramme du Secrétariat général"></div></section>
  <p class="sg-intro"><a href="https://the-secretary-general.europarl.europa.eu/en/organisation/directorates-general" target="_blank" rel="noopener">Source officielle : organigramme du Parlement européen</a>.</p>
- </section><section id="training" class="training" hidden><div id="studyIntro"><h2>Reconnais le député</h2><label class="choice-label">MODE DU QUIZ<select id="quizMode"><option value="name-photo">Nom → Photo</option><option value="photo-name">Photo → Nom</option></select></label><p class="progress">20 questions par session · 4 propositions par question</p><p id="quizAvailability" class="progress"></p><button id="startStudy" class="primary">Commencer</button></div><div id="studySession" hidden><p id="studyProgress" class="progress" aria-live="polite"></p><article class="study-card"><div id="studyPhoto" class="study-photo"></div><div class="answer" id="studyAnswer"></div></article><div id="quizChoices" class="quiz-choices" role="group" aria-label="Choisis la bonne réponse"></div><p id="quizFeedback" class="quiz-feedback" role="status" aria-live="polite"></p><div class="study-actions"><button id="listenName" class="listen-name" type="button" hidden aria-label="Écouter la prononciation officielle du nom">🔊 Écouter le nom</button><button id="nextStudy" class="primary" hidden>Photo suivante →</button><button id="stopStudy">Terminer et voir mon bilan</button></div></div><div id="studyEnd" hidden><h2>Quiz terminé</h2><p id="studyResult" class="intro"></p><div class="study-actions"><button id="retryStudy" class="primary">Rejouer les erreurs</button><button id="restartStudy">Nouveau quiz</button></div></div><div class="quiz-reset-area"><button id="resetQuizStats" type="button">Réinitialiser les statistiques</button><p id="resetQuizStatus" class="progress" role="status" aria-live="polite"></p></div></section><section class="recent-changes" id="vfHistory"><h2>Derniers changements</h2><p id="vfChangesDate" class="recent-source">Historique éditorial</p><ul id="vfChangeList"><li>Chargement des changements…</li></ul><button type="button" id="vfChangeMore" hidden>Afficher davantage de changements</button><p class="recent-source">Données éditoriales · consulter les sources pour confirmer les événements.</p></section><section id="offlineManager" style="margin:20px 0 10px;padding:10px 12px;border:1px solid #d8e3e8;border-radius:8px;background:#f8fafb;text-align:center;font-size:11px;line-height:1.6"><button id="downloadOffline" type="button" style="font-size:11px;padding:6px 9px;font-weight:600">Mode hors ligne : télécharger les médias</button><span id="offlineStatus" role="status" aria-live="polite" style="display:block;margin-top:5px;color:#627b88">Wi-Fi recommandé.</span></section><div class="admin-contact"><div class="admin-contact-title">Vademecum du Parlement européen · 10ᵉ législature · 2024–2029</div><div>Contacter l’administrateur du site :</div><a href="mailto:frederic.perou@europarl.europa.eu?subject=Contact%20Vademecum%20PE">frederic.perou@europarl.europa.eu</a><div class="admin-contact-disclaimer">Application indépendante · Non officielle</div><div class="admin-data-attribution">Source des données : <a href="https://www.europarl.europa.eu/meps/fr/full-list" target="_blank" rel="noopener">Parlement européen</a><div>Dernière mise à jour : 14 novembre 2026 <span class="app-version">· v135</span></div></div></div></main><nav id="alphaFloating" class="alpha-floating" aria-label="Navigation alphabétique des députés" hidden><div id="alphaLetters" class="alpha-letters"></div><button id="alphaTop" class="alpha-top" type="button" aria-label="Retour tout en haut" title="Retour tout en haut">↑</button><button id="alphaBottom" class="alpha-bottom" type="button" aria-label="Aller tout en bas" title="Aller tout en bas">↓</button></nav><script>
+ </section><section id="training" class="training" hidden><div id="studyIntro"><h2>Reconnais le député</h2><label class="choice-label">MODE DU QUIZ<select id="quizMode"><option value="name-photo">Nom → Photo</option><option value="photo-name">Photo → Nom</option></select></label><p class="progress">20 questions par session · 4 propositions par question</p><p id="quizAvailability" class="progress"></p><button id="startStudy" class="primary">Commencer</button></div><div id="studySession" hidden><p id="studyProgress" class="progress" aria-live="polite"></p><article class="study-card"><div id="studyPhoto" class="study-photo"></div><div class="answer" id="studyAnswer"></div></article><div id="quizChoices" class="quiz-choices" role="group" aria-label="Choisis la bonne réponse"></div><p id="quizFeedback" class="quiz-feedback" role="status" aria-live="polite"></p><div class="study-actions"><button id="listenName" class="listen-name" type="button" hidden aria-label="Écouter la prononciation officielle du nom">🔊 Écouter le nom</button><button id="nextStudy" class="primary" hidden>Photo suivante →</button><button id="stopStudy">Terminer et voir mon bilan</button></div></div><div id="studyEnd" hidden><h2>Quiz terminé</h2><p id="studyResult" class="intro"></p><div class="study-actions"><button id="retryStudy" class="primary">Rejouer les erreurs</button><button id="restartStudy">Nouveau quiz</button></div></div><div class="quiz-reset-area"><button id="resetQuizStats" type="button">Réinitialiser les statistiques</button><p id="resetQuizStatus" class="progress" role="status" aria-live="polite"></p></div></section><section class="recent-changes" id="vfHistory"><h2>Derniers changements</h2><p id="vfChangesDate" class="recent-source">Historique éditorial</p><ul id="vfChangeList"><li>Chargement des changements…</li></ul><button type="button" id="vfChangeMore" hidden>Afficher davantage de changements</button><p class="recent-source">Données éditoriales · consulter les sources pour confirmer les événements.</p></section><section id="offlineManager" style="margin:20px 0 10px;padding:10px 12px;border:1px solid #d8e3e8;border-radius:8px;background:#f8fafb;text-align:center;font-size:11px;line-height:1.6"><button id="downloadOffline" type="button" style="font-size:11px;padding:6px 9px;font-weight:600">Mode hors ligne : télécharger les médias</button><span id="offlineStatus" role="status" aria-live="polite" style="display:block;margin-top:5px;color:#627b88">Wi-Fi recommandé.</span></section><div class="admin-contact"><div class="admin-contact-title">Vademecum du Parlement européen · 10ᵉ législature · 2024–2029</div><div>Contacter l’administrateur du site :</div><a href="mailto:frederic.perou@europarl.europa.eu?subject=Contact%20Vademecum%20PE">frederic.perou@europarl.europa.eu</a><div class="admin-contact-disclaimer">Application indépendante · Non officielle</div><div class="admin-data-attribution">Source des données : <a href="https://www.europarl.europa.eu/meps/fr/full-list" target="_blank" rel="noopener">Parlement européen</a><div>Dernière mise à jour : 14 novembre 2026 <span class="app-version">· v136</span></div></div></div></main><nav id="alphaFloating" class="alpha-floating" aria-label="Navigation alphabétique des députés" hidden><div id="alphaLetters" class="alpha-letters"></div><button id="alphaTop" class="alpha-top" type="button" aria-label="Retour tout en haut" title="Retour tout en haut">↑</button><button id="alphaBottom" class="alpha-bottom" type="button" aria-label="Aller tout en bas" title="Aller tout en bas">↓</button></nav><script>
 'use strict';
 
 /* Barre alphabétique au bas de l'écran, uniquement dans l'annuaire. */
@@ -885,11 +885,20 @@ async function showSeatOnPlan(city,number,memberName,memberGroup){
   const base=fullView.split(' ').map(Number),bounds={x:base[0],y:base[1],w:base[2],h:base[3]};
   const view={x:bounds.x,y:bounds.y,w:bounds.w,h:bounds.h};
   const zoomLevel=()=>bounds.w/view.w;
-  let seatNumberLabels=null;
+  let seatNumberLabels=null,selectedMarker=null;
   const renderCamera=()=>{
    svg.setAttribute('preserveAspectRatio',dialog.classList.contains('seat-map-expanded')?'xMidYMid slice':'xMidYMid meet');
    svg.setAttribute('viewBox',view.x+' '+view.y+' '+view.w+' '+view.h);
-   if(seatNumberLabels)seatNumberLabels.style.display=zoomLevel()>=1.8?'':'none';
+   if(seatNumberLabels){
+    const visible=zoomLevel()>=1.8;
+    seatNumberLabels.style.display=visible?'':'none';
+    if(visible)seatNumberLabels.setAttribute('transform','translate(0 0)');
+   }
+   // Le repère reste petit et lisible même à très fort zoom.
+   if(selectedMarker){
+    const markerScale=1/Math.max(1,zoomLevel());
+    selectedMarker.setAttribute('transform','translate('+x+' '+y+') scale('+markerScale+') translate('+(-x)+' '+(-y)+')');
+   }
   };
   const clampView=()=>{view.w=Math.min(bounds.w,Math.max(bounds.w/20,view.w));view.h=bounds.h*view.w/bounds.w;view.x=Math.max(bounds.x,Math.min(bounds.x+bounds.w-view.w,view.x));view.y=Math.max(bounds.y,Math.min(bounds.y+bounds.h-view.h,view.y))};
   const zoomAt=(factor,px=0.5,py=0.5)=>{
@@ -906,13 +915,12 @@ async function showSeatOnPlan(city,number,memberName,memberGroup){
   };
   let gesture=null,suppressClickUntil=0;
   svg.addEventListener('touchstart',event=>{
-   if(!dialog.classList.contains('seat-map-expanded'))return;
    const t=[...event.touches];
    if(t.length===1)gesture={type:'pan',x:t[0].clientX,y:t[0].clientY,view:{...view}};
    else if(t.length>=2){const cx=(t[0].clientX+t[1].clientX)/2,cy=(t[0].clientY+t[1].clientY)/2;gesture={type:'pinch',distance:Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY),cx,cy,view:{...view}}}
   },{passive:true});
   svg.addEventListener('touchmove',event=>{
-   if(!gesture||!dialog.classList.contains('seat-map-expanded'))return;
+   if(!gesture)return;
    event.preventDefault();
    if(event.touches.length>1||gesture.type==='pinch'||Math.hypot(event.touches[0]?.clientX-gesture.x||0,event.touches[0]?.clientY-gesture.y||0)>6)suppressClickUntil=Date.now()+450;
    const t=[...event.touches];
@@ -929,15 +937,15 @@ async function showSeatOnPlan(city,number,memberName,memberGroup){
   },{passive:false});
   svg.addEventListener('touchend',()=>{gesture=null},{passive:true});
   svg.addEventListener('touchcancel',()=>{gesture=null},{passive:true});
-  svg.addEventListener('wheel',event=>{if(!dialog.classList.contains('seat-map-expanded'))return;event.preventDefault();const p=svgPosition(event.clientX,event.clientY);zoomAt(event.deltaY<0?1.2:1/1.2,p.x,p.y)},{passive:false});
+  svg.addEventListener('wheel',event=>{event.preventDefault();const p=svgPosition(event.clientX,event.clientY);zoomAt(event.deltaY<0?1.2:1/1.2,p.x,p.y)},{passive:false});
   let dragging=null;
-  svg.addEventListener('mousedown',event=>{if(event.button!==0||!dialog.classList.contains('seat-map-expanded'))return;dragging={x:event.clientX,y:event.clientY,view:{...view}}});
+  svg.addEventListener('mousedown',event=>{if(event.button!==0)return;dragging={x:event.clientX,y:event.clientY,view:{...view}}});
   const onDragMove=event=>{if(!dragging||!backdrop.isConnected)return;const start=svgPosition(dragging.x,dragging.y),end=svgPosition(event.clientX,event.clientY);view.x=dragging.view.x-(end.x-start.x)*dragging.view.w;view.y=dragging.view.y-(end.y-start.y)*dragging.view.h;clampView();renderCamera()};
   const onDragEnd=()=>{dragging=null};
   window.addEventListener('mousemove',onDragMove);
   window.addEventListener('mouseup',onDragEnd);
   releaseCameraListeners=()=>{window.removeEventListener('mousemove',onDragMove);window.removeEventListener('mouseup',onDragEnd)};
-  svg.addEventListener('dblclick',event=>{if(!dialog.classList.contains('seat-map-expanded'))return;const p=svgPosition(event.clientX,event.clientY);zoomAt(1.7,p.x,p.y)});
+  svg.addEventListener('dblclick',event=>{const p=svgPosition(event.clientX,event.clientY);zoomAt(1.7,p.x,p.y)});
   renderCamera();
   const background=seatSVG('g');
   const assignedGroups=seatGroupsForCity(city),seatCircles=[];
@@ -958,6 +966,7 @@ async function showSeatOnPlan(city,number,memberName,memberGroup){
   seatNumberLabels.style.display='none';
   const [x,y]=point;
   const marker=seatSVG('g');
+  selectedMarker=marker;
   const selectedOwner=seatOwners.get(number);
   if(selectedOwner){marker.setAttribute('role','button');marker.setAttribute('tabindex','0');marker.setAttribute('class','seat-map-pick');marker.setAttribute('aria-label','Ouvrir la fiche de '+selectedOwner.name);const openSelected=()=>{if(Date.now()<suppressClickUntil)return;location.assign('?person='+encodeURIComponent(String(selectedOwner.id)))};marker.addEventListener('click',openSelected);marker.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openSelected()}})}
   marker.append(seatSVG('circle',{cx:x,cy:y,r:13,fill:'#1e4b8b','fill-opacity':'.17',stroke:'#1e4b8b','stroke-width':1.2}));
@@ -968,6 +977,7 @@ async function showSeatOnPlan(city,number,memberName,memberGroup){
   marker.append(seatSVG('rect',{x:labelX-25,y:labelY-12,width:50,height:21,rx:8,fill:'#073b7e'}));
   marker.append(seatSVG('text',{x:labelX,y:labelY+2,'text-anchor':'middle',fill:'#fff','font-size':12,'font-weight':700},(city==='bru'?'B':'S')+number));
   svg.append(background,seatNumberLabels,marker);area.append(svg);
+  camera.fit(1.5);
   const legend=el('div','seat-group-legend');legend.hidden=true;legend.setAttribute('aria-label','Légende des groupes politiques');
   for(const [group,color] of Object.entries(SEAT_GROUP_COLORS)){
    if(![...assignedGroups.values()].includes(group))continue;
@@ -1649,7 +1659,7 @@ document.getElementById('downloadOffline').addEventListener('click',downloadOffi
 if('serviceWorker' in navigator){
  window.addEventListener('load',async()=>{
   try{
-   const registration=await navigator.serviceWorker.register('./sw.js?v=92',{scope:'./',updateViaCache:'none'});
+   const registration=await navigator.serviceWorker.register('./sw.js?v=93',{scope:'./',updateViaCache:'none'});
    const notice=$('appUpdateNotice'),apply=$('applyAppUpdate');
    const displayUpdate=()=>{
     if(registration.waiting&&navigator.serviceWorker.controller)notice.hidden=false;
