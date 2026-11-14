@@ -357,7 +357,7 @@ body.group-view .directories a[aria-current="page"]{
 .seat-map-dialog.seat-map-expanded .seat-map-head{flex:none}
 .seat-map-dialog.seat-map-expanded .seat-map-canvas{height:auto;max-height:calc(100dvh - 220px);min-height:180px;object-fit:contain;flex:1}
 .seat-map-dialog.seat-map-expanded .seat-map-controls{flex:none}
-.seat-map-head-actions{display:flex;align-items:center;gap:6px}
+.seat-map-head-actions{display:flex;align-items:center;gap:5px;flex-wrap:wrap;justify-content:flex-end}.seat-map-head{align-items:flex-start}
 .seat-map-expand{font-size:12px!important;padding:7px 9px!important;white-space:nowrap}
 @media(max-width:650px){.seat-map-dialog.seat-map-expanded .seat-map-canvas{max-height:calc(100dvh - 205px);min-height:130px}.seat-map-expand{font-size:11px!important;padding:7px!important}}
 .seat-map-controls{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px;font-size:12px}
@@ -397,7 +397,7 @@ body.group-view .directories a[aria-current="page"]{
  <label class="sg-filter">RECHERCHER <input id="sgSearch" type="search" placeholder="Nom, fonction, direction générale…" autocomplete="off"></label>
  <section id="sgOrgSection"><p class="sg-explainer">Appuie sur la photo ou le nom d'un directeur général pour afficher ses directions, responsables et services.</p><div class="sg-chart" id="sgOrgGrid" aria-label="Organigramme du Secrétariat général"></div></section>
  <p class="sg-intro"><a href="https://the-secretary-general.europarl.europa.eu/en/organisation/directorates-general" target="_blank" rel="noopener">Source officielle : organigramme du Parlement européen</a>.</p>
- </section><section id="training" class="training" hidden><div id="studyIntro"><h2>Reconnais le député</h2><label class="choice-label">MODE DU QUIZ<select id="quizMode"><option value="name-photo">Nom → Photo</option><option value="photo-name">Photo → Nom</option></select></label><p class="progress">20 questions par session · 4 propositions par question</p><p id="quizAvailability" class="progress"></p><button id="startStudy" class="primary">Commencer</button></div><div id="studySession" hidden><p id="studyProgress" class="progress" aria-live="polite"></p><article class="study-card"><div id="studyPhoto" class="study-photo"></div><div class="answer" id="studyAnswer"></div></article><div id="quizChoices" class="quiz-choices" role="group" aria-label="Choisis la bonne réponse"></div><p id="quizFeedback" class="quiz-feedback" role="status" aria-live="polite"></p><div class="study-actions"><button id="listenName" class="listen-name" type="button" hidden aria-label="Écouter la prononciation officielle du nom">🔊 Écouter le nom</button><button id="nextStudy" class="primary" hidden>Photo suivante →</button><button id="stopStudy">Terminer et voir mon bilan</button></div></div><div id="studyEnd" hidden><h2>Quiz terminé</h2><p id="studyResult" class="intro"></p><div class="study-actions"><button id="retryStudy" class="primary">Rejouer les erreurs</button><button id="restartStudy">Nouveau quiz</button></div></div><div class="quiz-reset-area"><button id="resetQuizStats" type="button">Réinitialiser les statistiques</button><p id="resetQuizStatus" class="progress" role="status" aria-live="polite"></p></div></section><section class="recent-changes" id="vfHistory"><h2>Derniers changements</h2><p id="vfChangesDate" class="recent-source">Historique éditorial</p><ul id="vfChangeList"><li>Chargement des changements…</li></ul><button type="button" id="vfChangeMore" hidden>Afficher davantage de changements</button><p class="recent-source">Données éditoriales · consulter les sources pour confirmer les événements.</p></section><section id="offlineManager" style="margin:20px 0 10px;padding:10px 12px;border:1px solid #d8e3e8;border-radius:8px;background:#f8fafb;text-align:center;font-size:11px;line-height:1.6"><button id="downloadOffline" type="button" style="font-size:11px;padding:6px 9px;font-weight:600">Mode hors ligne : télécharger les médias</button><span id="offlineStatus" role="status" aria-live="polite" style="display:block;margin-top:5px;color:#627b88">Wi-Fi recommandé.</span></section><div class="admin-contact"><div class="admin-contact-title">Vademecum du Parlement européen · 10ᵉ législature · 2024–2029</div><div>Contacter l’administrateur du site :</div><a href="mailto:frederic.perou@europarl.europa.eu?subject=Contact%20Vademecum%20PE">frederic.perou@europarl.europa.eu</a><div class="admin-contact-disclaimer">Application indépendante · Non officielle</div><div class="admin-data-attribution">Source des données : <a href="https://www.europarl.europa.eu/meps/fr/full-list" target="_blank" rel="noopener">Parlement européen</a><div>Dernière mise à jour : 14 novembre 2026 <span class="app-version">· v129</span></div></div></div></main><nav id="alphaFloating" class="alpha-floating" aria-label="Navigation alphabétique des députés" hidden><div id="alphaLetters" class="alpha-letters"></div><button id="alphaTop" class="alpha-top" type="button" aria-label="Retour tout en haut" title="Retour tout en haut">↑</button><button id="alphaBottom" class="alpha-bottom" type="button" aria-label="Aller tout en bas" title="Aller tout en bas">↓</button></nav><script>
+ </section><section id="training" class="training" hidden><div id="studyIntro"><h2>Reconnais le député</h2><label class="choice-label">MODE DU QUIZ<select id="quizMode"><option value="name-photo">Nom → Photo</option><option value="photo-name">Photo → Nom</option></select></label><p class="progress">20 questions par session · 4 propositions par question</p><p id="quizAvailability" class="progress"></p><button id="startStudy" class="primary">Commencer</button></div><div id="studySession" hidden><p id="studyProgress" class="progress" aria-live="polite"></p><article class="study-card"><div id="studyPhoto" class="study-photo"></div><div class="answer" id="studyAnswer"></div></article><div id="quizChoices" class="quiz-choices" role="group" aria-label="Choisis la bonne réponse"></div><p id="quizFeedback" class="quiz-feedback" role="status" aria-live="polite"></p><div class="study-actions"><button id="listenName" class="listen-name" type="button" hidden aria-label="Écouter la prononciation officielle du nom">🔊 Écouter le nom</button><button id="nextStudy" class="primary" hidden>Photo suivante →</button><button id="stopStudy">Terminer et voir mon bilan</button></div></div><div id="studyEnd" hidden><h2>Quiz terminé</h2><p id="studyResult" class="intro"></p><div class="study-actions"><button id="retryStudy" class="primary">Rejouer les erreurs</button><button id="restartStudy">Nouveau quiz</button></div></div><div class="quiz-reset-area"><button id="resetQuizStats" type="button">Réinitialiser les statistiques</button><p id="resetQuizStatus" class="progress" role="status" aria-live="polite"></p></div></section><section class="recent-changes" id="vfHistory"><h2>Derniers changements</h2><p id="vfChangesDate" class="recent-source">Historique éditorial</p><ul id="vfChangeList"><li>Chargement des changements…</li></ul><button type="button" id="vfChangeMore" hidden>Afficher davantage de changements</button><p class="recent-source">Données éditoriales · consulter les sources pour confirmer les événements.</p></section><section id="offlineManager" style="margin:20px 0 10px;padding:10px 12px;border:1px solid #d8e3e8;border-radius:8px;background:#f8fafb;text-align:center;font-size:11px;line-height:1.6"><button id="downloadOffline" type="button" style="font-size:11px;padding:6px 9px;font-weight:600">Mode hors ligne : télécharger les médias</button><span id="offlineStatus" role="status" aria-live="polite" style="display:block;margin-top:5px;color:#627b88">Wi-Fi recommandé.</span></section><div class="admin-contact"><div class="admin-contact-title">Vademecum du Parlement européen · 10ᵉ législature · 2024–2029</div><div>Contacter l’administrateur du site :</div><a href="mailto:frederic.perou@europarl.europa.eu?subject=Contact%20Vademecum%20PE">frederic.perou@europarl.europa.eu</a><div class="admin-contact-disclaimer">Application indépendante · Non officielle</div><div class="admin-data-attribution">Source des données : <a href="https://www.europarl.europa.eu/meps/fr/full-list" target="_blank" rel="noopener">Parlement européen</a><div>Dernière mise à jour : 14 novembre 2026 <span class="app-version">· v130</span></div></div></div></main><nav id="alphaFloating" class="alpha-floating" aria-label="Navigation alphabétique des députés" hidden><div id="alphaLetters" class="alpha-letters"></div><button id="alphaTop" class="alpha-top" type="button" aria-label="Retour tout en haut" title="Retour tout en haut">↑</button><button id="alphaBottom" class="alpha-bottom" type="button" aria-label="Aller tout en bas" title="Aller tout en bas">↓</button></nav><script>
 'use strict';
 
 /* Barre alphabétique au bas de l'écran, uniquement dans l'annuaire. */
@@ -739,8 +739,43 @@ async function showSeatOnPlan(city,number,memberName,memberGroup){
  const head=el('div','seat-map-head'),heading=el('h2','',(city==='str'?'Strasbourg':'Bruxelles')+' · place '+number);
  const close=el('button','', '×');close.type='button';close.setAttribute('aria-label','Fermer le plan');
  const expand=el('button','seat-map-expand','⛶ Plein écran');expand.type='button';expand.setAttribute('aria-pressed','false');expand.title='Agrandir le plan pour utiliser tout l’écran';
- const headActions=el('div','seat-map-head-actions');headActions.append(expand,close);
+ const rotate=el('button','seat-map-expand','⟳ Pivoter');rotate.type='button';
+ rotate.title='Passer en paysage comme sur le plan du Conseil de l’UE';
+ rotate.setAttribute('aria-label','Pivoter l’écran en mode paysage');
+ const headActions=el('div','seat-map-head-actions');headActions.append(rotate,expand,close);
  head.append(heading,headActions);
+ let orientationLocked=false;
+ const restoreOrientation=async()=>{
+  if(orientationLocked&&screen.orientation?.unlock){
+   try{screen.orientation.unlock()}catch{}
+  }
+  orientationLocked=false;
+  rotate.textContent='⟳ Pivoter';
+  rotate.setAttribute('aria-pressed','false');
+ };
+ rotate.setAttribute('aria-pressed','false');
+ rotate.onclick=async()=>{
+  if(orientationLocked){
+   await restoreOrientation();
+   return;
+  }
+  // L'API de rotation exige le plein écran dans plusieurs navigateurs mobiles.
+  if(!dialog.classList.contains('seat-map-expanded'))setExpanded(true);
+  if(document.fullscreenElement!==dialog&&typeof dialog.requestFullscreen==='function'){
+   try{await dialog.requestFullscreen()}catch{}
+  }
+  if(screen.orientation?.lock){
+   try{
+    await screen.orientation.lock('landscape');
+    orientationLocked=true;
+    rotate.textContent='⟲ Portrait';
+    rotate.setAttribute('aria-pressed','true');
+    return;
+   }catch{}
+  }
+  rotate.textContent='Tourner le téléphone';
+  rotate.title='Rotation automatique indisponible : désactive le verrouillage de rotation et tourne le téléphone';
+ };
  const setExpanded=expanded=>{
   backdrop.classList.toggle('seat-map-expanded',expanded);
   dialog.classList.toggle('seat-map-expanded',expanded);
@@ -756,7 +791,12 @@ async function showSeatOnPlan(city,number,memberName,memberGroup){
    try{await document.exitFullscreen()}catch{}
   }
  };
- const syncFullscreen=()=>{if(document.fullscreenElement!==dialog&&dialog.classList.contains('seat-map-expanded')&&typeof dialog.requestFullscreen==='function'&&document.fullscreenEnabled)setExpanded(false)};
+ const syncFullscreen=()=>{
+  if(document.fullscreenElement!==dialog){
+   restoreOrientation();
+   if(dialog.classList.contains('seat-map-expanded')&&typeof dialog.requestFullscreen==='function'&&document.fullscreenEnabled)setExpanded(false);
+  }
+ };
  document.addEventListener('fullscreenchange',syncFullscreen);
  const detail=el('p','seat-map-caption',memberName+(memberGroup?' · '+(SEAT_GROUP_LABELS[memberGroup]||memberGroup):''));
  const area=el('div','','Chargement du plan…');
@@ -773,6 +813,7 @@ async function showSeatOnPlan(city,number,memberName,memberGroup){
  dialog.append(head,detail,area,controls);backdrop.append(dialog);document.body.append(backdrop);
  const previousFocus=document.activeElement;
  const dismiss=()=>{
+  restoreOrientation();
   if(document.fullscreenElement===dialog)document.exitFullscreen().catch(()=>{});
   backdrop.remove();
   document.removeEventListener('keydown',escape);
@@ -1485,7 +1526,7 @@ document.getElementById('downloadOffline').addEventListener('click',downloadOffi
 if('serviceWorker' in navigator){
  window.addEventListener('load',async()=>{
   try{
-   const registration=await navigator.serviceWorker.register('./sw.js?v=86',{scope:'./',updateViaCache:'none'});
+   const registration=await navigator.serviceWorker.register('./sw.js?v=87',{scope:'./',updateViaCache:'none'});
    const notice=$('appUpdateNotice'),apply=$('applyAppUpdate');
    const displayUpdate=()=>{
     if(registration.waiting&&navigator.serviceWorker.controller)notice.hidden=false;
