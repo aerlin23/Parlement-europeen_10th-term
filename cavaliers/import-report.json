@@ -1,0 +1,167 @@
+{
+  "matched": 704,
+  "unmatched_files": [
+    {
+      "file": "BARNA.pdf",
+      "reason": "Correspondance non unique ou non confirmée",
+      "candidates": []
+    },
+    {
+      "file": "GALVEZ MUNOZ.pdf",
+      "reason": "Correspondance non unique ou non confirmée",
+      "candidates": []
+    },
+    {
+      "file": "GONZALES CASARES.pdf",
+      "reason": "Correspondance non unique ou non confirmée",
+      "candidates": []
+    },
+    {
+      "file": "GONZALES PONS.pdf",
+      "reason": "Correspondance non unique ou non confirmée",
+      "candidates": []
+    },
+    {
+      "file": "HANSEN N F.pdf",
+      "reason": "Correspondance non unique ou non confirmée",
+      "candidates": []
+    },
+    {
+      "file": "HERRANZ GARCIA.pdf",
+      "reason": "Correspondance non unique ou non confirmée",
+      "candidates": []
+    },
+    {
+      "file": "KEFALOGIANNIS.pdf",
+      "reason": "Correspondance non unique ou non confirmée",
+      "candidates": []
+    },
+    {
+      "file": "KYUCHUK.pdf",
+      "reason": "Correspondance non unique ou non confirmée",
+      "candidates": []
+    },
+    {
+      "file": "LENEARS.pdf",
+      "reason": "Correspondance non unique ou non confirmée",
+      "candidates": []
+    },
+    {
+      "file": "LUCANO.pdf",
+      "reason": "Correspondance non unique ou non confirmée",
+      "candidates": []
+    },
+    {
+      "file": "MAESTRE MARTIN.pdf",
+      "reason": "Correspondance non unique ou non confirmée",
+      "candidates": []
+    },
+    {
+      "file": "MCALIISTER.pdf",
+      "reason": "Correspondance non unique ou non confirmée",
+      "candidates": []
+    },
+    {
+      "file": "MONTERO GIL.pdf",
+      "reason": "Correspondance non unique ou non confirmée",
+      "candidates": []
+    },
+    {
+      "file": "PEREZ FERNANDEZ.pdf",
+      "reason": "Correspondance non unique ou non confirmée",
+      "candidates": []
+    },
+    {
+      "file": "TARCZYNSKU.pdf",
+      "reason": "Correspondance non unique ou non confirmée",
+      "candidates": []
+    },
+    {
+      "file": "TEODORESCU.pdf",
+      "reason": "Correspondance non unique ou non confirmée",
+      "candidates": []
+    }
+  ],
+  "missing_members": [
+    {
+      "id": "257110",
+      "name": "Dan BARNA",
+      "country": "Romania"
+    },
+    {
+      "id": "197702",
+      "name": "Lina GÁLVEZ",
+      "country": "Spain"
+    },
+    {
+      "id": "197718",
+      "name": "Nicolás GONZÁLEZ CASARES",
+      "country": "Spain"
+    },
+    {
+      "id": "125027",
+      "name": "Esteban GONZÁLEZ PONS",
+      "country": "Spain"
+    },
+    {
+      "id": "257033",
+      "name": "Niels Flemming HANSEN",
+      "country": "Denmark"
+    },
+    {
+      "id": "22418",
+      "name": "Esther HERRANZ GARCÍA",
+      "country": "Spain"
+    },
+    {
+      "id": "125068",
+      "name": "Emmanouil KEFALOGIANNIS",
+      "country": "Greece"
+    },
+    {
+      "id": "124866",
+      "name": "Ilhan KYUCHYUK",
+      "country": "Bulgaria"
+    },
+    {
+      "id": "95074",
+      "name": "Jeroen LENAERS",
+      "country": "Netherlands"
+    },
+    {
+      "id": "257129",
+      "name": "Mimmo LUCANO",
+      "country": "Italy"
+    },
+    {
+      "id": "124806",
+      "name": "David MCALLISTER",
+      "country": "Germany"
+    },
+    {
+      "id": "197719",
+      "name": "Cristina MAESTRE",
+      "country": "Spain"
+    },
+    {
+      "id": "245770",
+      "name": "Irene MONTERO",
+      "country": "Spain"
+    },
+    {
+      "id": "257019",
+      "name": "Alvise PÉREZ",
+      "country": "Spain"
+    },
+    {
+      "id": "204346",
+      "name": "Dominik TARCZYŃSKI",
+      "country": "Poland"
+    },
+    {
+      "id": "257116",
+      "name": "Georgiana TEODORESCU",
+      "country": "Romania"
+    }
+  ]
+}
