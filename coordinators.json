@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-13",
+  "updated": "2026-11-14",
   "description": "Coordinateurs des groupes politiques au sein des commissions. Sources propres aux commissions privilégiées; les nominations historiques sont signalées et ne constituent pas une preuve de mandat actuel.",
   "entries": [
     {
@@ -201,224 +201,8 @@
       "sourceStatus": "historical-nomination"
     },
     {
-      "id": "119652",
-      "committee": "SANT",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "247735",
-      "committee": "IMCO",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "124867",
-      "committee": "INTA",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "4267",
-      "committee": "DEVE",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "256880",
-      "committee": "EMPL",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "38542",
-      "committee": "TRAN",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "125046",
-      "committee": "ECON",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "256901",
-      "committee": "BUDG",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "256997",
-      "committee": "PETI",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "257059",
-      "committee": "FISC",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "197682",
-      "committee": "CULT",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "96812",
-      "committee": "AFCO",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "197497",
-      "committee": "SEDE",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "257111",
-      "committee": "AGRI",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "124784",
-      "committee": "ITRE",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "229839",
-      "committee": "JURI",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
       "id": "257066",
       "committee": "PECH",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "204413",
-      "committee": "REGI",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://www.europarl.europa.eu/cmsdata/305372/LIST%20Coordinators%20REGI_10th%20term_15_04_2026.pdf",
-      "sourceDate": "2026-04-15",
-      "sourceStatus": "committee-list"
-    },
-    {
-      "id": "197722",
-      "committee": "AFET",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "37312",
-      "committee": "EUDS",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://www.europarl.europa.eu/committees/en/euds-coordinators_10th-parliamentary-ter/product-details/20250205CPU46101",
-      "sourceDate": "2025-02-05",
-      "sourceStatus": "committee-list"
-    },
-    {
-      "id": "257084",
-      "committee": "FEMM",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "197670",
-      "committee": "HOUS",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "96932",
-      "committee": "LIBE",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "257071",
-      "committee": "CONT",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
-      "sourceDate": "2026-11-13",
-      "sourceStatus": "published-roster"
-    },
-    {
-      "id": "185619",
-      "committee": "ENVI",
       "group": "S&D",
       "role": "coordinator",
       "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
@@ -1686,15 +1470,6 @@
       "sourceStatus": "committee-list"
     },
     {
-      "id": "28307",
-      "committee": "DROI",
-      "group": "S&D",
-      "role": "coordinator",
-      "source": "https://www.europarl.europa.eu/cmsdata/301676/20251215%20-%20DROI%20Coordinators.pdf",
-      "sourceDate": "2025-01-30",
-      "sourceStatus": "committee-list"
-    },
-    {
       "id": "256875",
       "committee": "DROI",
       "group": "PfE",
@@ -1891,6 +1666,231 @@
       "source": "https://www.europarl.europa.eu/committees/en/euds-coordinators_10th-parliamentary-ter/product-details/20250205CPU46101",
       "sourceDate": "2025-02-05",
       "sourceStatus": "committee-list"
+    },
+    {
+      "id": "119652",
+      "committee": "SANT",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "28307",
+      "committee": "DROI",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "247735",
+      "committee": "IMCO",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "124867",
+      "committee": "INTA",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "4267",
+      "committee": "DEVE",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "256880",
+      "committee": "EMPL",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "38542",
+      "committee": "TRAN",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "125046",
+      "committee": "ECON",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "256901",
+      "committee": "BUDG",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "256997",
+      "committee": "PETI",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "257059",
+      "committee": "FISC",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "197682",
+      "committee": "CULT",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "96812",
+      "committee": "AFCO",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "197497",
+      "committee": "SEDE",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "257111",
+      "committee": "AGRI",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "124784",
+      "committee": "ITRE",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "229839",
+      "committee": "JURI",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "204413",
+      "committee": "REGI",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "197722",
+      "committee": "AFET",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "37312",
+      "committee": "EUDS",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "257084",
+      "committee": "FEMM",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "197670",
+      "committee": "HOUS",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "96932",
+      "committee": "LIBE",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "257071",
+      "committee": "CONT",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators?page=1",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
+    },
+    {
+      "id": "185619",
+      "committee": "ENVI",
+      "group": "S&D",
+      "role": "coordinator",
+      "source": "https://socialistsanddemocrats.eu/who-we-are/our-members/coordinators?page=1",
+      "sourceStatus": "published-roster",
+      "checkedAt": "2026-11-14"
     }
   ]
 }

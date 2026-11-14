@@ -42,7 +42,7 @@ if(committee){
 const history=$('vfHistory');
 if(history){
  const list=$('vfChangeList'),more=$('vfChangeMore'),date=$('vfChangesDate');
- let items=[],limit=3;
+ let items=[],limit=0;
  function draw(){
   list.replaceChildren();
   const current=items;
@@ -57,13 +57,13 @@ if(history){
    list.append(li);
   }
   more.hidden=current.length<=limit;
-  if(!current.length){const li=document.createElement('li');li.textContent='Aucun changement enregistré.';list.append(li)}
+  if(!current.length||!limit){const li=document.createElement('li');li.textContent=current.length?'Aucun changement enregistré ces deux derniers mois.':'Aucun changement enregistré.';list.append(li)}
  }
  more.addEventListener('click',()=>{limit+=10;draw()});
  fetch('./changes.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Historique');return r.json()}).then(data=>{
   if(!Array.isArray(data.items))throw Error('Format');
   items=data.items.filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.date)).sort((a,b)=>b.date.localeCompare(a.date));
-  if(date)date.hidden=true;draw();
+  const cutoff=new Date();const day=cutoff.getDate();cutoff.setDate(1);cutoff.setMonth(cutoff.getMonth()-2);cutoff.setDate(Math.min(day,new Date(cutoff.getFullYear(),cutoff.getMonth()+1,0).getDate()));const key=[cutoff.getFullYear(),String(cutoff.getMonth()+1).padStart(2,'0'),String(cutoff.getDate()).padStart(2,'0')].join('-');limit=items.filter(x=>x.date>=key).length;if(date)date.hidden=true;draw();
  }).catch(()=>{if(date)date.textContent='Historique temporairement indisponible';more.hidden=true});
 }
 })();
