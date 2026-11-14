@@ -24,6 +24,8 @@ for m in members:
     first=key(m["name"])[:1]
     if surname and first and countries.get(m["country"]):
         records.append((m,surname,first,countries[m["country"]]))
+# Exceptions contrôlées sur le texte des PDF originaux.
+manual={"BARNA.pdf":["257110","I.-D. BARNA","RO"],"GALVEZ MUNOZ.pdf":["197702","L. GALVEZ MUÑOZ","ES"],"GONZALES CASARES.pdf":["197718","N. GONZALEZ","ES","CASARES"],"GONZALES PONS.pdf":["125027","E. GONZÁLEZ PONS","ES"],"HANSEN N F.pdf":["257033","N. F. HANSEN","DK"],"HERRANZ GARCIA.pdf":["22418","M. E. HERRANZ GARCÍA","ES"],"KEFALOGIANNIS.pdf":["125068","M. KEFALOGIANNIS","EL"],"KYUCHUK.pdf":["124866","I. KYUCHYUK","BG"],"LENEARS.pdf":["95074","J. LENAERS","NL"],"LUCANO.pdf":["257129","D. LUCANO","IT"],"MAESTRE MARTIN.pdf":["197719","C. MAESTRE","ES","MARTÍN DE ALMAGRO"],"MCALIISTER.pdf":["124806","D. MCALLISTER","DE"],"MONTERO GIL.pdf":["245770","I. MONTERO GIL","ES"],"PEREZ FERNANDEZ.pdf":["257019","A. PÉREZ FERNÁNDEZ","ES"],"TARCZYNSKU.pdf":["204346","D. TARCZYŃSKI","PL"],"TEODORESCU.pdf":["257116","M.-G. TEODORESCU","RO"]}
 proposals=collections.defaultdict(list)
 unmatched=[]
 for archive in ("cavaliers-1.zip","cavaliers-2.zip"):
@@ -47,6 +49,14 @@ for archive in ("cavaliers-1.zip","cavaliers-2.zip"):
             printed="".join(visible)
             printed_initial=printed[:1]
             stem=key(pathlib.PurePosixPath(filename).stem)
+            if filename in manual:
+                mid,printed_name,country,*extra=manual[filename]
+                candidates=[m for m,_,_,c in records if str(m["id"])==mid and c==country and printed_name in lines and country in cc and all(x in lines for x in extra)]
+                if len(candidates)==1:
+                    proposals[mid].append((candidates[0],filename,raw))
+                    continue
+                unmatched.append({"file":filename,"reason":"Exception non confirmée"})
+                continue
             candidates=[]
             for m,surname,first,country in records:
                 if country not in cc or printed_initial!=first:

@@ -6,6 +6,7 @@ on:
     paths:
       - 'cavaliers-1.zip'
       - 'cavaliers-2.zip'
+      - 'scripts/import-cavaliers.py'
 permissions:
   contents: write
   pages: write
