@@ -16,45 +16,31 @@ async function share(title,url){
  }catch(error){if(error.name==='AbortError')return}
  window.prompt('Copier le lien :',url);
 }
-// Cavaliers : accès local volontaire, aucun transfert des documents vers le serveur.
-let cavalierFiles=null;
-const cavalierKey=s=>String(s||'').normalize('NFKD').replace(/\p{M}/gu,'').toUpperCase().replace(/[^A-Z0-9]/g,'');
-const cavalierOverrides={'Christine ANDERSON':'ANDERSON','Li ANDERSSON':'ANDERSSON','Bruno GONÇALVES':'GONÇALVES B','Sérgio GONÇALVES':'GONÇALVES S'};
-function chooseCavalierFolder(){
- return new Promise(resolve=>{
-  const input=document.createElement('input');input.type='file';input.webkitdirectory=true;input.multiple=true;input.style.display='none';document.body.append(input);
-  input.addEventListener('change',()=>{cavalierFiles=Array.from(input.files).filter(f=>/\.pdf$/i.test(f.name));input.remove();resolve(cavalierFiles)},{once:true});
-  input.addEventListener('cancel',()=>{input.remove();resolve(null)},{once:true});input.click();
- });
+// Cavaliers nominatifs : chargement à la demande, indexé par identifiant MEP.
+let cavalierIndexPromise=null;
+function loadCavalierIndex(){
+ if(!cavalierIndexPromise)cavalierIndexPromise=fetch('./cavaliers/index.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Index indisponible');return r.json()}).catch(e=>{cavalierIndexPromise=null;throw e});
+ return cavalierIndexPromise;
 }
 async function printCavalier(m){
- const files=cavalierFiles||await chooseCavalierFolder();
- if(!files)return;
- const override=cavalierOverrides[m.name];
- const surname=cavalierKey(m.lastName||'');
- const initial=cavalierKey(m.name).charAt(0);
- const key=f=>cavalierKey(f.name.replace(/\.pdf$/i,''));
- let matches=files.filter(f=>key(f)===cavalierKey(override||m.lastName));
- if(!override){const qualified=files.filter(f=>key(f)===surname+initial||key(f)===initial+surname);if(qualified.length)matches=qualified;}
- if(!matches.length||matches.length>1){
-  notify('Sélectionne manuellement le cavalier de '+m.name);
-  const input=document.createElement('input');input.type='file';input.accept='.pdf,application/pdf';input.style.display='none';document.body.append(input);
-  input.onchange=()=>{const file=input.files[0];input.remove();if(file)previewCavalier(file,m)};input.addEventListener('cancel',()=>input.remove(),{once:true});input.click();return;
- }
- previewCavalier(matches[0],m);
-}
-function previewCavalier(file,m){
+ const id=String(m.id);
+ if(!/^\d+$/.test(id))return;
+ let data;
+ try{data=await loadCavalierIndex()}catch{notify('Les cavaliers ne sont pas encore publiés.');return}
+ const item=data.entries?.[id];
+ if(!item||item.country!==m.country||item.name!==m.name){notify('Aucun cavalier vérifié pour '+m.name);return}
+ const url=new URL('./cavaliers/'+id+'.pdf',location.href);
  const dialog=document.createElement('dialog');dialog.className='vf-cavalier-dialog';
  const bar=document.createElement('div');bar.className='vf-cavalier-bar';
- const title=document.createElement('strong');title.textContent=m.name+' · '+file.name;
+ const title=document.createElement('strong');title.textContent=m.name+' · Cavalier';
  const print=document.createElement('button');print.type='button';print.textContent='Imprimer';
+ const open=document.createElement('a');open.href=url.href;open.target='_blank';open.rel='noopener';open.textContent='Ouvrir le PDF';
  const close=document.createElement('button');close.type='button';close.textContent='Fermer';
- const frame=document.createElement('iframe');frame.title='Aperçu du cavalier PDF';
- const url=URL.createObjectURL(file);frame.src=url;
- print.onclick=()=>{try{frame.contentWindow.focus();frame.contentWindow.print()}catch{window.open(url,'_blank','noopener')}};
+ const frame=document.createElement('iframe');frame.title='Aperçu du cavalier PDF';frame.src=url.href;
+ print.onclick=()=>{try{frame.contentWindow.focus();frame.contentWindow.print()}catch{open.click()}};
  close.onclick=()=>dialog.close();
- bar.append(title,print,close);dialog.append(bar,frame);document.body.append(dialog);
- dialog.addEventListener('close',()=>{dialog.remove();URL.revokeObjectURL(url)},{once:true});dialog.showModal();
+ bar.append(title,print,open,close);dialog.append(bar,frame);document.body.append(dialog);
+ dialog.addEventListener('close',()=>dialog.remove(),{once:true});dialog.showModal();
 }
 window.vademecumCardShare=m=>{
  const button=document.createElement('button');
@@ -64,7 +50,7 @@ window.vademecumCardShare=m=>{
  const actions=document.createElement('span');actions.className='vf-card-actions';
  const printer=document.createElement('button');printer.type='button';printer.className='vf-print-icon';printer.title='Imprimer le cavalier de '+m.name;printer.setAttribute('aria-label',printer.title);
  printer.innerHTML='<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v7H6zM18 12h1"/></svg>';
- printer.onclick=()=>printCavalier(m).catch(()=>notify('Impossible d’ouvrir le cavalier local.'));
+ printer.onclick=()=>printCavalier(m).catch(()=>notify('Impossible d’ouvrir le cavalier.'));
  actions.append(printer,button);return actions;
 };
 const committee=$('committee');

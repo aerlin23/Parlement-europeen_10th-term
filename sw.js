@@ -1,5 +1,5 @@
 /* Vademecum PE : ressources critiques hors-ligne et mises à jour consenties. */
-const VERSION='pe-pwa-v204';
+const VERSION='pe-pwa-v205';
 const MEDIA='pe-offline-official-media-v1';
 const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
 const OFFLINE=['./','./index.html','./smart-search.js','./features.js','./secretariat-general.html','./commission-europeenne.html','./institutions-agences.html','./assets/presidences-conseil-ue-2026-2030.svg','./presidences-cinema.html','./assets/presidences-conseil-ue-cinema.avif','./commission-members.json','./members.json','./coordinators.json','./changes.json','./hemicycle-seats.json','./hemicycle-str-coordinates.json','./hemicycle-bru-coordinates.json','./committees.json','./photo-assets.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png','./assets/greens-logo.svg','./assets/sg-juan-carlos-jimenez-marin.webp','./assets/sg-markus-winkler.webp','./assets/sg-alessandro-chiocchetti-user.webp','./assets/sg-markus-winkler-official.webp'];
@@ -60,6 +60,9 @@ self.addEventListener('fetch',event=>{
   return;
  }
  if(url.origin!==self.location.origin)return;
+ // Les PDF de cavaliers sont servis à la demande, sans cache hors ligne systématique.
+ if(/\/cavaliers\/\d+\.pdf$/.test(url.pathname))return;
+ if(/\/cavaliers\/index\.json$/.test(url.pathname)){event.respondWith(fromNetworkOrCache(request,false));return;}
  const isDocument=request.mode==='navigate';
  const isData=/\/(members|commission-members|committees|coordinators|photo-assets|hemicycle-seats|hemicycle-str-coordinates|hemicycle-bru-coordinates|changes)\.json$/.test(url.pathname);
  if(isDocument||isData){event.respondWith(fromNetworkOrCache(request,isDocument));return}

@@ -1,0 +1,49 @@
+name: Importer les cavaliers nominatifs
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'cavaliers-1.zip'
+      - 'cavaliers-2.zip'
+permissions:
+  contents: write
+  pages: write
+concurrency:
+  group: import-cavaliers
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Vérifier les deux archives
+        id: archives
+        run: |
+          if [ -f cavaliers-1.zip ] && [ -f cavaliers-2.zip ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Les deux archives sont nécessaires."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Associer les PDF par identifiant parlementaire
+        if: steps.archives.outputs.ready == 'true'
+        run: |
+          python -m pip install --quiet pymupdf
+          python scripts/import-cavaliers.py
+      - name: Enregistrer les fichiers vérifiés
+        if: steps.archives.outputs.ready == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add cavaliers/
+          if ! git diff --cached --quiet; then
+            git commit -m "Importer les cavaliers PDF vérifiés"
+            git push origin HEAD:main
+          fi
+      - name: Demander une nouvelle publication Pages
+        if: steps.archives.outputs.ready == 'true'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST "repos/${{ github.repository }}/pages/builds"
