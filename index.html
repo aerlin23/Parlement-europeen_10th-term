@@ -685,6 +685,13 @@ body.reading-large .seat-map-expanded .seat-person-info span{font-size:12px}
 .seat-map-dialog .seat-map-head-actions .seat-map-reading button[data-reading=large]{font-size:19px!important}
 .seat-map-dialog .seat-map-head-actions .seat-map-reading button[aria-pressed=true]{background:#17416d;color:#fff}
 @media(max-width:600px) and (orientation:portrait){.seat-map-dialog .seat-map-head-actions .seat-map-reading button{width:24px;min-width:24px}}
+
+/* Commandes du plan avec pictogrammes explicites. */
+.seat-map-dialog .seat-map-head-actions .seat-plan-icon-button{width:34px;min-width:34px;height:34px;min-height:34px!important;padding:5px!important;display:inline-flex;align-items:center;justify-content:center}
+.seat-plan-icon-button svg{display:block;width:20px;height:20px;flex:none}
+.seat-plan-icon-button.seat-search-toggle svg{width:23px;height:23px}
+.seat-map-expanded .seat-map-head-actions .seat-plan-icon-button{width:30px;min-width:30px;height:30px;min-height:30px!important;padding:3px!important}
+.seat-map-expanded .seat-search-toggle[aria-expanded=true]{display:none!important}
 </style></head><body><header class="ep-header"><div class="top"><div class="ep-identity"><a class="ep-logo" href="https://www.europarl.europa.eu/portal/fr" target="_blank" rel="noopener"><img id="identityLogo" src="./assets/parlement-logo.png" width="260" height="90" alt="Parlement européen"><span id="identityText" class="identity-text" hidden>NI</span></a><div id="identityBrand" class="brand">VADEMECUM · 10ᵉ LÉGISLATURE</div></div><div class="term" aria-label="Parlement européen, 2024 à 2029"><span>PARLEMENT</span><span>EUROPÉEN</span><span class="term-years">2024–2029</span></div></div><h1 id="identityTitle">Vademecum des députés européens</h1><p id="identitySubtitle">Retrouver un député. Reconnaître un visage.</p><p class="header-updated" id="dataUpdated">Application mise à jour le 14 novembre 2026</p><div class="stats" id="headerStats"><div><b id="total">—</b>députés</div><div><b id="countries">—</b>pays</div><div><b>10ᵉ</b>législature</div></div></header><div id="appUpdateNotice" role="status" hidden style="padding:12px 18px;background:#e8f4f6;border-bottom:1px solid #b2cbd0;text-align:center">Une nouvelle version est prête. <button id="applyAppUpdate" type="button">Mettre à jour</button></div><main><nav class="directories" aria-label="Annuaires"><a href="https://aerlin23.github.io/Parlement-europeen_10th-term/">Tous les députés</a><a class="group-nav-item" href="?group=PPE">PPE</a><a class="group-nav-item" href="?group=S%26D">S&amp;D</a><a class="group-nav-item" href="?group=PfE">PfE</a><a class="group-nav-item" href="?group=ECR">ECR</a><a class="group-nav-item" href="?group=Renew">Renew</a><a class="group-nav-item" href="?group=Verts%2FALE">Verts/ALE</a><a class="group-nav-item" href="?group=The%20Left">The Left</a><a class="group-nav-item" href="?group=ESN">ESN</a><a class="group-nav-item" href="?group=NI">NI</a><a class="institution-nav-item" href="./commission-europeenne.html">Commission européenne</a><a class="institution-nav-item" href="./institutions-agences.html">Institutions &amp; organes</a><a class="institution-nav-item" href="?section=secretariat" id="secretariatNav">Secrétariat général</a><details class="mobile-institutions" id="mobileInstitutions"><summary id="mobileInstitutionsSummary">Autres</summary><div class="mobile-institutions-links"><a class="mobile-institution-item" href="./commission-europeenne.html">Commission européenne</a><a class="mobile-institution-item" href="./institutions-agences.html">Institutions &amp; organes</a><a class="mobile-institution-item" id="mobileSecretariatNav" href="?section=secretariat">Secrétariat général</a></div></details></nav><div class="tabs" role="group" aria-label="Mode"><button id="directoryTab" class="active" aria-pressed="true">Vademecum</button><button id="trainingTab" aria-pressed="false">S’entraîner</button></div><section id="filters" class="toolbar" aria-label="Filtres"><div class="fields"><div class="smart-search-wrap"><label for="search" class="seat-search-label">RECHERCHER</label><div class="seat-search-line"><input id="search" type="search" placeholder="Nom, groupe, commission, siège…" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="smartSearchResults" aria-expanded="false"><button type="button" id="openHemicycle" class="seat-search-open" aria-label="Ouvrir les plans des hémicycles" title="Plans des hémicycles"><svg viewBox="0 0 26 18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 16 A12 12 0 0 1 25 16 M5 16 A8 8 0 0 1 21 16 M9 16 A4 4 0 0 1 17 16"/></svg></button></div><div id="smartSearchResults" class="smart-search-results" role="listbox" aria-label="Suggestions de recherche" hidden></div><span class="search-seat-hint">Siège : S328 (Strasbourg) · B328 (Bruxelles)</span></div><label>GROUPE POLITIQUE<select id="group" aria-label="Groupe politique"><option value="">Tous les groupes</option></select></label><label class="committee-filter-label">COMMISSIONS PARLEMENTAIRES<select id="committee" aria-label="Commissions parlementaires · membres titulaires"><option value="">Toutes</option></select></label></div><details id="advanced" class="advanced" aria-label="Filtres avancés" open><summary>Filtres avancés <span>Genre · Pays · Fonction · Tri</span></summary><div class="extra"><label>GENRE<select id="gender" aria-label="Genre"><option value="">Tous</option><option value="MALE">Masculin</option><option value="FEMALE">Féminin</option></select></label><label>FONCTION<select id="function" aria-label="Fonction"><option value="">Toutes les fonctions</option><option value="presidencype">Présidence et vice-présidences du Parlement</option><option value="quaestor">Questeurs du Parlement</option><option value="commissionbureau">Présidence et vice-présidences de commission</option><option value="chair">Présidences de commission</option><option value="vicechair">Vice-présidences de commission</option><option value="president">Présidence du Parlement</option><option value="vice">Vice-présidences du Parlement</option><option value="grouppresident">Présidence de groupe</option><option value="groupvice">Vice-présidences de groupe</option><option value="groupleadership">Présidence et vice-présidences de groupe</option><option value="coord">Coordinateurs de groupe</option></select></label><label>PAYS<select id="country" aria-label="Pays"><option value="">Tous les pays</option></select></label><label>TRIER PAR<select id="sort" aria-label="Trier par"><option value="name" selected>Nom de famille · A → Z</option><option value="role">Responsabilités, groupes, puis nom</option><option value="country">Pays, puis nom</option><option value="group">Groupe politique, puis nom</option></select></label></div></details><div class="tools"><button id="reset">Réinitialiser les filtres</button><div class="reading-mode" role="group" aria-label="Taille de lecture"><button type="button" data-reading="compact" aria-label="Affichage compact" title="Compact">A</button><button type="button" data-reading="normal" aria-label="Affichage normal" title="Standard">A</button><button type="button" data-reading="large" aria-label="Lecture agrandie" title="Agrandissement">A</button></div></div><p id="coverage" class="coverage"></p><div id="localBanner" class="local-banner" hidden>Aperçu d’un fichier importé, visible uniquement dans cet onglet. Le site public n’a pas été modifié. <button id="restore">Revenir aux données publiées</button></div></section><p id="count" class="count" aria-live="polite">Chargement des députés…</p><section id="committeeLeadership" class="committee-leadership" aria-label="Direction de commission et coordinateurs des groupes" hidden></section><section id="directory"><div id="grid" class="grid"></div><div id="loadMoreWrap" class="study-actions" hidden><button id="loadMore" type="button">Afficher plus de députés</button></div><div id="substitutesToggleWrap" class="substitutes-toggle-wrap" hidden><button id="substitutesToggle" type="button" aria-controls="substitutesSection" aria-expanded="false">Afficher les suppléants</button></div><section id="substitutesSection" class="substitutes-section" aria-label="Membres suppléants de la commission" hidden><h3 id="substitutesTitle" class="substitutes-title"></h3><p class="substitutes-description">Membres suppléants de cette commission, présentés après les membres titulaires.</p><div id="substitutesGrid" class="grid substitutes-grid"></div><div id="substitutesMoreWrap" class="study-actions" hidden><button id="substitutesMore" type="button">Afficher davantage de suppléants</button></div></section><p id="empty" class="empty" hidden>Aucun député pour ces filtres. Modifie la recherche ou réinitialise les filtres.</p></section><section id="secretariatPanel" class="secretariat-section" aria-label="Secrétariat général" hidden>
  <div class="sg-heading"><span class="sg-eyebrow">ADMINISTRATION DU PARLEMENT EUROPÉEN</span><h2>Secrétariat général</h2><p>Responsables, directions générales et organisation administrative.</p></div>
  <label class="sg-filter">RECHERCHER <input id="sgSearch" type="search" placeholder="Nom, fonction, direction générale…" autocomplete="off"></label>
@@ -1036,11 +1043,15 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
  dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');
  dialog.setAttribute('aria-label','Localisation de la place en hémicycle');
  const head=el('div','seat-map-head'),heading=el('h2','',(city==='str'?'Strasbourg':'Bruxelles')+(overview?'':' · place '+number));
+ const setPlanIcon=(button,kind,label)=>{
+  const paths={search:'M21 21l-5-5 M18 10.5a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0',rotate:'M20 7v5h-5 M20 12a8 8 0 1 0-2.3 5.7',portrait:'M4 7v5h5 M4 12a8 8 0 1 1 2.3 5.7',expand:'M8 3H3v5 M16 3h5v5 M21 16v5h-5 M3 16v5h5',reduce:'M3 8h5V3 M21 8h-5V3 M16 21v-5h5 M8 21v-5H3'};
+  const icon=seatSVG('svg',{viewBox:'0 0 24 24',fill:'none',stroke:'currentColor','stroke-width':1.9,'stroke-linecap':'round','stroke-linejoin':'round','aria-hidden':'true'});
+  icon.append(seatSVG('path',{d:paths[kind]}));button.replaceChildren(icon);button.classList.add('seat-plan-icon-button');button.title=label;button.setAttribute('aria-label',label);
+ };
  const close=el('button','', '×');close.type='button';close.setAttribute('aria-label','Fermer le plan');
- const expand=el('button','seat-map-expand','⛶ Plein écran');expand.type='button';expand.setAttribute('aria-pressed','false');expand.title='Agrandir le plan pour utiliser tout l’écran';
+ const expand=el('button','seat-map-expand','⛶ Plein écran');expand.type='button';expand.setAttribute('aria-pressed','false');setPlanIcon(expand,'expand','Plein écran');
  const rotate=el('button','seat-map-expand','⟳ Pivoter');rotate.type='button';
- rotate.title='Passer en paysage comme sur le plan du Conseil de l’UE';
- rotate.setAttribute('aria-label','Pivoter l’écran en mode paysage');
+ setPlanIcon(rotate,'rotate','Pivoter l’écran en mode paysage');
  const groupHeader=el('button','seat-map-expand seat-map-groups-header','Groupes');
  groupHeader.type='button';groupHeader.title='Afficher les groupes politiques sur le plan';
  groupHeader.setAttribute('aria-pressed','false');
@@ -1063,7 +1074,7 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
    try{screen.orientation.unlock()}catch{}
   }
   orientationLocked=false;
-  rotate.textContent='⟳ Pivoter';
+  setPlanIcon(rotate,'rotate','Pivoter l’écran en mode paysage');
   rotate.setAttribute('aria-pressed','false');
   setCinema(false);
  };
@@ -1084,19 +1095,19 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
     await screen.orientation.lock('landscape');
     orientationLocked=true;
     requestAnimationFrame(()=>{if(backdrop.isConnected&&camera)camera.focusSeat()});
-    rotate.textContent='⟲ Portrait';
+    setPlanIcon(rotate,'portrait','Revenir en mode portrait');
     rotate.setAttribute('aria-pressed','true');
     return;
    }catch{}
   }
-  rotate.textContent='⟲ Retour';rotate.setAttribute('aria-pressed','true');
+  setPlanIcon(rotate,'portrait','Quitter le mode paysage');rotate.setAttribute('aria-pressed','true');
   rotate.title='Tourne le téléphone manuellement si nécessaire ; appuie ici pour quitter le mode paysage';
  };
  const setExpanded=expanded=>{
   if(!expanded&&cinema){setCinema(false);if(orientationLocked&&screen.orientation?.unlock){try{screen.orientation.unlock()}catch{}}orientationLocked=false}
   backdrop.classList.toggle('seat-map-expanded',expanded);
   dialog.classList.toggle('seat-map-expanded',expanded);
-  expand.textContent=expanded?'↙ Réduire':'⛶ Plein écran';
+  setPlanIcon(expand,expanded?'reduce':'expand',expanded?'Réduire':'Plein écran');
   expand.setAttribute('aria-pressed',String(expanded));
   if(camera)requestAnimationFrame(()=>{if(expanded)camera.focusSeat();else camera.resize()});
  };
@@ -1137,7 +1148,7 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
  const searchInput=el('input','');searchInput.type='search';searchInput.placeholder='Nom ou n° de siège…';searchInput.setAttribute('aria-label','Rechercher dans le plan');
  const searchResults=el('div','seat-plan-results');searchResults.hidden=true;
  searchBox.append(searchInput,searchResults);
- const searchToggle=el('button','seat-map-expand seat-search-toggle','⌕');searchToggle.type='button';searchToggle.title='Rechercher un député ou un siège';searchToggle.setAttribute('aria-label',searchToggle.title);headActions.prepend(searchToggle);
+ const searchToggle=el('button','seat-map-expand seat-search-toggle','⌕');searchToggle.type='button';searchToggle.title='Rechercher un député ou un siège';setPlanIcon(searchToggle,'search','Rechercher un député ou un siège');headActions.prepend(searchToggle);
  searchBox.hidden=false;
  searchToggle.setAttribute('aria-expanded',String(!searchBox.hidden));
  searchToggle.onclick=()=>{searchBox.hidden=!searchBox.hidden;searchToggle.setAttribute('aria-expanded',String(!searchBox.hidden));if(!searchBox.hidden)searchInput.focus()};
@@ -1164,7 +1175,7 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
  };
  close.onclick=dismiss;backdrop.addEventListener('click',onBackdropClick);document.addEventListener('keydown',escape);close.focus();syncReadingMap();
  if(options.expanded)setExpanded(true);
- if(options.cinema){setCinema(true);rotate.textContent=orientationLocked?'⟲ Portrait':'⟲ Retour';rotate.setAttribute('aria-pressed','true')}
+ if(options.cinema){setCinema(true);setPlanIcon(rotate,'portrait',orientationLocked?'Revenir en mode portrait':'Quitter le mode paysage');rotate.setAttribute('aria-pressed','true')}
 
  try{
   const positions=await getSeatMap(city);
@@ -2081,7 +2092,7 @@ document.getElementById('downloadOffline').addEventListener('click',downloadOffi
 if('serviceWorker' in navigator){
  window.addEventListener('load',async()=>{
   try{
-   const registration=await navigator.serviceWorker.register('./sw.js?v=135',{scope:'./',updateViaCache:'none'});
+   const registration=await navigator.serviceWorker.register('./sw.js?v=136',{scope:'./',updateViaCache:'none'});
    const notice=$('appUpdateNotice'),apply=$('applyAppUpdate');
    const displayUpdate=()=>{
     if(registration.waiting&&navigator.serviceWorker.controller)notice.hidden=false;
