@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedManually": "2026-11-13",
+  "updatedManually": "2026-11-14",
   "notice": "Historique éditorial, dates des événements distinctes de la date de mise à jour. Sources à vérifier avant tout usage institutionnel.",
   "items": [
     {
@@ -84,6 +84,14 @@
       "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
     },
     {
+      "date": "2026-06-20",
+      "category": "deputes",
+      "kind": "Départ du Parlement",
+      "name": "Bas Eickhout",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/outgoing"
+    },
+    {
       "date": "2026-06-11",
       "category": "deputes",
       "kind": "Entrée au Parlement",
@@ -94,6 +102,307 @@
         "name": "Christine Schneider",
         "url": "https://www.europarl.europa.eu/meps/fr/197422/_/home"
       },
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2026-05-25",
+      "category": "deputes",
+      "kind": "Départ du Parlement",
+      "name": "Christine Schneider",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/outgoing"
+    },
+    {
+      "date": "2026-05-22",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Csaba Bogdán",
+      "person": "277777",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2026-05-22",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Viktor Weisz",
+      "person": "260695",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2026-05-08",
+      "category": "deputes",
+      "kind": "Départ du Parlement",
+      "name": "Péter Magyar",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/outgoing"
+    },
+    {
+      "date": "2026-05-08",
+      "category": "deputes",
+      "kind": "Départ du Parlement",
+      "name": "Zoltán Tarr",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/outgoing"
+    },
+    {
+      "date": "2026-04-16",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Majbritt Birkholm",
+      "person": "277178",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2026-04-13",
+      "category": "deputes",
+      "kind": "Départ du Parlement",
+      "name": "Anders Vistisen",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/outgoing"
+    },
+    {
+      "date": "2026-03-27",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Marie-Sophie Lanig",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2026-03-03",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Willemien Koning",
+      "person": "276060",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2026-02-28",
+      "category": "deputes",
+      "kind": "Départ du Parlement",
+      "name": "Daniel Caspary",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/outgoing"
+    },
+    {
+      "date": "2026-02-22",
+      "category": "deputes",
+      "kind": "Départ du Parlement",
+      "name": "Tom Berendsen",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/outgoing"
+    },
+    {
+      "date": "2026-02-11",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Georgia Tramacere",
+      "person": "275087",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2026-02-01",
+      "category": "deputes",
+      "kind": "Départ du Parlement",
+      "name": "Antonio Decaro",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/outgoing"
+    },
+    {
+      "date": "2025-11-20",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Mieke Andriese",
+      "person": "130881",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2025-11-11",
+      "category": "deputes",
+      "kind": "Départ du Parlement",
+      "name": "Sebastiaan Stöteler",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/outgoing"
+    },
+    {
+      "date": "2025-10-12",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Jérémy Decerle",
+      "person": "197504",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2025-10-11",
+      "category": "deputes",
+      "kind": "Départ du Parlement",
+      "name": "Marie-Pierre Vedrenne",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/outgoing"
+    },
+    {
+      "date": "2025-10-04",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Antonín Staněk",
+      "person": "272024",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2025-10-03",
+      "category": "deputes",
+      "kind": "Départ du Parlement",
+      "name": "Filip Turek",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/outgoing"
+    },
+    {
+      "date": "2025-09-16",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Martin Günther",
+      "person": "270719",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2025-09-15",
+      "category": "deputes",
+      "kind": "Départ du Parlement",
+      "name": "Carola Rackete",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/outgoing"
+    },
+    {
+      "date": "2025-07-31",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Jaroslav Knot",
+      "person": "270261",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2025-07-30",
+      "category": "deputes",
+      "kind": "Départ du Parlement",
+      "name": "Ondřej Kovařík",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/outgoing"
+    },
+    {
+      "date": "2025-04-04",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Volker Schnurrbusch",
+      "person": "267485",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2025-03-24",
+      "category": "deputes",
+      "kind": "Départ du Parlement",
+      "name": "Maximilian Krah",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/outgoing"
+    },
+    {
+      "date": "2024-12-05",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Liudas Mažylis",
+      "person": "197841",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2024-12-03",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Martine Kemp",
+      "person": "249603",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2024-12-02",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Andi Cristea",
+      "person": "40224",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2024-12-01",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Sirpa Pietikäinen",
+      "person": "40599",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2024-10-10",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Hanna Gronkiewicz-Waltz",
+      "person": "262021",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2024-09-27",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Christophe Bay",
+      "person": "261797",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2024-09-27",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Séverine Werbrouck",
+      "person": "261796",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2024-09-22",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Csaba Dömötör",
+      "person": "260724",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2024-09-05",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Marko Vešligaj",
+      "person": "260035",
+      "description": "",
+      "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
+    },
+    {
+      "date": "2024-08-01",
+      "category": "deputes",
+      "kind": "Entrée au Parlement",
+      "name": "Tomáš Kubín",
+      "person": "261038",
+      "description": "",
       "source": "https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming"
     }
   ]
