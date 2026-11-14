@@ -351,6 +351,29 @@ body.group-view .directories a[aria-current="page"]{
 .seat-map-caption{font-size:12px;color:#526d7f;line-height:1.6;margin:6px 0 10px}
 .seat-map-canvas{width:100%;border-radius:10px;display:block;background:#f0f4f8;border:1px solid #d7e1e9}
 
+
+/* Plan manipulable : plein écran réellement exploitable et vue paysage immersive. */
+.seat-map-dialog.seat-map-expanded{overflow:hidden;padding:8px;gap:3px}
+.seat-map-dialog.seat-map-expanded .seat-map-head{margin-bottom:2px;flex:0 0 auto}
+.seat-map-dialog.seat-map-expanded .seat-map-area{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.seat-map-dialog.seat-map-expanded .seat-map-canvas{width:100%;height:100%;min-height:0;max-height:none;flex:1 1 auto;object-fit:fill;touch-action:none;user-select:none;cursor:grab;background:#dce8f0}
+.seat-map-dialog.seat-map-expanded .seat-map-canvas:active{cursor:grabbing}
+.seat-map-dialog.seat-map-expanded .seat-map-controls{margin-top:3px;gap:5px}
+.seat-map-dialog.seat-map-expanded .seat-map-controls button,.seat-map-dialog.seat-map-expanded .seat-map-controls a{font-size:11px;padding:6px 9px}
+.seat-map-dialog.seat-map-expanded .seat-map-caption{margin:2px 0;font-size:11px}
+.seat-map-dialog.seat-map-expanded .seat-map-zoom{display:flex}
+.seat-map-zoom{display:none;gap:5px;align-items:center}
+.seat-map-zoom button{min-width:31px}
+.seat-map-dialog.seat-map-cinema,.seat-map-dialog.seat-map-cinema:fullscreen{background:#13273a;color:#fff;padding:0;gap:0}
+.seat-map-dialog.seat-map-cinema .seat-map-head{position:absolute;z-index:5;right:8px;top:max(6px,env(safe-area-inset-top));margin:0;pointer-events:none}
+.seat-map-dialog.seat-map-cinema .seat-map-head h2{display:none}
+.seat-map-dialog.seat-map-cinema .seat-map-head-actions{pointer-events:auto}
+.seat-map-dialog.seat-map-cinema .seat-map-head-actions button{background:#153956e6;color:#fff;border:1px solid #829eb2;border-radius:7px}
+.seat-map-dialog.seat-map-cinema .seat-map-caption,.seat-map-dialog.seat-map-cinema .seat-map-controls,.seat-map-dialog.seat-map-cinema .seat-group-legend{display:none!important}
+.seat-map-dialog.seat-map-cinema .seat-map-area{flex:1 1 auto;min-height:0;height:100%;padding:0}
+.seat-map-dialog.seat-map-cinema .seat-map-canvas{background:#dce8f0;border:0;border-radius:0;width:100%;height:100%;max-height:none;min-height:0}
+@media(orientation:landscape) and (max-height:550px){.seat-map-dialog.seat-map-expanded:not(.seat-map-cinema) .seat-map-caption{display:none}.seat-map-dialog.seat-map-expanded:not(.seat-map-cinema) .seat-map-controls{font-size:10px}}
+
 /* Affichage immersif du plan, utilisable aussi sur iPhone sans Fullscreen API. */
 .seat-map-backdrop.seat-map-expanded{padding:0}
 .seat-map-dialog.seat-map-expanded,.seat-map-dialog.seat-map-expanded:fullscreen{width:100vw;max-width:none;height:100dvh;max-height:none;border-radius:0;box-shadow:none;display:flex;flex-direction:column;padding:clamp(10px,2vw,20px);overflow:auto;overscroll-behavior:contain}
@@ -397,7 +420,7 @@ body.group-view .directories a[aria-current="page"]{
  <label class="sg-filter">RECHERCHER <input id="sgSearch" type="search" placeholder="Nom, fonction, direction générale…" autocomplete="off"></label>
  <section id="sgOrgSection"><p class="sg-explainer">Appuie sur la photo ou le nom d'un directeur général pour afficher ses directions, responsables et services.</p><div class="sg-chart" id="sgOrgGrid" aria-label="Organigramme du Secrétariat général"></div></section>
  <p class="sg-intro"><a href="https://the-secretary-general.europarl.europa.eu/en/organisation/directorates-general" target="_blank" rel="noopener">Source officielle : organigramme du Parlement européen</a>.</p>
- </section><section id="training" class="training" hidden><div id="studyIntro"><h2>Reconnais le député</h2><label class="choice-label">MODE DU QUIZ<select id="quizMode"><option value="name-photo">Nom → Photo</option><option value="photo-name">Photo → Nom</option></select></label><p class="progress">20 questions par session · 4 propositions par question</p><p id="quizAvailability" class="progress"></p><button id="startStudy" class="primary">Commencer</button></div><div id="studySession" hidden><p id="studyProgress" class="progress" aria-live="polite"></p><article class="study-card"><div id="studyPhoto" class="study-photo"></div><div class="answer" id="studyAnswer"></div></article><div id="quizChoices" class="quiz-choices" role="group" aria-label="Choisis la bonne réponse"></div><p id="quizFeedback" class="quiz-feedback" role="status" aria-live="polite"></p><div class="study-actions"><button id="listenName" class="listen-name" type="button" hidden aria-label="Écouter la prononciation officielle du nom">🔊 Écouter le nom</button><button id="nextStudy" class="primary" hidden>Photo suivante →</button><button id="stopStudy">Terminer et voir mon bilan</button></div></div><div id="studyEnd" hidden><h2>Quiz terminé</h2><p id="studyResult" class="intro"></p><div class="study-actions"><button id="retryStudy" class="primary">Rejouer les erreurs</button><button id="restartStudy">Nouveau quiz</button></div></div><div class="quiz-reset-area"><button id="resetQuizStats" type="button">Réinitialiser les statistiques</button><p id="resetQuizStatus" class="progress" role="status" aria-live="polite"></p></div></section><section class="recent-changes" id="vfHistory"><h2>Derniers changements</h2><p id="vfChangesDate" class="recent-source">Historique éditorial</p><ul id="vfChangeList"><li>Chargement des changements…</li></ul><button type="button" id="vfChangeMore" hidden>Afficher davantage de changements</button><p class="recent-source">Données éditoriales · consulter les sources pour confirmer les événements.</p></section><section id="offlineManager" style="margin:20px 0 10px;padding:10px 12px;border:1px solid #d8e3e8;border-radius:8px;background:#f8fafb;text-align:center;font-size:11px;line-height:1.6"><button id="downloadOffline" type="button" style="font-size:11px;padding:6px 9px;font-weight:600">Mode hors ligne : télécharger les médias</button><span id="offlineStatus" role="status" aria-live="polite" style="display:block;margin-top:5px;color:#627b88">Wi-Fi recommandé.</span></section><div class="admin-contact"><div class="admin-contact-title">Vademecum du Parlement européen · 10ᵉ législature · 2024–2029</div><div>Contacter l’administrateur du site :</div><a href="mailto:frederic.perou@europarl.europa.eu?subject=Contact%20Vademecum%20PE">frederic.perou@europarl.europa.eu</a><div class="admin-contact-disclaimer">Application indépendante · Non officielle</div><div class="admin-data-attribution">Source des données : <a href="https://www.europarl.europa.eu/meps/fr/full-list" target="_blank" rel="noopener">Parlement européen</a><div>Dernière mise à jour : 14 novembre 2026 <span class="app-version">· v130</span></div></div></div></main><nav id="alphaFloating" class="alpha-floating" aria-label="Navigation alphabétique des députés" hidden><div id="alphaLetters" class="alpha-letters"></div><button id="alphaTop" class="alpha-top" type="button" aria-label="Retour tout en haut" title="Retour tout en haut">↑</button><button id="alphaBottom" class="alpha-bottom" type="button" aria-label="Aller tout en bas" title="Aller tout en bas">↓</button></nav><script>
+ </section><section id="training" class="training" hidden><div id="studyIntro"><h2>Reconnais le député</h2><label class="choice-label">MODE DU QUIZ<select id="quizMode"><option value="name-photo">Nom → Photo</option><option value="photo-name">Photo → Nom</option></select></label><p class="progress">20 questions par session · 4 propositions par question</p><p id="quizAvailability" class="progress"></p><button id="startStudy" class="primary">Commencer</button></div><div id="studySession" hidden><p id="studyProgress" class="progress" aria-live="polite"></p><article class="study-card"><div id="studyPhoto" class="study-photo"></div><div class="answer" id="studyAnswer"></div></article><div id="quizChoices" class="quiz-choices" role="group" aria-label="Choisis la bonne réponse"></div><p id="quizFeedback" class="quiz-feedback" role="status" aria-live="polite"></p><div class="study-actions"><button id="listenName" class="listen-name" type="button" hidden aria-label="Écouter la prononciation officielle du nom">🔊 Écouter le nom</button><button id="nextStudy" class="primary" hidden>Photo suivante →</button><button id="stopStudy">Terminer et voir mon bilan</button></div></div><div id="studyEnd" hidden><h2>Quiz terminé</h2><p id="studyResult" class="intro"></p><div class="study-actions"><button id="retryStudy" class="primary">Rejouer les erreurs</button><button id="restartStudy">Nouveau quiz</button></div></div><div class="quiz-reset-area"><button id="resetQuizStats" type="button">Réinitialiser les statistiques</button><p id="resetQuizStatus" class="progress" role="status" aria-live="polite"></p></div></section><section class="recent-changes" id="vfHistory"><h2>Derniers changements</h2><p id="vfChangesDate" class="recent-source">Historique éditorial</p><ul id="vfChangeList"><li>Chargement des changements…</li></ul><button type="button" id="vfChangeMore" hidden>Afficher davantage de changements</button><p class="recent-source">Données éditoriales · consulter les sources pour confirmer les événements.</p></section><section id="offlineManager" style="margin:20px 0 10px;padding:10px 12px;border:1px solid #d8e3e8;border-radius:8px;background:#f8fafb;text-align:center;font-size:11px;line-height:1.6"><button id="downloadOffline" type="button" style="font-size:11px;padding:6px 9px;font-weight:600">Mode hors ligne : télécharger les médias</button><span id="offlineStatus" role="status" aria-live="polite" style="display:block;margin-top:5px;color:#627b88">Wi-Fi recommandé.</span></section><div class="admin-contact"><div class="admin-contact-title">Vademecum du Parlement européen · 10ᵉ législature · 2024–2029</div><div>Contacter l’administrateur du site :</div><a href="mailto:frederic.perou@europarl.europa.eu?subject=Contact%20Vademecum%20PE">frederic.perou@europarl.europa.eu</a><div class="admin-contact-disclaimer">Application indépendante · Non officielle</div><div class="admin-data-attribution">Source des données : <a href="https://www.europarl.europa.eu/meps/fr/full-list" target="_blank" rel="noopener">Parlement européen</a><div>Dernière mise à jour : 14 novembre 2026 <span class="app-version">· v131</span></div></div></div></main><nav id="alphaFloating" class="alpha-floating" aria-label="Navigation alphabétique des députés" hidden><div id="alphaLetters" class="alpha-letters"></div><button id="alphaTop" class="alpha-top" type="button" aria-label="Retour tout en haut" title="Retour tout en haut">↑</button><button id="alphaBottom" class="alpha-bottom" type="button" aria-label="Aller tout en bas" title="Aller tout en bas">↓</button></nav><script>
 'use strict';
 
 /* Barre alphabétique au bas de l'écran, uniquement dans l'annuaire. */
@@ -744,7 +767,8 @@ async function showSeatOnPlan(city,number,memberName,memberGroup){
  rotate.setAttribute('aria-label','Pivoter l’écran en mode paysage');
  const headActions=el('div','seat-map-head-actions');headActions.append(rotate,expand,close);
  head.append(heading,headActions);
- let orientationLocked=false;
+ let orientationLocked=false,camera=null,cinema=false;
+ const setCinema=on=>{cinema=on;dialog.classList.toggle('seat-map-cinema',on);backdrop.classList.toggle('seat-map-cinema',on);if(camera)camera.fit(on?1.12:1)};
  const restoreOrientation=async()=>{
   if(orientationLocked&&screen.orientation?.unlock){
    try{screen.orientation.unlock()}catch{}
@@ -752,15 +776,17 @@ async function showSeatOnPlan(city,number,memberName,memberGroup){
   orientationLocked=false;
   rotate.textContent='⟳ Pivoter';
   rotate.setAttribute('aria-pressed','false');
+  setCinema(false);
  };
  rotate.setAttribute('aria-pressed','false');
  rotate.onclick=async()=>{
-  if(orientationLocked){
+  if(cinema){
    await restoreOrientation();
    return;
   }
   // L'API de rotation exige le plein écran dans plusieurs navigateurs mobiles.
   if(!dialog.classList.contains('seat-map-expanded'))setExpanded(true);
+  setCinema(true);
   if(document.fullscreenElement!==dialog&&typeof dialog.requestFullscreen==='function'){
    try{await dialog.requestFullscreen()}catch{}
   }
@@ -777,6 +803,7 @@ async function showSeatOnPlan(city,number,memberName,memberGroup){
   rotate.title='Rotation automatique indisponible : désactive le verrouillage de rotation et tourne le téléphone';
  };
  const setExpanded=expanded=>{
+  if(!expanded&&cinema){setCinema(false);if(orientationLocked&&screen.orientation?.unlock){try{screen.orientation.unlock()}catch{}}orientationLocked=false}
   backdrop.classList.toggle('seat-map-expanded',expanded);
   dialog.classList.toggle('seat-map-expanded',expanded);
   expand.textContent=expanded?'↙ Réduire':'⛶ Plein écran';
@@ -799,7 +826,7 @@ async function showSeatOnPlan(city,number,memberName,memberGroup){
  };
  document.addEventListener('fullscreenchange',syncFullscreen);
  const detail=el('p','seat-map-caption',memberName+(memberGroup?' · '+(SEAT_GROUP_LABELS[memberGroup]||memberGroup):''));
- const area=el('div','','Chargement du plan…');
+ const area=el('div','seat-map-area','Chargement du plan…');
  const controls=el('div','seat-map-controls');
  const original=el('a','', 'Consulter le plan officiel actualisé');original.href=seatPlanURL[city];original.target='_blank';original.rel='noopener noreferrer';
  controls.append(original);
@@ -830,6 +857,54 @@ async function showSeatOnPlan(city,number,memberName,memberGroup){
   if(!point||!point[0]||!point[1]){area.textContent='Cette place ne possède pas de position graphique fiable sur le plan du '+(city==='bru'?'11 novembre 2026':'19 octobre 2026')+'. Consulte le plan officiel pour la vérifier.';return}
   area.replaceChildren();
   const fullView=city==='bru'?'335 350 525 375':'340 350 510 355';const svg=seatSVG('svg',{viewBox:fullView,class:'seat-map-canvas',role:'group','aria-label':'Plan interactif des sièges de '+(city==='bru'?'Bruxelles':'Strasbourg')+', place '+number+' repérée en bleu foncé'});
+  const base=fullView.split(' ').map(Number),bounds={x:base[0],y:base[1],w:base[2],h:base[3]};
+  const view={x:bounds.x,y:bounds.y,w:bounds.w,h:bounds.h};
+  const zoomLevel=()=>bounds.w/view.w;
+  const renderCamera=()=>svg.setAttribute('viewBox',view.x+' '+view.y+' '+view.w+' '+view.h);
+  const clampView=()=>{view.w=Math.min(bounds.w,Math.max(bounds.w/8,view.w));view.h=bounds.h*view.w/bounds.w;view.x=Math.max(bounds.x,Math.min(bounds.x+bounds.w-view.w,view.x));view.y=Math.max(bounds.y,Math.min(bounds.y+bounds.h-view.h,view.y))};
+  const zoomAt=(factor,px=0.5,py=0.5)=>{
+   const beforeX=view.x+px*view.w,beforeY=view.y+py*view.h;
+   view.w/=factor;view.h/=factor;view.x=beforeX-px*view.w;view.y=beforeY-py*view.h;clampView();renderCamera();
+  };
+  camera={fit:(scale=1)=>{view.w=bounds.w/scale;view.h=bounds.h/scale;view.x=bounds.x+(bounds.w-view.w)/2;view.y=bounds.y+(bounds.h-view.h)/2;clampView();renderCamera()},zoomAt};
+  const svgPosition=(clientX,clientY)=>{
+   const rect=svg.getBoundingClientRect();const ratio=view.w/view.h,boxRatio=rect.width/Math.max(rect.height,1);
+   let sx=0,sy=0,sw=rect.width,sh=rect.height;
+   if(boxRatio>ratio){sw=rect.height*ratio;sx=(rect.width-sw)/2}else{sh=rect.width/ratio;sy=(rect.height-sh)/2}
+   return {x:(clientX-rect.left-sx)/Math.max(sw,1),y:(clientY-rect.top-sy)/Math.max(sh,1),sw,sh};
+  };
+  const touchPoint=touch=>svgPosition(touch.clientX,touch.clientY);
+  let gesture=null;
+  svg.addEventListener('touchstart',event=>{
+   if(!dialog.classList.contains('seat-map-expanded'))return;
+   const t=[...event.touches];
+   if(t.length===1)gesture={type:'pan',x:t[0].clientX,y:t[0].clientY,view:{...view}};
+   else if(t.length>=2){const cx=(t[0].clientX+t[1].clientX)/2,cy=(t[0].clientY+t[1].clientY)/2;gesture={type:'pinch',distance:Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY),cx,cy,view:{...view}}}
+  },{passive:true});
+  svg.addEventListener('touchmove',event=>{
+   if(!gesture||!dialog.classList.contains('seat-map-expanded'))return;
+   event.preventDefault();
+   const t=[...event.touches];
+   if(gesture.type==='pan'&&t.length===1){
+    const p=svgPosition(t[0].clientX,t[0].clientY),start=svgPosition(gesture.x,gesture.y);
+    view.x=gesture.view.x-(p.x-start.x)*gesture.view.w;view.y=gesture.view.y-(p.y-start.y)*gesture.view.h;view.w=gesture.view.w;view.h=gesture.view.h;clampView();renderCamera();
+   }else if(t.length>=2){
+    const cx=(t[0].clientX+t[1].clientX)/2,cy=(t[0].clientY+t[1].clientY)/2;
+    if(gesture.type!=='pinch'){gesture={type:'pinch',distance:Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY),cx,cy,view:{...view}}}
+    const factor=Math.max(0.1,Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY))/Math.max(gesture.distance,1);
+    const p=svgPosition(gesture.cx,gesture.cy),centerX=gesture.view.x+p.x*gesture.view.w,centerY=gesture.view.y+p.y*gesture.view.h;
+    view.w=gesture.view.w/factor;view.h=gesture.view.h/factor;view.x=centerX-p.x*view.w;view.y=centerY-p.y*view.h;clampView();renderCamera();
+   }
+  },{passive:false});
+  svg.addEventListener('touchend',()=>{gesture=null},{passive:true});
+  svg.addEventListener('touchcancel',()=>{gesture=null},{passive:true});
+  svg.addEventListener('wheel',event=>{if(!dialog.classList.contains('seat-map-expanded'))return;event.preventDefault();const p=svgPosition(event.clientX,event.clientY);zoomAt(event.deltaY<0?1.2:1/1.2,p.x,p.y)},{passive:false});
+  let dragging=null;
+  svg.addEventListener('mousedown',event=>{if(event.button!==0||!dialog.classList.contains('seat-map-expanded'))return;dragging={x:event.clientX,y:event.clientY,view:{...view}}});
+  window.addEventListener('mousemove',event=>{if(!dragging||!backdrop.isConnected)return;const start=svgPosition(dragging.x,dragging.y),end=svgPosition(event.clientX,event.clientY);view.x=dragging.view.x-(end.x-start.x)*dragging.view.w;view.y=dragging.view.y-(end.y-start.y)*dragging.view.h;clampView();renderCamera()});
+  window.addEventListener('mouseup',()=>{dragging=null});
+  svg.addEventListener('dblclick',event=>{if(!dialog.classList.contains('seat-map-expanded'))return;const p=svgPosition(event.clientX,event.clientY);zoomAt(1.7,p.x,p.y)});
+  renderCamera();
   const background=seatSVG('g');
   const assignedGroups=seatGroupsForCity(city),seatCircles=[];
   const seatOwners=new Map();for(const m of members){const occupied=hemicycleSeats[String(m.id)]?.[city];if(Number.isInteger(occupied))seatOwners.set(occupied,m)}
@@ -874,11 +949,14 @@ async function showSeatOnPlan(city,number,memberName,memberGroup){
    svg.setAttribute('aria-label','Plan des sièges de '+(city==='bru'?'Bruxelles':'Strasbourg')+(groupsOn?', couleurs par groupe politique':'')+', place '+number+' repérée en bleu foncé');
   };
   controls.prepend(groupBtn);
-  let zoom=false;
   const zoomBtn=el('button','','Agrandir autour du siège');
   zoomBtn.type='button';
-  zoomBtn.onclick=()=>{zoom=!zoom;svg.setAttribute('viewBox',zoom?`${Math.max(city==='bru'?335:340,Math.min(x-95,city==='bru'?670:660))} ${Math.max(350,Math.min(y-78,city==='bru'?580:565))} 190 145`:fullView);zoomBtn.textContent=zoom?'Vue entière':'Agrandir autour du siège'};
+  zoomBtn.onclick=()=>{if(zoomLevel()>1.2){camera.fit();zoomBtn.textContent='Agrandir autour du siège'}else{view.w=190;view.h=bounds.h*view.w/bounds.w;view.x=x-view.w/2;view.y=y-view.h/2;clampView();renderCamera();zoomBtn.textContent='Vue entière'}};
   controls.prepend(zoomBtn);
+  const zoomControls=el('div','seat-map-zoom');
+  for(const [label,factor] of [['−',1/1.5],['+',1.5]]){const btn=el('button','',label);btn.type='button';btn.setAttribute('aria-label',factor>1?'Zoom avant':'Zoom arrière');btn.onclick=()=>camera.zoomAt(factor);zoomControls.append(btn)}
+  const fit=el('button','','Centrer');fit.type='button';fit.onclick=()=>camera.fit(cinema?1.12:1);zoomControls.append(fit);
+  controls.prepend(zoomControls);
  }catch(error){if(backdrop.isConnected)area.textContent='Plan indisponible sur cet appareil. Ouvre le PDF officiel pour consulter la place.';console.warn('Carte des places',error)}
 }
 
@@ -1526,7 +1604,7 @@ document.getElementById('downloadOffline').addEventListener('click',downloadOffi
 if('serviceWorker' in navigator){
  window.addEventListener('load',async()=>{
   try{
-   const registration=await navigator.serviceWorker.register('./sw.js?v=87',{scope:'./',updateViaCache:'none'});
+   const registration=await navigator.serviceWorker.register('./sw.js?v=88',{scope:'./',updateViaCache:'none'});
    const notice=$('appUpdateNotice'),apply=$('applyAppUpdate');
    const displayUpdate=()=>{
     if(registration.waiting&&navigator.serviceWorker.controller)notice.hidden=false;
