@@ -1369,7 +1369,9 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
   locateIcon.append(seatSVG('circle',{cx:12,cy:12,r:7}),seatSVG('circle',{cx:12,cy:12,r:2.5}),seatSVG('path',{d:'M12 2V5 M12 19V22 M2 12H5 M19 12H22'}));previewLocate.append(locateIcon);
   previewLocate.onclick=()=>{
    const p=positions[(previewSeat??0)-1];if(!p||!p[0]||!p[1])return;
-   const ratio=viewportRatio();view.w=Math.min(bounds.w*.42,bounds.h*.55*ratio);view.h=view.w/ratio;
+   const ratio=viewportRatio();
+   const pixelWidth=svg.getBoundingClientRect().width;
+   view.w=Math.min(bounds.w*.42,bounds.h*.55*ratio,pixelWidth>0?pixelWidth/3.8:Infinity);view.h=view.w/ratio;
    // Keep the selected seat above the preview, including short iPhone viewports.
    const mapRect=svg.getBoundingClientRect(),cardRect=preview.getBoundingClientRect();
    const safeFraction=mapRect.height>0?Math.max(.15,Math.min(.5,(cardRect.top-mapRect.top-28)/mapRect.height)): .35;
