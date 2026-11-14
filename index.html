@@ -1314,7 +1314,7 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
   const labelY=Math.max(367,y-27);
   marker.append(seatSVG('path',{d:`M${x} ${y-8} L${labelX} ${labelY+9}`,stroke:'#164b86','stroke-width':1.3}));
   marker.append(seatSVG('rect',{x:labelX-25,y:labelY-12,width:50,height:21,rx:8,fill:'#073b7e'}));
-  marker.append(seatSVG('text',{x:labelX,y:labelY+2,'text-anchor':'middle',fill:'#fff','font-size':12,'font-weight':700},(city==='bru'?'B':'S')+number));
+  marker.append(seatSVG('text',{x:labelX,y:labelY+2,'text-anchor':'middle',fill:'#fff','font-size':12,'font-weight':700},String(number)));
   svg.append(background,seatNumberLabels);
   // Les deux zones institutionnelles sont attestées sur le plan de Strasbourg.
   if(city==='str'){
@@ -1379,11 +1379,10 @@ window.addEventListener('pageshow',event=>{if(event.persisted){try{sessionStorag
 function hemicycleBlock(m){
  const seats=hemicycleSeats[String(m.id)];if(!seats||(!Number.isInteger(seats.str)&&!Number.isInteger(seats.bru)))return null;
  const box=el('div','hemicycle-seats');box.setAttribute('aria-label','Places dans les hémicycles de Strasbourg et Bruxelles');
- box.append(hemicycleMarker());
  for(const [key,label] of [['bru','Bru'],['str','Str']]){
   if(!Number.isInteger(seats[key]))continue;
   const row=el('span','hemicycle-row');
-  row.append(el('span','',label),el('span','hemicycle-number',String(seats[key])));row.setAttribute('role','button');row.tabIndex=0;row.setAttribute('aria-label',`Voir la place ${seats[key]} sur le plan de ${key==='str'?'Strasbourg':'Bruxelles'} pour ${m.name}`);row.addEventListener('click',()=>showSeatOnPlan(key,seats[key],m.name,m.group));row.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();showSeatOnPlan(key,seats[key],m.name,m.group)}});box.append(row);
+  row.append(hemicycleMarker(),el('span','',label),el('span','hemicycle-number',String(seats[key])));row.setAttribute('role','button');row.tabIndex=0;row.setAttribute('aria-label',`Voir la place ${seats[key]} sur le plan de ${key==='str'?'Strasbourg':'Bruxelles'} pour ${m.name}`);row.addEventListener('click',()=>showSeatOnPlan(key,seats[key],m.name,m.group));row.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();showSeatOnPlan(key,seats[key],m.name,m.group)}});box.append(row);
  }
  box.title='Plans officiels du Parlement européen · Strasbourg 19/10/2026 · Bruxelles 11/11/2026';
  return box;
@@ -2045,7 +2044,7 @@ document.getElementById('downloadOffline').addEventListener('click',downloadOffi
 if('serviceWorker' in navigator){
  window.addEventListener('load',async()=>{
   try{
-   const registration=await navigator.serviceWorker.register('./sw.js?v=126',{scope:'./',updateViaCache:'none'});
+   const registration=await navigator.serviceWorker.register('./sw.js?v=127',{scope:'./',updateViaCache:'none'});
    const notice=$('appUpdateNotice'),apply=$('applyAppUpdate');
    const displayUpdate=()=>{
     if(registration.waiting&&navigator.serviceWorker.controller)notice.hidden=false;
