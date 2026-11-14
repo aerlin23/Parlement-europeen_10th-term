@@ -1653,6 +1653,10 @@ function applyGroupTheme(){
  $('identityBrand').textContent='';$('identityBrand').hidden=true;
  $('identitySubtitle').textContent='';$('identitySubtitle').hidden=true;
  $('headerStats').hidden=false;
+ // Les compteurs reflètent le groupe entier, indépendamment des autres filtres.
+ const headerMembers=theme?members.filter(m=>m.group===selected):members;
+ $('total').textContent=headerMembers.length;
+ $('countries').textContent=new Set(headerMembers.map(m=>m.country).filter(Boolean)).size;
  logo.hidden=!!theme&&!theme.file;mark.hidden=!(theme&&!theme.file);mark.textContent=theme?.name||'';
  logo.src=theme?.file?'https://aerlin23.github.io/'+theme.repo+'/assets/'+theme.file:'./assets/parlement-logo.png';
  logo.alt=theme?'Logo '+theme.name:'Parlement européen';
