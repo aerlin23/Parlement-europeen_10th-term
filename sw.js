@@ -1,8 +1,8 @@
 /* Vademecum PE : ressources critiques hors-ligne et mises à jour consenties. */
-const VERSION='pe-pwa-v223';
+const VERSION='pe-pwa-v224';
 const MEDIA='pe-offline-official-media-v1';
 const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
-const CODE=['./styles.css?v=223','./directory.js?v=223','./hemicycle.js?v=223','./interface.js?v=223','./quiz.js?v=223','./offline.js?v=223','./smart-search.js?v=223','./features.js?v=223'];
+const CODE=['./styles.css?v=224','./directory.js?v=224','./hemicycle.js?v=224','./interface.js?v=224','./quiz.js?v=224','./offline.js?v=224','./smart-search.js?v=224','./features.js?v=224'];
 const OFFLINE=['./','./index.html','./smart-search.js','./features.js','./secretariat-general.html','./commission-europeenne.html','./institutions-agences.html','./assets/presidences-conseil-ue-2026-2030.svg','./presidences-cinema.html','./assets/presidences-conseil-ue-cinema.avif','./commission-members.json','./members.json','./coordinators.json','./changes.json','./hemicycle-seats.json','./hemicycle-str-coordinates.json','./hemicycle-bru-coordinates.json','./committees.json','./photo-assets.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png','./assets/greens-logo.svg','./assets/sg-juan-carlos-jimenez-marin.webp','./assets/sg-markus-winkler.webp','./assets/sg-alessandro-chiocchetti-user.webp','./assets/sg-markus-winkler-official.webp'];
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{const cache=await caches.open(CORE);await cache.addAll(['./index.html','./members.json','./committees.json','./coordinators.json',...CODE].map(url=>new Request(url,{cache:'reload'})));await Promise.allSettled(OFFLINE.filter(url=>!['./index.html','./members.json','./committees.json','./coordinators.json'].includes(url)).map(url=>cache.add(url)));})());
