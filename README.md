@@ -59,3 +59,7 @@ L'installation PWA est proposée par les navigateurs compatibles. Précharger le
 ## État de maintenance
 
 Version 219 : séparation conservatrice des scripts classiques et du CSS, correction du score du quiz, cache durable des médias téléchargés et URLs de ressources versionnées. Les tests navigateur restent nécessaires avant de considérer la refonte validée.
+
+## Version 220 (branche de validation)
+
+Recherche combinée par pays, groupe et commission/fonction ; cinq consultations récentes conservées sur l'appareil ; révision adaptative tenant compte du délai depuis la dernière réponse et du temps de réponse ; filtres facultatifs de pays, commission et fonction sur les plans. Aucun quiz de localisation ajouté. Les filtres de commission portent sur les titulaires.

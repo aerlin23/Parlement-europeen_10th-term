@@ -764,3 +764,4 @@ body.reading-large header.ep-header #identityTitle{font-size:clamp(26px,6vw,32px
 .vf-cavalier-bar strong{flex:1}
 .vf-cavalier-dialog iframe{width:100%;height:calc(100% - 56px);border:0}
 .vf-tools-tab{display:none}@media(min-width:901px) and (hover:hover) and (pointer:fine){.vf-tools-preview .vf-tools-tab{display:inline-flex;align-items:center;justify-content:center;padding:9px 18px;border:1px solid #cbdce5;border-radius:7px;color:#315d78;background:#f7fafc;font-weight:600;text-decoration:none}} 
+.seat-extra-filters{padding:4px 8px;font-size:12px}.seat-extra-filters summary{cursor:pointer;font-weight:600}.seat-filter-row{display:flex;flex-wrap:wrap;gap:5px;align-items:center;padding:5px 0}.seat-filter-row select{min-width:0;max-width:100%;font:inherit}.seat-filter-status{font-size:11px}

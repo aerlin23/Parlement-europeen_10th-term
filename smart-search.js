@@ -15,7 +15,9 @@ const functions=[
 function close(){choices=[];selected=-1;panel.replaceChildren();panel.hidden=true;input.setAttribute('aria-expanded','false');input.removeAttribute('aria-activedescendant')}
 function score(value,q){const v=norm(value);if(v===q)return 0;if(v.startsWith(q))return 1;if(v.split(/[\s\-–/]+/).some(w=>w.startsWith(q)))return 2;return v.includes(q)?3:Infinity}
 function search(value){
- const q=norm(value.trim());if(!q||!members.length)return [];
+ const q=norm(value.trim());if(!members.length)return [];
+ if(!q)return recentMepIds().map(id=>members.find(m=>String(m.id)===id)).filter(Boolean).map(m=>({kind:'Récent',title:m.name,desc:m.group+' · '+(fr[m.country]||m.country),action:{person:m.name,personId:m.id}}));
+ const multi=parseMultiSearch(value);if(multi)return [{kind:'Filtres',title:[multi.country&&fr[multi.country],multi.group,multi.committee,multi.func&&({chair:'Présidence',vicechair:'Vice-présidence',coord:'Coordinateur',quaestor:'Questeur',president:'Présidence PE',vice:'Vice-présidence PE',grouppresident:'Présidence de groupe',groupvice:'Vice-présidence de groupe'}[multi.func])].filter(Boolean).join(' · '),desc:'Appliquer les critères',action:multi}];
  const out=[],add=(kind,title,desc,weight,action)=>{if(Number.isFinite(weight))out.push({kind,title,desc,weight,action})};
  for(const [code,def] of Object.entries(committeeDefs)){
   add('Commission',code+' — '+def.name,'Membres et responsables',Math.min(score(code,q),score(def.name,q)+1),{committee:code});
@@ -52,7 +54,8 @@ function choose(choice){
  for(const id of ['search','group','committee','function','country','gender','assignment','kind']){
   const el=document.getElementById(id);if(el)el.value='';
  }
- if(choice.action.person)input.value=choice.action.person;
+ if(choice.action.person){input.value=choice.action.person;rememberMep(members.find(m=>choice.action.personId?String(m.id)===String(choice.action.personId):m.name===choice.action.person));}
+ if(choice.action.country)document.getElementById('country').value=choice.action.country;
  if(choice.action.seat)input.value=choice.action.seat;
  if(choice.action.group)document.getElementById('group').value=choice.action.group;
  if(choice.action.committee)document.getElementById('committee').value=choice.action.committee;

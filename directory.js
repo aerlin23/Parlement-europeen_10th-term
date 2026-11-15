@@ -147,7 +147,7 @@ function field(id){return $(id)?.value||''}
 function groupPresident(m){return /^(Co)?président(e)?$/i.test(m.role||'')}
 const HEAD_COUNTRY_CODES={"Austria":"AT","Belgium":"BE","Bulgaria":"BG","Croatia":"HR","Cyprus":"CY","Czechia":"CZ","Czech Republic":"CZ","Denmark":"DK","Estonia":"EE","Finland":"FI","France":"FR","Germany":"DE","Greece":"GR","Hungary":"HU","Ireland":"IE","Italy":"IT","Latvia":"LV","Lithuania":"LT","Luxembourg":"LU","Malta":"MT","Netherlands":"NL","Poland":"PL","Portugal":"PT","Romania":"RO","Slovakia":"SK","Slovenia":"SI","Spain":"ES","Sweden":"SE"};
 function fnEntries(m){const functions=afs(m).map(f=>({...f,checkedAt:f.checkedAt||m.committeesCheckedAt}));const out=functions.filter(f=>f.type.startsWith('EP_'));if(m.role)out.push({type:'GROUP',label:m.role+' · '+(m.group||CONFIG.short),source:m.roleSource,checkedAt:m.roleCheckedAt,sourceDate:m.roleSourceDate});out.push(...functions.filter(f=>!f.type.startsWith('EP_')));if(m.headOfDelegation&&field('group')===m.group&&m.group)out.push({type:'HEAD',label:(m.gender==='FEMALE'?'Cheffe':'Chef')+' de délégation · '+(HEAD_COUNTRY_CODES[m.country]||m.country),source:m.headSource,checkedAt:m.headCheckedAt});for(const c of committeeCoordinatorEntries(m)){out.push({type:'COORD',label:field('committee')?'Coordinateur':'Coordinateur '+c.committee,source:c.source,checkedAt:c.checkedAt,sourceDate:c.sourceDate});}return out}
-function matchesFunction(m,f){if(!f)return true;if(f==="commissionbureau")return afs(m).some(x=>["COMMITTEE_CHAIR","COMMITTEE_VICE_CHAIR"].includes(x.type)&&(!field("committee")||x.committee===field("committee")));if(f==="presidencype")return afs(m).some(x=>["EP_PRESIDENT","EP_VICE_PRESIDENT"].includes(x.type));const types={president:'EP_PRESIDENT',vice:'EP_VICE_PRESIDENT',quaestor:'EP_QUAESTOR',chair:'COMMITTEE_CHAIR',vicechair:'COMMITTEE_VICE_CHAIR'};if(types[f])return afs(m).some(x=>x.type===types[f]&&(!['chair','vicechair'].includes(f)||((!field('committee')||x.committee===field('committee'))&&(!field('kind')||committeeDefs[x.committee]?.type===field('kind'))))); if(f==='bureau')return afs(m).some(x=>x.type.startsWith('EP_'));if(f==='groupleadership')return groupPresident(m)||/vice-président/i.test(m.role||'');if(f==='grouppresident')return groupPresident(m);if(f==='groupvice')return /vice-président/i.test(m.role||'');if(f==='head')return !!m.headOfDelegation&&!!field('group')&&m.group===field('group');if(f==='coord')return committeeCoordinatorEntries(m).length>0;return false}
+function matchesFunction(m,f,committee=field('committee'),kind=field('kind')){if(!f)return true;if(f==="commissionbureau")return afs(m).some(x=>["COMMITTEE_CHAIR","COMMITTEE_VICE_CHAIR"].includes(x.type)&&(!committee||x.committee===committee));if(f==="presidencype")return afs(m).some(x=>["EP_PRESIDENT","EP_VICE_PRESIDENT"].includes(x.type));const types={president:'EP_PRESIDENT',vice:'EP_VICE_PRESIDENT',quaestor:'EP_QUAESTOR',chair:'COMMITTEE_CHAIR',vicechair:'COMMITTEE_VICE_CHAIR'};if(types[f])return afs(m).some(x=>x.type===types[f]&&(!['chair','vicechair'].includes(f)||((!committee||x.committee===committee)&&(!kind||committeeDefs[x.committee]?.type===kind)))); if(f==='bureau')return afs(m).some(x=>x.type.startsWith('EP_'));if(f==='groupleadership')return groupPresident(m)||/vice-président/i.test(m.role||'');if(f==='grouppresident')return groupPresident(m);if(f==='groupvice')return /vice-président/i.test(m.role||'');if(f==='head')return !!m.headOfDelegation&&!!field('group')&&m.group===field('group');if(f==='coord')return committeeCoordinatorEntries(m,committee).length>0;return false}
 function committeeBox(m){const box=el('div','committee-box');for(const [status,label] of [['MEMBER','Titulaires']]){const list=committeesOf(m).filter(c=>c.status===status&&committeeDefs[c.code]?.type==='standing').sort((a,b)=>a.code.localeCompare(b.code));if(!list.length)continue;const row=status==='SUBSTITUTE'?el('details','committee-substitutes'):el('div','committee-members');if(status==='SUBSTITUTE')row.append(el('summary','',label+' · '+list.length));else row.append(el('span','committee-heading',label+' : '));for(const c of list){const def=committeeDefs[c.code]||{},tag=el('a','committee-tag',c.code+(def.type==='subcommittee'?' (sous-comm.)':def.type==='special'?' (spéciale)':''));tag.title=def.name||c.code;const url=safeLink(def.source);if(url){tag.href=url;tag.target='_blank';tag.rel='noopener'}row.append(tag)}box.append(row)}return box.childNodes.length?box:null}
 
 function safeLink(url){try{const u=new URL(url);const hosts=['europarl.europa.eu','www.europarl.europa.eu','esn-group.eu','patriotsforeurope.eu','www.patriotsforeurope.eu','eppgroup.eu','www.eppgroup.eu','socialistsanddemocrats.eu','www.socialistsanddemocrats.eu','ecrgroup.eu','www.ecrgroup.eu','reneweuropegroup.eu','www.reneweuropegroup.eu','greens-efa.eu','www.greens-efa.eu','left.eu','www.left.eu'];return u.protocol==='https:'&&(hosts.includes(u.hostname)||u.hostname.endsWith('.europarl.europa.eu'))?u.href:null}catch{return null}}
@@ -235,6 +235,33 @@ function fuzzyNameScore(name,query){
  return best<=limit?best:Infinity;
 }
 let fuzzySearchUsed=false;
+
+const countryAliases={France:'francais francaise francaises',Germany:'allemand allemands allemande allemandes',Italy:'italien italiens italienne italiennes',Spain:'espagnol espagnols espagnole espagnoles',Belgium:'belge belges',Poland:'polonais polonaise polonaises',Netherlands:'neerlandais neerlandaise neerlandaises hollandais',Portugal:'portugais portugaise portugaises',Sweden:'suedois suedoise suedoises',Austria:'autrichien autrichiens autrichienne autrichiennes',Greece:'grec grecs grecque grecques',Ireland:'irlandais irlandaise irlandaises',Romania:'roumain roumains roumaine roumaines',Hungary:'hongrois hongroise hongroises',Denmark:'danois danoise danoises',Finland:'finlandais finlandaise finlandaises',Czechia:'tcheque tcheques','Czech Republic':'tcheque tcheques',Slovakia:'slovaque slovaques',Slovenia:'slovene slovenes',Croatia:'croate croates',Bulgaria:'bulgare bulgares',Lithuania:'lituanien lituaniens lituanienne',Latvia:'letton lettons lettone',Estonia:'estonien estoniens estonienne',Malta:'maltais maltaise',Cyprus:'chypriote chypriotes',Luxembourg:'luxembourgeois luxembourgeoise'};
+function parseMultiSearch(value){
+ let rest=norm(value).trim().replace(/[-’']/g,' '), result={},count=0;
+ const take=(key,options)=>{
+  for(const [alias,val] of options.sort((a,b)=>b[0].length-a[0].length)){
+   const needle=norm(alias).replace(/[-’']/g,' ');
+   const pos=(' '+rest+' ').indexOf(' '+needle+' ');
+   if(pos<0)continue;
+   result[key]=val;count++;rest=(' '+rest+' ').slice(0,pos)+ ' '+(' '+rest+' ').slice(pos+needle.length+2);rest=rest.trim().replace(/\s+/g,' ');return;
+  }
+ };
+ take('country',Object.entries(fr).flatMap(([key,label])=>[ [label,key],[key,key],...(countryAliases[key]||'').split(' ').filter(Boolean).map(a=>[a,key])]).filter(x=>members.some(m=>m.country===x[1])));
+ take('group',[...new Set(members.map(m=>m.group))].map(g=>[g,g]));
+ take('committee',Object.keys(committeeDefs).map(c=>[c,c]));
+ take('func',[['vice president','vicechair'],['vice presidente','vicechair'],['president','chair'],['presidente','chair'],['coordinateur','coord'],['coordinatrice','coord'],['questeur','quaestor']]);
+ if(!result.committee&&result.func==='chair')result.func=result.group?'grouppresident':'president';
+ if(!result.committee&&result.func==='vicechair')result.func=result.group?'groupvice':'vice';
+ return count>=2&&!rest?result:null;
+}
+function matchesMultiSearch(m,a){
+ return (!a.country||m.country===a.country)&&(!a.group||m.group===a.group)&&(!a.committee||committeesOf(m).some(c=>c.code===a.committee&&c.status==='MEMBER'))&&matchesFunction(m,a.func,a.committee||'','');
+}
+const RECENT_MEP_KEY='pe-recent-mep-v1';
+function recentMepIds(){try{const a=JSON.parse(localStorage.getItem(RECENT_MEP_KEY)||'[]');return Array.isArray(a)?a.filter(x=>typeof x==='string').slice(0,5):[]}catch{return []}}
+function rememberMep(m){if(!m)return;try{const id=String(m.id);localStorage.setItem(RECENT_MEP_KEY,JSON.stringify([id,...recentMepIds().filter(x=>x!==id)].slice(0,5)))}catch{}}
+
 function selectMembers(){
  const groupSizes=members.reduce((sizes,m)=>{sizes[m.group]=(sizes[m.group]||0)+1;return sizes},{});
  const rawSearch=field('search').trim(),q=norm(rawSearch).trim();
@@ -248,10 +275,12 @@ function selectMembers(){
   (!(c||status||kind)||committeesOf(m).some(x=>(!c||(x.code===c&&x.status==='MEMBER'))&&(!status||x.status===status)&&(!kind||committeeDefs[x.code]?.type===kind)))
  );
  let results;
+ const multi=parseMultiSearch(rawSearch);
  fuzzySearchUsed=false;
  if(seatQuery){
   results=pool.filter(m=>hemicycleSeats[String(m.id)]?.[seatQuery[1].toLowerCase()==='s'?'str':'bru']===Number(seatQuery[2]));
- }else if(!q)results=pool;
+ }else if(multi)results=pool.filter(m=>matchesMultiSearch(m,multi));
+ else if(!q)results=pool;
  else{
   results=pool.filter(m=>norm(m.name).includes(q));
   if(!results.length&&q.replace(/[^a-z]/g,'').length>=3){

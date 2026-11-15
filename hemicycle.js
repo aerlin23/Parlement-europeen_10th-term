@@ -332,7 +332,7 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
   previewRing=seatSVG('circle',{r:3.1,fill:'none',stroke:city==='bru'?'#a0802b':'#073b7e','stroke-width':1.5,'vector-effect':'non-scaling-stroke','pointer-events':'none',visibility:'hidden'});
   const showPreview=(m,n)=>{
    if(Date.now()<suppressClickUntil)return;
-   previewSeat=n;selectedMep=m;
+   previewSeat=n;selectedMep=m;rememberMep(m);
    const p=positions[n-1];if(p){previewRing.setAttribute('cx',p[0]);previewRing.setAttribute('cy',p[1]);previewRing.setAttribute('visibility','visible')}
    if(selectedMarker)selectedMarker.setAttribute('visibility','hidden');
    renderCamera();
@@ -352,7 +352,7 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
    const [x,y]=positions[i];if(!x||!y)continue;
    const seat=seatSVG('circle',{cx:x,cy:y,r:2.45,fill:'#a4b4c4',class:'seat-map-dot'});
    background.append(seat);
-   seatCircles.push([seat,assignedGroups.get(i+1)]);
+   seatCircles.push([seat,assignedGroups.get(i+1),seatOwners.get(i+1)]);
    const owner=seatOwners.get(i+1);
    if(owner){const hit=seatSVG('circle',{cx:x,cy:y,r:3.1,fill:'transparent',class:'seat-map-pick',tabindex:i+1===number?0:-1,role:'button','aria-label':'Place '+(i+1)+' : '+owner.name+' · '+owner.group});const tooltip=seatSVG('title',{},'Place '+(i+1)+' · '+owner.name+' · '+owner.group);hit.append(tooltip);const pick=()=>showPreview(owner,i+1);hit.addEventListener('click',()=>{hit.blur();pick()});hit.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();pick()}});background.append(hit)}
   }
@@ -426,12 +426,25 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
   area.append(legend);
   
   const groupBtn=el('button','seat-group-toggle','Vue groupes');groupBtn.type='button';groupBtn.setAttribute('aria-pressed','false');
-  function paintGroups(){
+  const planFilters=el('details','seat-extra-filters');
+ const filterSummary=el('summary','','Filtres du plan');planFilters.append(filterSummary);
+ const filterRow=el('div','seat-filter-row');
+ const makeFilter=(label,items)=>{const select=el('select');select.setAttribute('aria-label',label);for(const [value,text] of [['',label],...items]){const option=el('option','',text);option.value=value;select.append(option)}filterRow.append(select);return select};
+ const countryFilter=makeFilter('Tous les pays',[...new Set(members.map(m=>m.country))].sort((a,b)=>(fr[a]||a).localeCompare(fr[b]||b,'fr')).map(c=>[c,fr[c]||c]));
+ const committeeFilter=makeFilter('Toutes les commissions',Object.keys(committeeDefs).sort().map(c=>[c,c]));
+ const functionFilter=makeFilter('Toutes les fonctions',[['presidencype','Présidence du PE'],['quaestor','Questeurs'],['chair','Présidents de commission'],['vicechair','Vice-présidents de commission'],['grouppresident','Présidents de groupe'],['coord','Coordinateurs']]);
+ const filterStatus=el('span','seat-filter-status');filterStatus.setAttribute('role','status');filterRow.append(filterStatus);planFilters.append(filterRow);
+ searchBox.after(planFilters);
+ for(const field of [countryFilter,committeeFilter,functionFilter])field.addEventListener('change',paintGroups);
+ function paintGroups(){
    const on=groupBtn.getAttribute('aria-pressed')==='true';
-   for(const [circle,group] of seatCircles){
+   const a={country:countryFilter.value,committee:committeeFilter.value,func:functionFilter.value};let hits=0;const filtering=!!(a.country||a.committee||a.func);
+   for(const [circle,group,owner] of seatCircles){
     circle.setAttribute('fill',on&&group?SEAT_GROUP_COLORS[group]:'#a4b4c4');
-    circle.setAttribute('opacity',on&&activeGroup&&group!==activeGroup?'.15':'1');
+    const matches=(!on||!activeGroup||group===activeGroup)&&(!filtering||(owner&&matchesMultiSearch(owner,a)));if(matches&&owner)hits++;
+    circle.setAttribute('opacity',matches?'1':'.15');
    }
+   filterStatus.textContent=filtering?hits+' députés sur le plan':'';
    for(const button of legend.querySelectorAll('[data-group]'))button.setAttribute('aria-pressed',String(activeGroup===button.dataset.group));
   }
   groupHeader.onclick=()=>groupBtn.click();

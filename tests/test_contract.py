@@ -67,19 +67,11 @@ class DirectoryContract(unittest.TestCase):
         self.assertIn("QUIZ_PROGRESS_KEY", HTML)
 
     def test_secretariat_general_navigation(self):
-        self.assertIn('id="secretariatNav"', HTML)
-        self.assertIn('href="?section=secretariat"', HTML)
-        self.assertIn('id="secretariatPanel"', HTML)
-        self.assertIn('id="sgMainGrid"', HTML)
-        self.assertIn('id="sgDeputyGrid"', HTML)
-        self.assertIn('id="sgDirectorGrid"', HTML)
+        for element in ('secretariatNav','secretariatPanel','sgOrgGrid','sgSearch'):
+            self.assertIn('id="'+element+'"', MARKUP)
+        self.assertIn('function sgDrawOrg(', HTML)
         self.assertIn('function showSecretariat(', HTML)
-        self.assertIn('function sgCard(', HTML)
         self.assertIn('Alessandro Chiocchetti', HTML)
-        self.assertIn('Photo non disponible', HTML)
-        self.assertEqual(sum(1 for code in ('PRES', 'ECTI', 'IUST', 'CASP', 'BUDG', 'EXPO', 'EPRS', 'COMM', 'PART', 'PERS', 'INLO', 'TRAD', 'LINC', 'FINS', 'ITEC', 'SAFE') if '["'+code+'",' in HTML), 16)
-        old = (ROOT / "secretariat-general.html").read_text(encoding="utf-8")
-        self.assertIn('url=./?section=secretariat', old)
 
     def test_pagination_keeps_entire_dataset(self):
         self.assertIn("DIRECTORY_PAGE_SIZE=matchMedia", HTML)

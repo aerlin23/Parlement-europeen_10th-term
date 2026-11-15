@@ -17,6 +17,7 @@ function directoryCard(m,priority=false){
  photoLink.setAttribute('aria-label',`Ouvrir la fiche officielle de ${m.name} sur le site du Parlement européen`);
  photoLink.title='Ouvrir la fiche officielle sur le site du Parlement européen';
  photoLink.append(imageBox(m,false,priority));card.append(photoLink,info);
+ name.addEventListener('click',()=>rememberMep(m));photoLink.addEventListener('click',()=>rememberMep(m));
  return card;
 }
 function appendDirectoryPage(){

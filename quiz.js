@@ -61,6 +61,8 @@ function spacedDeck(list){
   let weight=neverSeen?3:overdue?2:0.08;
   if(misses&&overdue)weight+=Math.min(12,3+misses*1.6);
   if(misses&&!overdue)weight=Math.max(weight,0.2);
+  if(overdue&&record.lastReviewed){weight+=Math.min(6,Math.max(0,(Date.now()-record.lastReviewed)/86400000-1)*0.25)}
+  if(overdue&&record.responseMs>8000)weight+=Math.min(5,(record.responseMs-8000)/4000);
   return {m,weight};
  });
  const selected=[];
@@ -75,8 +77,9 @@ function spacedDeck(list){
 function updateQuizProgress(m,correct){
  const key=String(m.id),previous=quizProgress.people[key]||{};
  const streak=correct?(Number(previous.streak)||0)+1:0;
- const delay=correct?Math.min(16,2**Math.min(streak,4)):1;
- quizProgress.people[key]={seen:(Number(previous.seen)||0)+1,misses:(Number(previous.misses)||0)+(correct?0:1),streak,due:quizProgress.round+delay};
+ const elapsed=Math.min(60000,Math.max(0,performance.now()-(session?.questionStarted||performance.now())));
+ const delay=correct?(elapsed>12000?1:Math.min(16,2**Math.min(streak,4))):1;
+ quizProgress.people[key]={seen:(Number(previous.seen)||0)+1,misses:(Number(previous.misses)||0)+(correct?0:1),streak,due:quizProgress.round+delay,lastReviewed:Date.now(),responseMs:elapsed};
  saveQuizProgress();
 }
 function startSession(list=filtered){
@@ -136,7 +139,7 @@ function enableNamePronunciation(m){
 }
 function showStudy(){
  stopNamePronunciation();$('listenName').hidden=true;
- const m=session.deck[session.index];session.answered=false;
+ const m=session.deck[session.index];session.answered=false;session.questionStarted=performance.now();
  $('studyProgress').textContent=quizProgressLabel(session.index);
  $('studyPhoto').replaceChildren();$('studyAnswer').replaceChildren();
  $('quizFeedback').textContent='';$('quizFeedback').className='quiz-feedback';

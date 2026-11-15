@@ -2,7 +2,7 @@ name: Vademecum PE — tests manuels
 # Lancement manuel uniquement : aucun courriel à chaque modification.
 on:
   push:
-    branches: [stabilisation-v219]
+    branches: [stabilisation-v219, evolution-v220]
   workflow_dispatch:
     inputs:
       browser:
