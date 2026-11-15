@@ -768,3 +768,6 @@ body.reading-large header.ep-header #identityTitle{font-size:clamp(26px,6vw,32px
 
 /* Quatre filtres avancés de largeur identique sur mobile. */
 @media(max-width:650px){#advanced>.extra{grid-template-columns:repeat(2,minmax(0,1fr))}#advanced>.extra>label:nth-child(n){grid-column:auto;min-width:0}#advanced>.extra>label select{width:100%;min-width:0;font-size:13px}}
+
+/* Réinitialisation discrète dans la légende, sans modifier la caméra. */
+.seat-reset-filters{border-color:#c5d5df;background:#fff;font-weight:600;white-space:nowrap;align-self:center}.seat-reset-filters:disabled{opacity:.45}.seat-legend-simple>.seat-group-legend-item{display:none}.seat-map-dialog .seat-group-legend.seat-legend-simple{width:max-content!important;max-width:100%!important;align-self:center}.seat-legend-simple:has(.seat-reset-filters:disabled){display:none!important}

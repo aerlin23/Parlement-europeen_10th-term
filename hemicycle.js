@@ -423,6 +423,8 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
   }
   const unassigned=assignedGroups.size<positions.filter(p=>p[0]&&p[1]).length;
   if(unassigned){const entry=el('span','seat-group-legend-item');const dot=el('span','seat-group-dot');dot.style.backgroundColor='#a4b4c4';entry.append(dot,document.createTextNode('Non attribué / non renseigné'));legend.append(entry)}
+  const resetFilters=el('button','seat-group-filter seat-reset-filters','Réinitialiser les filtres');resetFilters.type='button';resetFilters.title='Effacer les filtres de pays et de groupe';resetFilters.onclick=()=>{countryFilter.value='';activeGroup=null;paintGroups()};
+  legend.append(resetFilters);
   area.append(legend);
   
   const groupBtn=el('button','seat-group-toggle','Vue groupes');groupBtn.type='button';groupBtn.setAttribute('aria-pressed','false');
@@ -440,6 +442,7 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
     const matches=(!on||!activeGroup||group===activeGroup)&&(!filtering||owner?.country===country);if(matches&&owner)hits++;
     circle.setAttribute('opacity',matches?'1':'.15');
    }
+   resetFilters.disabled=!country&&!activeGroup;
    countryFilter.title=filtering?(fr[country]||country)+' · '+hits+' députés sur le plan':'Filtrer les sièges par pays';
    for(const button of legend.querySelectorAll('[data-group]'))button.setAttribute('aria-pressed',String(activeGroup===button.dataset.group));
   }
@@ -451,7 +454,8 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
    groupHeader.textContent=groupsOn?'Sans groupes':'Groupes';
    groupHeader.setAttribute('aria-pressed',String(groupsOn));
    if(!groupsOn)activeGroup=null;paintGroups();
-   legend.hidden=!groupsOn;
+   legend.classList.toggle('seat-legend-simple',!groupsOn);
+   legend.hidden=false;
    svg.setAttribute('aria-label','Plan des sièges de '+(city==='bru'?'Bruxelles':'Strasbourg')+(groupsOn?', couleurs par groupe politique':'')+', place '+number+' repérée en bleu foncé');
   };
   controls.prepend(groupBtn);
