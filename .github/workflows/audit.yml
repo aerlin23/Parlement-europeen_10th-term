@@ -1,25 +1,5 @@
 name: Audit Vademecum PE
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'index.html'
-      - 'sw.js'
-      - 'members.json'
-      - 'committees.json'
-      - 'coordinators.json'
-      - 'hemicycle-seats.json'
-      - 'scripts/audit.cjs'
-      - '.github/workflows/audit.yml'
-  pull_request:
-    paths:
-      - 'index.html'
-      - 'sw.js'
-      - 'members.json'
-      - 'committees.json'
-      - 'coordinators.json'
-      - 'hemicycle-seats.json'
-      - 'scripts/audit.cjs'
   workflow_dispatch:
 permissions:
   contents: read
