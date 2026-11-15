@@ -212,7 +212,7 @@ $('group').addEventListener('change',()=>{$('function').value='';$('sort').value
 $('reset').onclick=()=>{for(const id of ['search','gender','group','country','function','committee','assignment','kind'])if($(id))$(id).value='';$('sort').value='name';changeFilters()};
 // Conserver les filtres visibles sur ordinateur et repliés au chargement sur mobile.
 const advancedBreakpoint=matchMedia('(max-width:650px)');
-function syncMobileFilterLabels(){const mobile=advancedBreakpoint.matches;for(const [id,desktop,mobileText] of [['group','Tous les groupes','Groupes politiques'],['committee','Toutes','Commissions'],['gender','Tous','Genre'],['function','Toutes les fonctions','Fonctions'],['country','Tous les pays','Pays'],['sort','Nom de famille · A → Z','Tri : nom A → Z']]){const select=$(id),option=select?.options[0];if(option)option.textContent=mobile?mobileText:desktop}}
+function syncMobileFilterLabels(){const mobile=advancedBreakpoint.matches;for(const [id,desktop,mobileText] of [['group','Tous les groupes','Groupes politiques'],['committee','Toutes','Commissions'],['gender','Tous','Genre'],['function','Toutes les fonctions','Fonctions'],['country','Tous les pays','Pays'],['sort','Nom de famille · A → Z','Nom A–Z']]){const select=$(id),option=select?.options[0];if(option)option.textContent=mobile?mobileText:desktop}}
 function syncAdvancedBreakpoint(){const panel=$('advanced');if(panel)panel.open=!advancedBreakpoint.matches;syncMobileFilterLabels()}
 syncAdvancedBreakpoint();
 advancedBreakpoint.addEventListener?.('change',syncAdvancedBreakpoint);
