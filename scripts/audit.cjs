@@ -65,7 +65,8 @@ for(const [i,match] of scripts.entries()){
 }
 try{new vm.Script(worker,{filename:'sw.js'})}catch(error){errors.push('Syntaxe service worker : '+error.message)}
 check(worker.includes('coordinators|photo-assets'),'Coordinateurs absents de la stratégie de rafraîchissement du cache');
-check(/register\('\.\/sw\.js\?v=\d+'/.test(html),'Enregistrement PWA versionné absent');
+check(/register\(['"]\.\/sw\.js['"]/.test(html),'Enregistrement PWA à URL stable absent');
+check(/const VERSION=['"]pe-pwa-v\d+['"]/.test(worker),'Version interne du cache absente');
 check(html.includes('value="commissionbureau"'),'Filtre groupé présidences de commission absent');
 check(html.includes('syncCommissionFunctionMenu()'),'Filtre contextuel des commissions absent');
 console.log('Audit : '+members.length+' députés, '+Object.keys(committees).length+' commissions, '+coordinators.length+' attributions, '+Object.keys(seats).length+' plans de sièges.');
