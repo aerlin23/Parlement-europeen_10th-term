@@ -8,7 +8,9 @@ const members=json('members.json');
 const committees=json('committees.json');
 const coordinators=json('coordinators.json').entries;
 const seats=json('hemicycle-seats.json').seats;
-const html=read('index.html');
+const markup=read('index.html');
+const external=[...markup.matchAll(/<script src="\.\/([^"?]+)(?:\?[^" ]+)?"[^>]*><\/script>/g)].map(m=>m[1]);
+const html=markup+'\n'+external.map(read).join('\n');
 const worker=read('sw.js');
 const errors=[];
 const warnings=[];
@@ -58,7 +60,8 @@ for(const c of coordinators){
   else errors.push('Coordinateur non historique sans rattachement : '+m.name+' / '+c.committee);
  }
 }
-const scripts=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)];
+for(const path of external){try{new vm.Script(read(path),{filename:path})}catch(error){errors.push('Syntaxe '+path+' : '+error.message)}}
+const scripts=[...markup.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)];
 check(scripts.length>0,'Scripts JavaScript absents');
 for(const [i,match] of scripts.entries()){
  try{new vm.Script(match[1],{filename:'index.html#script'+i})}catch(error){errors.push('Syntaxe HTML/JS : '+error.message)}
@@ -69,6 +72,10 @@ check(/register\(['"]\.\/sw\.js['"]/.test(html),'Enregistrement PWA à URL stabl
 check(/const VERSION=['"]pe-pwa-v\d+['"]/.test(worker),'Version interne du cache absente');
 check(html.includes('value="commissionbureau"'),'Filtre groupé présidences de commission absent');
 check(html.includes('syncCommissionFunctionMenu()'),'Filtre contextuel des commissions absent');
+const quiz=read('quiz.js');check(quiz.includes('session.correct+session.missed.length'),'Calcul du score du quiz incorrect');
+const assets=json('photo-assets.json');for(const id of ids){check(assets.photos.includes(id)&&assets.thumbs.includes(id),'Portrait ou miniature non déclaré : '+id);check(fs.existsSync('photos/'+id+'.jpg')&&fs.existsSync('thumbs/'+id+'.webp'),'Portrait ou miniature absent : '+id)}
+check(worker.includes('persistent.match(request)'),'Cache durable des portraits absent');
+check(external.every(path=>worker.includes('./'+path+'?v=219')),'Module absent du cache de version');
 console.log('Audit : '+members.length+' députés, '+Object.keys(committees).length+' commissions, '+coordinators.length+' attributions, '+Object.keys(seats).length+' plans de sièges.');
 for(const warning of warnings)console.warn('AVERTISSEMENT : '+warning);
 if(errors.length){for(const error of errors)console.error('ERREUR : '+error);process.exitCode=1}

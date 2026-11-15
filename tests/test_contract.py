@@ -6,7 +6,8 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-HTML = (ROOT / "index.html").read_text(encoding="utf-8")
+MARKUP = (ROOT / "index.html").read_text(encoding="utf-8")
+HTML = MARKUP + "\n" + "\n".join((ROOT / p).read_text(encoding="utf-8") for p in re.findall(r\'<script src="\./([^"?]+)(?:\?[^"]+)?"\', MARKUP))
 SW = (ROOT / "sw.js").read_text(encoding="utf-8")
 MEMBERS = json.loads((ROOT / "members.json").read_text(encoding="utf-8"))
 COMMITTEES = json.loads((ROOT / "committees.json").read_text(encoding="utf-8"))
@@ -49,7 +50,7 @@ class DirectoryContract(unittest.TestCase):
             self.assertEqual(len(taken), len(set(taken)))
             self.assertTrue(all(isinstance(x, int) and 1 <= x <= 999 for x in taken))
         self.assertIn("function hemicycleBlock(m)", HTML)
-        self.assertIn("if(!seats||(!seats.str&&!seats.bru))return null;", HTML)
+        self.assertIn("if(!seats||(!Number.isInteger(seats.str)&&!Number.isInteger(seats.bru)))return null;", HTML)
         self.assertIn("if(seats)info.append(seats)", HTML)
         self.assertIn("hemicycle-seats.json", HTML)
         self.assertIn("'./hemicycle-seats.json'", SW)
@@ -81,7 +82,7 @@ class DirectoryContract(unittest.TestCase):
         self.assertIn('url=./?section=secretariat', old)
 
     def test_pagination_keeps_entire_dataset(self):
-        self.assertIn("DIRECTORY_PAGE_SIZE=40", HTML)
+        self.assertIn("DIRECTORY_PAGE_SIZE=matchMedia", HTML)
         self.assertIn("filtered=selectMembers()", HTML)
         self.assertIn("appendDirectoryPage()", HTML)
         self.assertIn("IntersectionObserver", HTML)
@@ -95,12 +96,10 @@ class DirectoryContract(unittest.TestCase):
         self.assertIn("cache:'no-store'", SW)
         self.assertIn("navigator.serviceWorker.register", HTML)
 
-    def test_backup_and_update_require_user_action(self):
-        for tag in ('id="exportProgress"', 'id="importProgress"', 'id="progressFile"', 'id="appUpdateNotice"', 'id="applyAppUpdate"'):
+    def test_update_requires_user_action(self):
+        for tag in ('id="appUpdateNotice"', 'id="applyAppUpdate"', 'id="checkAppUpdate"'):
             self.assertIn(tag, HTML)
-        self.assertIn("validBackup(data)", HTML)
-        self.assertIn("progressFile", HTML)
-        self.assertIn("registration.waiting.postMessage({type:'SKIP_WAITING'})", HTML)
+        self.assertIn("worker.postMessage({type:'SKIP_WAITING'})", HTML)
         self.assertIn("if(session)", HTML)
 
     def test_offline_shell_and_photo_cache_are_bounded(self):

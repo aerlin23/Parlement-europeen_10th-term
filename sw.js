@@ -1,10 +1,11 @@
 /* Vademecum PE : ressources critiques hors-ligne et mises à jour consenties. */
-const VERSION='pe-pwa-v218';
+const VERSION='pe-pwa-v219';
 const MEDIA='pe-offline-official-media-v1';
 const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
+const CODE=['./styles.css?v=219','./directory.js?v=219','./hemicycle.js?v=219','./interface.js?v=219','./quiz.js?v=219','./offline.js?v=219','./smart-search.js?v=219','./features.js?v=219'];
 const OFFLINE=['./','./index.html','./smart-search.js','./features.js','./secretariat-general.html','./commission-europeenne.html','./institutions-agences.html','./assets/presidences-conseil-ue-2026-2030.svg','./presidences-cinema.html','./assets/presidences-conseil-ue-cinema.avif','./commission-members.json','./members.json','./coordinators.json','./changes.json','./hemicycle-seats.json','./hemicycle-str-coordinates.json','./hemicycle-bru-coordinates.json','./committees.json','./photo-assets.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png','./assets/greens-logo.svg','./assets/sg-juan-carlos-jimenez-marin.webp','./assets/sg-markus-winkler.webp','./assets/sg-alessandro-chiocchetti-user.webp','./assets/sg-markus-winkler-official.webp'];
 self.addEventListener('install',event=>{
- event.waitUntil((async()=>{const cache=await caches.open(CORE);await cache.addAll(['./index.html','./members.json','./committees.json','./coordinators.json']);await Promise.allSettled(OFFLINE.filter(url=>!['./index.html','./members.json','./committees.json','./coordinators.json'].includes(url)).map(url=>cache.add(url)));})());
+ event.waitUntil((async()=>{const cache=await caches.open(CORE);await cache.addAll(['./index.html','./members.json','./committees.json','./coordinators.json',...CODE].map(url=>new Request(url,{cache:'reload'})));await Promise.allSettled(OFFLINE.filter(url=>!['./index.html','./members.json','./committees.json','./coordinators.json'].includes(url)).map(url=>cache.add(url)));})());
 });
 self.addEventListener('message',event=>{
  if(event.data?.type==='SKIP_WAITING')event.waitUntil(self.skipWaiting());
@@ -28,6 +29,9 @@ async function fromNetworkOrCache(request,isDocument){
 }
 async function cachePhoto(request){
  const cache=await caches.open(PHOTOS);
+ const persistent=await caches.open(MEDIA);
+ const saved=await persistent.match(request);
+ if(saved)return saved;
  const hit=await cache.match(request);
  if(hit)return hit;
  try{
@@ -46,7 +50,7 @@ self.addEventListener('fetch',event=>{
  if(request.method!=='GET')return;
  const url=new URL(request.url);
  // Conserver les portraits et voix officiels dans un cache durable, même après mise à jour.
- if((url.origin==='https://aerlin23.github.io'&&/^\/Commission-europeenne\/(photos\/\d+\.png|assets\/commission-logo\.svg)$/.test(url.pathname))||(url.origin==='https://www.europarl.europa.eu'&&/^\/(mepphoto|mepaudio)\/[0-9]+\.(jpg|mp3)$/.test(url.pathname))||(url.origin==='https://the-secretary-general.europarl.europa.eu'&&url.pathname.startsWith('/files/live/sites/secretarygeneral/files/images/'))){
+ if((url.origin==='https://aerlin23.github.io'&&/^\/Commission-europeenne\/(photos\/\d+\.(?:png|jpg|jpeg|webp)|assets\/commission-logo\.svg)$/.test(url.pathname))||(url.origin==='https://www.europarl.europa.eu'&&/^\/(mepphoto|mepaudio)\/[0-9]+\.(jpg|mp3)$/.test(url.pathname))||(url.origin==='https://the-secretary-general.europarl.europa.eu'&&url.pathname.startsWith('/files/live/sites/secretarygeneral/files/images/'))){
   event.respondWith((async()=>{
    const cache=await caches.open(MEDIA);
    const hit=await cache.match(url.href);
@@ -65,6 +69,9 @@ self.addEventListener('fetch',event=>{
  if(/\/cavaliers\/index\.json$/.test(url.pathname)){event.respondWith(fromNetworkOrCache(request,false));return;}
  const isDocument=request.mode==='navigate';
  const isData=/\/(members|commission-members|committees|coordinators|photo-assets|hemicycle-seats|hemicycle-str-coordinates|hemicycle-bru-coordinates|changes)\.json$/.test(url.pathname);
+ if(isDocument&&(/\/$/.test(url.pathname)||/\/index\.html$/.test(url.pathname))){
+  event.respondWith((async()=>{const cache=await caches.open(CORE);return await cache.match('./index.html')||fetch(request)})());return;
+ }
  if(isDocument||isData){event.respondWith(fromNetworkOrCache(request,isDocument));return}
  if(/\/(photos|thumbs)\/[0-9]+\.(jpg|webp)$/.test(url.pathname)){
   event.respondWith(cachePhoto(request));return;

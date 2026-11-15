@@ -19,7 +19,12 @@ Application web progressive (PWA) indépendante, destinée à la consultation et
 
 | Fichier | Rôle |
 | --- | --- |
-| `index.html` | Annuaire principal, interface, CSS et logique applicative |
+| `index.html` | Structure de l’interface |
+| `styles.css` | Styles et adaptation aux écrans |
+| `directory.js`, `interface.js` | Annuaire, filtres, navigation et institutions |
+| `hemicycle.js` | Plans interactifs |
+| `quiz.js` | Quiz et progression |
+| `offline.js` | Téléchargement et mises à jour PWA |
 | `smart-search.js` | Suggestions de recherche |
 | `features.js` | Partage et historique des changements |
 | `commission-europeenne.html`, `institutions-agences.html` | Rubriques complémentaires |
@@ -46,11 +51,11 @@ Les portraits proviennent principalement des ressources officielles. Les places,
 1. Mettre à jour les données à partir des sources officielles, conserver les dates et références, contrôler les identifiants et les doublons.
 2. Vérifier les filtres, le quiz, les deux plans et les liens vers les fiches.
 3. Contrôler la syntaxe JavaScript et préserver l'ordre de cascade CSS. Tester en particulier les interfaces mobile, portrait et paysage.
-4. Incrémenter la version du cache dans `sw.js`, le paramètre d'enregistrement du service worker et la version affichée dans l'annuaire.
+4. Incrémenter la version du cache dans `sw.js`, les URL des modules et la liste CODE du service worker (l’adresse d’enregistrement de sw.js reste stable).
 5. Publier via GitHub Pages : branche `main`, racine du dépôt.
 
 L'installation PWA est proposée par les navigateurs compatibles. Précharger les ressources avant une utilisation hors ligne ; certaines ressources officielles peuvent ne pas être disponibles. La rotation automatique dépend des restrictions du navigateur. Les préférences de lecture et certaines informations de navigation sont conservées localement sur l'appareil.
 
 ## État de maintenance
 
-Version 168 : nettoyage conservateur des règles CSS strictement identiques et de certains styles obsolètes, sans refonte visuelle ni changement des données. La validation syntaxique ne remplace pas les tests fonctionnels sur appareils réels.
+Version 219 : séparation conservatrice des scripts classiques et du CSS, correction du score du quiz, cache durable des médias téléchargés et URLs de ressources versionnées. Les tests navigateur restent nécessaires avant de considérer la refonte validée.

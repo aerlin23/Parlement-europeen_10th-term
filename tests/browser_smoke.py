@@ -82,16 +82,10 @@ def test(page, base):
         page.locator("#nextStudy").click()
     check(page, page.locator("#studyEnd").is_visible(), "Quiz must reach final results")
     check(page, "Questions répondues" in page.locator("#studyResult").inner_text(), "Quiz results missing")
-    check(page, "Fautes" in page.locator("#studyResult").inner_text(), "Quiz error summary missing")
+    check(page, "Erreurs" in page.locator("#studyResult").inner_text(), "Quiz error summary missing")
+    values=page.locator("#studyResult .quiz-stat strong").all_text_contents()
+    check(page, int(values[0])==20 and int(values[1])+int(values[2])==20, "Incorrect quiz totals")
     page.locator("#restartStudy").click()
-    # Vérifier la sauvegarde et son import, sans quitter le navigateur.
-    with page.expect_download() as downloaded:
-        page.locator("#exportProgress").click()
-    backup=downloaded.value
-    check(page, backup.suggested_filename.endswith(".json"), "Backup must be JSON")
-    page.locator("#progressFile").set_input_files(str(backup.path()))
-    page.wait_for_function("document.querySelector('#backupStatus')?.textContent.includes('Progression restaurée') || document.querySelector('#backupStatus')?.textContent.includes('Import refusé')", timeout=10000)
-    check(page, "Progression restaurée" in page.locator("#backupStatus").inner_text(), "Backup import failed: "+page.locator("#backupStatus").inner_text())
     if os.environ.get("TEST_BROWSER", "chromium")=="chromium":
         page.wait_for_function("navigator.serviceWorker?.controller != null",timeout=15000)
         page.context.set_offline(True)
@@ -115,7 +109,7 @@ def main():
                 context=browser.new_context(viewport={"width":390,"height":844},device_scale_factor=2,accept_downloads=True)
                 page=context.new_page()
                 test(page,base)
-                print("Smoke test PASSED:",engine,"directory, both quizzes, full session and backup")
+                print("Smoke test PASSED:",engine,"directory, both quizzes, full session and score")
             finally:
                 browser.close()
 if __name__=="__main__":

@@ -25,18 +25,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Contrôler le code JavaScript
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          import re
-          html=Path('index.html').read_text(encoding='utf-8')
-          found=re.search(r'<script>(.*?)</script>',html,re.DOTALL)
-          assert found, "Script principal manquant"
-          Path('/tmp/trombinoscope-main.js').write_text(found.group(1),encoding='utf-8')
-          PY
-          node --check /tmp/trombinoscope-main.js
-          node --check sw.js
+      - name: Contrôler les données et le code JavaScript
+        run: node scripts/audit.cjs
       - name: Contrôler les identifiants et les places des deux hémicycles
         run: |
           python - <<'PY'
