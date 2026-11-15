@@ -169,7 +169,7 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
     if(key===city)return;
     const seat=selectedMep?hemicycleSeats[String(selectedMep.id)]?.[key]:null;
     const hasSeat=Number.isInteger(seat)&&seat>0;
-    showSeatOnPlan(key,hasSeat?seat:null,hasSeat?selectedMep.name:'',hasSeat?selectedMep.group:'',{keepMode:true,expanded:dialog.classList.contains('seat-map-expanded'),cinema:cinema,memberId:selectedMep?.id});
+    showSeatOnPlan(key,hasSeat?seat:null,hasSeat?selectedMep.name:'',hasSeat?selectedMep.group:'',{keepMode:true,expanded:dialog.classList.contains('seat-map-expanded'),cinema:cinema,memberId:selectedMep?.id,country:dialog.querySelector('.seat-country-filter')?.value||''});
    };citySwitch.append(button);
   }
   if(overview)dialog.classList.add('seat-map-overview');
@@ -426,25 +426,21 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
   area.append(legend);
   
   const groupBtn=el('button','seat-group-toggle','Vue groupes');groupBtn.type='button';groupBtn.setAttribute('aria-pressed','false');
-  const planFilters=el('details','seat-extra-filters');
- const filterSummary=el('summary','','Filtres du plan');planFilters.append(filterSummary);
- const filterRow=el('div','seat-filter-row');
- const makeFilter=(label,items)=>{const select=el('select');select.setAttribute('aria-label',label);for(const [value,text] of [['',label],...items]){const option=el('option','',text);option.value=value;select.append(option)}filterRow.append(select);return select};
- const countryFilter=makeFilter('Tous les pays',[...new Set(members.map(m=>m.country))].sort((a,b)=>(fr[a]||a).localeCompare(fr[b]||b,'fr')).map(c=>[c,fr[c]||c]));
- const committeeFilter=makeFilter('Toutes les commissions',Object.keys(committeeDefs).sort().map(c=>[c,c]));
- const functionFilter=makeFilter('Toutes les fonctions',[['presidencype','Présidence du PE'],['quaestor','Questeurs'],['chair','Présidents de commission'],['vicechair','Vice-présidents de commission'],['grouppresident','Présidents de groupe'],['coord','Coordinateurs']]);
- const filterStatus=el('span','seat-filter-status');filterStatus.setAttribute('role','status');filterRow.append(filterStatus);planFilters.append(filterRow);
- searchBox.after(planFilters);
- for(const field of [countryFilter,committeeFilter,functionFilter])field.addEventListener('change',paintGroups);
+  const countryFilter=el('select','seat-country-filter');
+ countryFilter.setAttribute('aria-label','Filtrer les sièges par pays');countryFilter.title='Filtrer les sièges par pays';
+ for(const [value,label] of [['','Pays'],...[...new Set(members.map(m=>m.country))].sort((a,b)=>(fr[a]||a).localeCompare(fr[b]||b,'fr')).map(c=>[c,fr[c]||c])]){const option=el('option','',label);option.value=value;countryFilter.append(option)}
+ countryFilter.value=options.country||'';
+ searchInput.after(countryFilter);
+ countryFilter.addEventListener('change',paintGroups);
  function paintGroups(){
    const on=groupBtn.getAttribute('aria-pressed')==='true';
-   const a={country:countryFilter.value,committee:committeeFilter.value,func:functionFilter.value};let hits=0;const filtering=!!(a.country||a.committee||a.func);
+   const country=countryFilter.value;let hits=0;const filtering=!!country;
    for(const [circle,group,owner] of seatCircles){
     circle.setAttribute('fill',on&&group?SEAT_GROUP_COLORS[group]:'#a4b4c4');
-    const matches=(!on||!activeGroup||group===activeGroup)&&(!filtering||(owner&&matchesMultiSearch(owner,a)));if(matches&&owner)hits++;
+    const matches=(!on||!activeGroup||group===activeGroup)&&(!filtering||owner?.country===country);if(matches&&owner)hits++;
     circle.setAttribute('opacity',matches?'1':'.15');
    }
-   filterStatus.textContent=filtering?hits+' députés sur le plan':'';
+   countryFilter.title=filtering?(fr[country]||country)+' · '+hits+' députés sur le plan':'Filtrer les sièges par pays';
    for(const button of legend.querySelectorAll('[data-group]'))button.setAttribute('aria-pressed',String(activeGroup===button.dataset.group));
   }
   groupHeader.onclick=()=>groupBtn.click();

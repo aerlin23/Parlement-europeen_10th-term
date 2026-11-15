@@ -63,3 +63,5 @@ Version 219 : séparation conservatrice des scripts classiques et du CSS, correc
 ## Version 220 (branche de validation)
 
 Recherche combinée par pays, groupe et commission/fonction ; cinq consultations récentes conservées sur l'appareil ; révision adaptative tenant compte du délai depuis la dernière réponse et du temps de réponse ; filtres facultatifs de pays, commission et fonction sur les plans. Aucun quiz de localisation ajouté. Les filtres de commission portent sur les titulaires.
+
+Version 221 : filtre du plan limité au pays, intégré à la ligne de recherche ; les couleurs et filtres politiques existants restent disponibles.
