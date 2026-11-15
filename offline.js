@@ -5,6 +5,7 @@ async function downloadOfficialOfflineMedia(){
  if(!navigator.onLine){status.textContent='Connecte-toi à Internet pour commencer le téléchargement.';return}
  if(!members.length){status.textContent='La liste des députés doit d’abord être chargée.';return}
  button.disabled=true;
+ if(navigator.storage?.persist)navigator.storage.persist().catch(()=>{});
  const ids=[...new Set(members.map(m=>String(m.id)).filter(id=>/^\d+$/.test(id)))];
  const base='https://www.europarl.europa.eu/';
  const urls=ids.flatMap(id=>[
@@ -36,7 +37,7 @@ async function downloadOfficialOfflineMedia(){
      const response=await fetch(url,{mode:new URL(url).origin===location.origin?'same-origin':'no-cors',credentials:'omit',cache:'no-store'});
      if(!(response.ok||response.type==='opaque'))throw Error('réponse invalide');
      await cache.put(url,response);
-     if(navigator.storage?.persist&&!already&&done===0){navigator.storage.persist().catch(()=>{})}
+     
     }catch(error){
      failed++;
      const photoOrAudio=url.match(/\/(mepphoto|mepaudio)\/([0-9]+)\./);

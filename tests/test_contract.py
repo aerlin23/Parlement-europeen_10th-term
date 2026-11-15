@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MARKUP = (ROOT / "index.html").read_text(encoding="utf-8")
-HTML = MARKUP + "\n" + "\n".join((ROOT / p).read_text(encoding="utf-8") for p in re.findall(r\'<script src="\./([^"?]+)(?:\?[^"]+)?"\', MARKUP))
+HTML = MARKUP + "\n" + "\n".join((ROOT / p).read_text(encoding="utf-8") for p in re.findall(r'<script src="\./([^"?]+)(?:\?[^"]+)?"' , MARKUP))
 SW = (ROOT / "sw.js").read_text(encoding="utf-8")
 MEMBERS = json.loads((ROOT / "members.json").read_text(encoding="utf-8"))
 COMMITTEES = json.loads((ROOT / "committees.json").read_text(encoding="utf-8"))

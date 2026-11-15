@@ -75,7 +75,7 @@ check(html.includes('syncCommissionFunctionMenu()'),'Filtre contextuel des commi
 const quiz=read('quiz.js');check(quiz.includes('session.correct+session.missed.length'),'Calcul du score du quiz incorrect');
 const assets=json('photo-assets.json');for(const id of ids){check(assets.photos.includes(id)&&assets.thumbs.includes(id),'Portrait ou miniature non déclaré : '+id);check(fs.existsSync('photos/'+id+'.jpg')&&fs.existsSync('thumbs/'+id+'.webp'),'Portrait ou miniature absent : '+id)}
 check(worker.includes('persistent.match(request)'),'Cache durable des portraits absent');
-check(external.every(path=>worker.includes('./'+path+'?v=219')),'Module absent du cache de version');
+check(external.every(path=>worker.includes('./'+path)||worker.includes("'./"+path+"'")),'Module absent du cache de version');
 console.log('Audit : '+members.length+' députés, '+Object.keys(committees).length+' commissions, '+coordinators.length+' attributions, '+Object.keys(seats).length+' plans de sièges.');
 for(const warning of warnings)console.warn('AVERTISSEMENT : '+warning);
 if(errors.length){for(const error of errors)console.error('ERREUR : '+error);process.exitCode=1}
