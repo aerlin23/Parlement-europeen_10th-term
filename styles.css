@@ -778,3 +778,7 @@ body.reading-large header.ep-header #identityTitle{font-size:clamp(26px,6vw,32px
 .admin-contact #checkAppUpdate[hidden]{display:none!important}
 .admin-contact .app-update-version{font-size:10px;color:#58717e;font-variant-numeric:tabular-nums;white-space:nowrap}
 .admin-contact #checkAppUpdateStatus:empty{display:none}
+
+/* Locally opted-in mobile project preview. */
+html.vf-tools-mobile-preview .vf-print-icon{display:inline-flex}
+html.vf-tools-mobile-preview .vf-tools-tab{display:inline-flex}
