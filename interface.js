@@ -236,12 +236,15 @@ const SG_PE_DIRECTION_PHOTOS={"Maria Gandolfo":"https://the-secretary-general.eu
 let sgLocalAssistants=null;
 const sgAllowedDG=new Set(['ECTI','CASP','IUST','BUDG','EXPO']);
 function sgLocalControls(){
- if(new URLSearchParams(location.search).get('local-assistants')!=='1')return;
+ if(document.getElementById('sgLocalDirectoryControls'))return;
+ // Generic file import is available from the SG screen; no names are included in the site.
+
  const panel=$('secretariatPanel'),section=$('sgOrgSection');
  const wrap=el('div','sg-tree-direction'),status=el('p','sg-role','Importation locale facultative ; données effacées au rechargement.');
+ wrap.id='sgLocalDirectoryControls';wrap.style.margin='12px 0';
  const input=document.createElement('input');input.type='file';input.accept='.json,application/json';input.setAttribute('aria-label','Importer une liste locale des assistants');
  const clear=el('button','','Effacer la liste locale');clear.type='button';clear.hidden=true;
- wrap.append(el('strong','','Annuaire personnel · Assistants de commission'),input,clear,status);panel.insertBefore(wrap,section);
+ const toggle=el('details','');toggle.append(el('summary','','Importer une liste personnelle (facultatif)'),input,clear,status);wrap.append(toggle);section.before(wrap);
  input.addEventListener('change',async()=>{
   const file=input.files[0];if(!file)return;
   try{
@@ -379,6 +382,7 @@ function sgRender(){
 }
 $('sgSearch').addEventListener('input',sgRender);sgLocalControls();sgRender();
 function showSecretariat(changeUrl=true){
+ sgLocalControls();
  if(session)endSession(true);
  if(directoryObserver)directoryObserver.disconnect();
  $('secretariatPanel').hidden=false;$('filters').hidden=true;$('count').hidden=true;
