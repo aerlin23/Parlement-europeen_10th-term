@@ -757,7 +757,7 @@ body.reading-large header.ep-header #identityTitle{font-size:clamp(26px,6vw,32px
 .vf-card-actions{position:absolute;right:9px;bottom:8px;display:flex;gap:6px}
 .vf-card-actions .vf-share-icon{position:static}
 .vf-print-icon{display:none;width:29px;height:28px;align-items:center;justify-content:center;padding:3px;border:1px solid #d5e1e8;border-radius:6px;background:#f7fafc;color:#315d78}
-@media(min-width:901px) and (hover:hover) and (pointer:fine){.vf-print-icon{display:inline-flex}}
+@media(min-width:901px) and (hover:hover) and (pointer:fine){html.vf-tools-preview .vf-print-icon{display:inline-flex}}
 .vf-cavalier-dialog{width:min(1000px,94vw);height:90vh;padding:12px;border:1px solid #d5e1e8;border-radius:10px}
 .vf-cavalier-dialog::backdrop{background:#132b4799}
 .vf-cavalier-bar{display:flex;align-items:center;gap:8px;margin-bottom:8px}
