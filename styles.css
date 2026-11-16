@@ -771,3 +771,10 @@ body.reading-large header.ep-header #identityTitle{font-size:clamp(26px,6vw,32px
 
 /* Réinitialisation discrète dans la légende, sans modifier la caméra. */
 .seat-reset-filters{border-color:#c5d5df;background:#fff;font-weight:600;white-space:nowrap;align-self:center}.seat-reset-filters:disabled{opacity:.45}.seat-legend-simple>.seat-group-legend-item{display:none}.seat-map-dialog .seat-group-legend.seat-legend-simple{width:max-content!important;max-width:100%!important;align-self:center}.seat-legend-simple:has(.seat-reset-filters:disabled){display:none!important}
+
+/* Compact footer update control */
+.admin-contact .app-update-line{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:5px 8px;margin:4px 0;font-size:10px;line-height:1.4}
+.admin-contact #checkAppUpdate{font-size:10px!important;line-height:1.4;padding:2px 6px;min-height:0;min-width:0;width:auto;border:1px solid #d8e3e8;border-radius:4px;background:transparent;color:#315d78;box-shadow:none;font-weight:500}
+.admin-contact #checkAppUpdate[hidden]{display:none!important}
+.admin-contact .app-update-version{font-size:10px;color:#58717e;font-variant-numeric:tabular-nums;white-space:nowrap}
+.admin-contact #checkAppUpdateStatus:empty{display:none}
