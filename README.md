@@ -85,3 +85,5 @@ Version PWA 244 : restauration de l’en-tête institutionnel d’origine, avec 
 Version PWA 245 : l’Assistant cavaliers reprend le grand en-tête bleu et le logo institutionnel de l’annuaire, sans modifier les en-têtes des groupes politiques. Le bandeau secondaire est supprimé.
 
 Réunions conjointes (251, expérimental) : tri par groupes dans l’ordre du Vademecum, puis présidence, vice-présidences dans l’ordre renseigné et autres titulaires par nom. Les listes et trombinoscopes imprimables suivent le même ordre.
+
+Version PWA 252 : harmonisation visuelle de Réunions conjointes avec l’Assistant cavaliers (bandeau institutionnel, navigation et panneaux), sans changement du tri ni du mode expérimental.
