@@ -1,5 +1,5 @@
 /* Vademecum PE : ressources critiques hors-ligne et mises à jour consenties. */
-const VERSION='pe-pwa-v234';
+const VERSION='pe-pwa-v235';
 const MEDIA='pe-offline-official-media-v1';
 const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
 const CODE=['./styles.css?v=231','./directory.js?v=225','./hemicycle.js?v=225','./interface.js?v=228','./quiz.js?v=225','./offline.js?v=225','./smart-search.js?v=225','./features.js?v=234'];
@@ -67,6 +67,7 @@ self.addEventListener('fetch',event=>{
  // Les PDF de cavaliers sont servis à la demande, sans cache hors ligne systématique.
  if(/\/cavaliers\/\d+\.pdf$/.test(url.pathname))return;
  if(/\/cavaliers\/index\.json$/.test(url.pathname)){event.respondWith(fromNetworkOrCache(request,false));return;}
+ if(/\/(?:creation-cavaliers(?:-\d+)?\.js|cavaliers-assistant(?:-\d+)?\.js|creation-cavaliers\.html)$/.test(url.pathname)){event.respondWith(fromNetworkOrCache(request,false));return;}
  const isDocument=request.mode==='navigate';
  const isData=/\/(members|commission-members|committees|coordinators|photo-assets|hemicycle-seats|hemicycle-str-coordinates|hemicycle-bru-coordinates|changes)\.json$/.test(url.pathname);
  if(isDocument&&(/\/$/.test(url.pathname)||/\/index\.html$/.test(url.pathname))){
