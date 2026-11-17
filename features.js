@@ -39,7 +39,22 @@ async function printCavalier(m){
  const frame=document.createElement('iframe');frame.title='Aperçu du cavalier PDF';frame.src=url.href;
  print.onclick=()=>{try{frame.contentWindow.focus();frame.contentWindow.print()}catch{open.click()}};
  close.onclick=()=>dialog.close();
- bar.append(title,print,open,close);dialog.append(bar,frame);document.body.append(dialog);
+ const mobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+ bar.append(title,print,open,close);
+ if(mobile){
+  const email='mobileprint@europarl.europa.eu', panel=document.createElement('div');panel.style.cssText='padding:8px 12px;background:#fff;color:#263b50;font-size:12px;flex-shrink:0';
+  const send=document.createElement('button');send.type='button';send.textContent='Imprimer via Mobile Print';send.disabled=true;
+  const copy=document.createElement('button');copy.type='button';copy.textContent='Copier l’adresse';
+  const info=document.createElement('p');info.style.margin='5px 0';info.textContent='Préparation du PDF…';
+  const guide=document.createElement('a');guide.href='https://mfd.europarl.europa.eu/pdf/mobile-printing-qsg_en.pdf';guide.target='_blank';guide.rel='noopener';guide.textContent='Guide officiel';
+  const notes=document.createElement('small');notes.textContent='Mail professionnel : badge puis Secure print. Mail personnel : code reçu par mail puis Job Code. ';
+  let file;
+  fetch(url.href).then(async r=>{if(!r.ok)throw Error('PDF');const b=await r.blob();if(!(await b.slice(0,5).text()).startsWith('%PDF-'))throw Error('PDF');file=new File([b],'Cavalier-'+m.name.replace(/[^\p{L}\p{N}-]+/gu,'-')+'.pdf',{type:'application/pdf'});send.disabled=false;info.textContent='Choisissez votre messagerie puis collez '+email+' dans le destinataire.'}).catch(()=>{info.textContent='PDF indisponible. Essayez Ouvrir le PDF.'});
+  copy.onclick=async()=>{try{await navigator.clipboard.writeText(email);notify('Adresse copiée.')}catch{window.prompt('Copier l’adresse :',email)}};
+  send.onclick=async()=>{if(!file)return;try{navigator.clipboard?.writeText(email).catch(()=>{})}catch{}try{if(navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:'Cavalier'});return}info.textContent='Partage indisponible : ouvrez le PDF et joignez-le à votre mail.';open.click()}catch(e){if(e.name!=='AbortError')info.textContent='Partage impossible : ouvrez le PDF et joignez-le manuellement.'}};
+  panel.append(send,document.createTextNode(' '),copy,info,notes,guide);dialog.append(bar,panel,frame);
+ }else dialog.append(bar,frame);
+ document.body.append(dialog);
  dialog.addEventListener('close',()=>dialog.remove(),{once:true});dialog.showModal();
 }
 window.vademecumCardShare=m=>{
