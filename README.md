@@ -28,7 +28,7 @@ Application web progressive (PWA) indépendante, destinée à la consultation et
 | `offline.js` | Téléchargement et mises à jour PWA |
 | `smart-search.js` | Suggestions de recherche |
 | `features.js` | Partage et historique des changements |
-| `creation-cavaliers.html`, `creation-cavaliers-225.js`, `cavaliers-assistant-225.js` | Assistant cavaliers |
+| `creation-cavaliers.html`, `creation-cavaliers-227.js`, `cavaliers-assistant-227.js`, `cavaliers-core.js` | Assistant cavaliers |
 | `commission-europeenne.html`, `institutions-agences.html` | Rubriques complémentaires |
 | `members.json`, `committees.json`, `coordinators.json` | Données parlementaires |
 | `hemicycle-seats.json` | Correspondances député–siège |
@@ -75,3 +75,7 @@ Accessible depuis le menu principal sur ordinateur et mobile : [ouvrir l’assis
 Les fichiers importés sont traités dans le navigateur. Le lecteur Excel est chargé depuis un CDN et requiert une connexion lors du chargement. Vérifier les noms et les exclusions avant impression : le filtrage ne constitue pas une validation d’identité. Imprimer en A4, recto uniquement, à 100 %, puis plier les feuilles. Sur mobile, partager le PDF avec la messagerie et coller l’adresse `mobileprint@europarl.europa.eu` ; la copie automatique et le partage dépendent du navigateur. Consulter le [guide officiel Mobile Print](https://mfd.europarl.europa.eu/pdf/mobile-printing-qsg_en.pdf). Ne transmettre que les documents autorisés par les règles internes applicables.
 
 Version PWA 236 : accès public à l’assistant. Les réunions conjointes restent en mode expérimental.
+
+### Maintenance Assistant cavaliers (227)
+
+Import centralisé dans `cavaliers-core.js`, reconnaissance des en-têtes français/anglais et des colonnes réordonnées, dédoublonnage par prénom et nom, annulation de la dernière suppression. Tests de régression : `node tests/cavaliers-core.test.cjs`. Le PDF partagé reste matriciel (JPEG intégré), et les tests navigateur et impression physique restent nécessaires. Les anciennes ressources versionnées sont conservées pour les clients qui utilisent encore des pages mises en cache.
