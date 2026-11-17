@@ -79,3 +79,5 @@ Version PWA 236 : accès public à l’assistant. Les réunions conjointes reste
 ### Maintenance Assistant cavaliers (227)
 
 Import centralisé dans `cavaliers-core.js`, reconnaissance des en-têtes français/anglais et des colonnes réordonnées, dédoublonnage par prénom et nom, annulation de la dernière suppression. Tests de régression : `node tests/cavaliers-core.test.cjs`. Le PDF partagé reste matriciel (JPEG intégré), et les tests navigateur et impression physique restent nécessaires. Les anciennes ressources versionnées sont conservées pour les clients qui utilisent encore des pages mises en cache.
+
+Version PWA 243 : en-tête institutionnel compact et navigation commune aux espaces annuaire, entraînement et cavaliers via `vademecum-ui.css`. Les couleurs des groupes demeurent dans les filtres et le contexte parlementaire.
