@@ -5,6 +5,8 @@ function valid(g){return g&&typeof g==='object'&&!Array.isArray(g)&&Object.keys(
 const bruRooms=[['Hémicycle','44125',''],['Tribunes','44293',''],['1 A 02','44022',''],['2Q2','43160',''],['4Q1','34435',''],['4Q2','32359',''],['6Q1','46015',''],['6Q2','34447',''],['1E2','48111',''],['1G2','48366',''],['1G3','48367',''],['3E2','48113',''],['3G2','48368',''],['3G3','48369',''],['4 B 01','44108',''],['5 B 01','44295',''],['5E2','48116',''],['5G2','48371',''],['5G3','48372',''],['6 B 01','44238',''],['6 B 54','44109',''],['3 C 50','44323',''],['7 C 50','44891',''],['Secrétariat de l’unité','41023','']];
 const strRooms=[['G06300','72182/72192',''],['N1.1','76144',''],['N1.2','76146',''],['N1.3','76158',''],['N1.4','76078',''],['N3.2','76173',''],['N3.3','76177',''],['N3.4','76176',''],['N4.3','76178',''],['R1.1','76140',''],['R3.1','76170',''],['R5.1','76182',''],['S1.4','76134',''],['S1.5','76135',''],['S2.1','76160',''],['S2.3','76161',''],['S3.4','76163',''],['S3.5','76165',''],['S3.6','76166',''],['S4.1','76179',''],['S4.2','76179',''],['S4.3','76181',''],['S4.4','76180',''],['S4.5','76180',''],['SDM-S1','72107',''],['SDM-S3','72307',''],['SDM-S5','72507',''],['SDM-S7','72707',''],['WIC200','74294',''],['Secrétariat de l’unité','74650',''],['Porte Conseil','76154',''],['Porte CE','76150',''],['Message','74811',''],['Bureau HEM','76099',''],['Desk Canal','76137',''],['Desk Riviera','76139',''],['Tribunes','76104',''],['Sécurité tribunes','73012','']];
 const descriptions={'Helpdesk BHD':'Ménage, nettoyage et demandes liées aux locaux','Techniciens de conf':'Assistance technique des réunions et conférences','Régie':'Coordination technique en salle'};
+Object.assign(descriptions,{"Standard":"Standard téléphonique du Parlement européen","Renseignements":"Service de renseignements — numéro interne 111","Nettoyage Spinelli":"Salles Spinelli · 10h00–14h30","Nettoyage Spaak / Antall":"Salles Spaak ou Antall · 06h00–14h30","Café Spinelli / Spaak (1)":"Service café Bruxelles · Spinelli / Spaak","Café Spinelli / Spaak (2)":"Service café Bruxelles · Spinelli / Spaak","Café Antall":"Service café Bruxelles · Antall","Café Protocole":"Service café Bruxelles · Protocole","Fauteuil roulant":"Assistance aux personnes à mobilité réduite","Scooter":"Assistance aux personnes à mobilité réduite"});
+const extraServices=[["Standard","","02 284 21 11"],["Renseignements","111",""],["Nettoyage Spinelli","","0470 92 99 24"],["Nettoyage Spaak / Antall","","0470 92 99 21"],["Café Spinelli / Spaak (1)","","0496 58 04 41"],["Café Spinelli / Spaak (2)","","0492 74 68 57"],["Café Antall","","0496 58 04 42"],["Café Protocole","","0492 74 68 59"],["Accréditations","43988",""],["Affichages","42799",""],["Clefs des locaux","44321",""],["Clefs mobilier","44600",""],["EP Posting","32502",""],["Interprétation","48489",""],["ITEC Service desk","84300",""],["Journalistes","44817",""],["LINC IT helpdesk","34321",""],["Fauteuil roulant","46240",""],["Scooter","42878",""],["Nameplates","43819",""],["One-Stop Shop","84500",""],["Photo","42896",""]];
 function roomFamily(s){s=s.trim();if(/^G0/i.test(s))return 'G';if(/^F0/i.test(s))return 'F';if(/^SDM/i.test(s))return 'SDM';if(/^WIC/i.test(s))return 'WIC';if(/^[NRS]\d/i.test(s))return s[0].toUpperCase();return 'Autres contacts'}
 function organize(input){
  const out={'Services':[],'Bruxelles':[],'Strasbourg':[],'Unité':[],'Secrétariat':[]};
@@ -14,7 +16,9 @@ function organize(input){
  for(const [cat,rows] of [['Bruxelles',bruRooms],['Strasbourg',strRooms]])for(const row of rows)if(!out[cat].some(r=>norm(r[0])===norm(row[0])))add(cat,row);
  for(const row of [['Techniciens de conf','30300',''],['Régie','',''],['Helpdesk BHD','85600',''],['Urgences','85112',''],['Sécurité','44321','']])if(!out.Services.some(r=>norm(r[0])===norm(row[0])))add('Services',row);
  if(!out['Secrétariat'].some(r=>norm(r[0])===norm('Secrétariat de l’unité')))out['Secrétariat'].unshift(['Secrétariat de l’unité','41023/74650','']);else out['Secrétariat'].sort((a,b)=>Number(!/secrétariat de l.unit/i.test(a[0]))-Number(!/secrétariat de l.unit/i.test(b[0])));
- const order=['F','G','N','R','S','SDM','WIC','Autres contacts'];out.Strasbourg.sort((a,b)=>order.indexOf(roomFamily(a[0]))-order.indexOf(roomFamily(b[0]))||a[0].localeCompare(b[0],'fr',{numeric:true}));
+ for(const row of extraServices)if(!out.Services.some(r=>norm(r[0])===norm(row[0])))add('Services',row);
+ out.Strasbourg=out.Strasbourg.filter(r=>roomFamily(r[0])!=='G');
+ const order=['F','N','R','S','SDM','WIC','Autres contacts'];out.Strasbourg.sort((a,b)=>order.indexOf(roomFamily(a[0]))-order.indexOf(roomFamily(b[0]))||a[0].localeCompare(b[0],'fr',{numeric:true}));
  const priority=['Techniciens de conf','Régie','Helpdesk BHD','Urgences','Sécurité'];out.Services.sort((a,b)=>(priority.includes(a[0])?priority.indexOf(a[0]):99)-(priority.includes(b[0])?priority.indexOf(b[0]):99)||a[0].localeCompare(b[0],'fr'));
  return out;
 }
@@ -28,6 +32,7 @@ function phoneEntries(num,ext){
  const add=(display,dial,f,info='')=>{if(!seen.has(dial)){seen.add(dial);out.push({display,dial,f,info})}};
  for(const raw of [num,ext].filter(Boolean).flatMap(v=>v.split('/'))){
   const s=raw.trim();let n=s.replace(/\(0\)/g,'').replace(/[\s().-]/g,'').replace(/^00/,'+');
+  if(n==='111'){add(n,n,'','Renseignements · poste interne');continue;}
   if(/^\d{5}$/.test(n)){
    if(/^[34]/.test(n))add(n,'+32228'+n,'🇧🇪','+32 2 28 '+n);
    else if(/^[67]/.test(n))add(n,'+333881'+n,'🇫🇷','+33 3 88 1 '+n);
@@ -69,22 +74,22 @@ async function extractPdf(file){
   for(const row of rows){
    row.items.sort((a,b)=>a.x-b.x);
    // CUU: colonne des collègues à gauche, tableaux de services à droite.
-   const left=row.items.filter(i=>i.x<.425).map(i=>i.s).join(' ').trim();
+   const left=row.items.filter(i=>i.x<.400).map(i=>i.s).join(' ').trim();
    const right=row.items.filter(i=>i.x>=.425);
    const cell=(lo,hi)=>right.filter(i=>i.x>=lo&&i.x<hi).map(i=>i.s).join(' ').trim();
-   // Read the entire upper-right row, extracting phone tokens independently of column shifts.
-   if(row.y>=.625&&row.y<=.835){
-    const t=cell(.425,1), mobile=t.match(/\b0\d{3}\s*\d{2}\s*\d{2}\s*\d{2}\b/);
-    const rest=mobile?t.replace(mobile[0],' '):t;
-    const nums=rest.match(/\b[3467]\d{4}\b/g)||[];
-    if(/secr[ée]tariat de l/i.test(t)&&nums.length>=2){add('Secrétariat','Secrétariat de l’unité',nums.join('/'),'');}
-    else if(nums.length&&!/extension|secr[ée]tariat de l/i.test(t)){
-      const name=(mobile?t.slice(0,mobile.index):rest.slice(0,rest.search(/\b[3467]\d{4}\b/))).replace(/stagiaires\s+schumann/i,'').trim();
-      if(name&&/[a-zÀ-ÿ]/i.test(name)){add('Secrétariat',name,nums.join('/'),mobile&&!/priv[ée]/i.test(t)?mobile[0]:'');count++}
+   // Exact source column boundaries, normalized against the PDF page.
+   if(row.y>=.63&&row.y<=.835){
+    const read=(lo,hi)=>row.items.filter(i=>i.x>=lo&&i.x<hi).map(i=>i.s).join(' ').trim();
+    const t=read(.400,1), surname=read(.400,.545), given=read(.545,.685), mobile=read(.685,.785), bru=read(.785,.845), str=read(.845,1);
+    if(/secr[ée]tariat de l/i.test(t)){add('Secrétariat','Secrétariat de l’unité','41023/74650','');}
+    else if(given&&/^\d{5}$/.test(bru)&&(!str||/^\d{5}$/.test(str))){
+      const name=[/stagiaires/i.test(surname)?'':surname,given].filter(Boolean).join(' ');
+      const safe=/^0\d{3}\s*\d{2}\s*\d{2}\s*\d{2}$/.test(mobile)&&!/priv[ée]/i.test(t)?mobile:'';
+      add('Secrétariat',name,[bru,str].filter(Boolean).join('/'),safe);count++;
     }
    }
    if(left){const m=left.match(/^(.+?)\s+((?:0?\d{3})\s+\d{2}\s+\d{2}\s+\d{2})(.*)$/);if(m){const name=m[1].trim(),tail=m[3],priv=/priv[ée]/i.test(left);const short=tail.match(/\b\d{5}\b(?:\s*\/\s*\d{5}\b)?/);add('Unité',name,priv?'':(short?short[0]:''),priv?'':(m[2].replace(/\s/g,'').length===9?'0':'')+m[2]);count++}}
-   if(row.y>=.625&&row.y<=.835)continue;
+   if(row.y>=.63&&row.y<=.835)continue;
    // Split spatially into independent columns, preventing cross-column number assignments.
    for(const [lo,hi,cat] of [[.445,.60,'Bruxelles'],[.60,.755,'Services'],[.755,.875,'Strasbourg'],[.875,1.01,'Strasbourg']]){
     const s=right.filter(i=>i.x>=lo&&i.x<hi).map(i=>i.s).join(' ').trim();
