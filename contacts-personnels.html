@@ -13,6 +13,7 @@ function organize(input){
  // Recover public-facing service extensions omitted by the previous CUU parser, using the dated source only as fallback.
  for(const [cat,rows] of [['Bruxelles',bruRooms],['Strasbourg',strRooms]])for(const row of rows)if(!out[cat].some(r=>norm(r[0])===norm(row[0])))add(cat,row);
  for(const row of [['Techniciens de conf','30300',''],['Régie','',''],['Helpdesk BHD','85600',''],['Urgences','85112',''],['Sécurité','44321','']])if(!out.Services.some(r=>norm(r[0])===norm(row[0])))add('Services',row);
+ if(!out['Secrétariat'].some(r=>norm(r[0])===norm('Secrétariat de l’unité')))out['Secrétariat'].unshift(['Secrétariat de l’unité','41023/74650','']);else out['Secrétariat'].sort((a,b)=>Number(!/secrétariat de l.unit/i.test(a[0]))-Number(!/secrétariat de l.unit/i.test(b[0])));
  const order=['F','G','N','R','S','SDM','WIC','Autres contacts'];out.Strasbourg.sort((a,b)=>order.indexOf(roomFamily(a[0]))-order.indexOf(roomFamily(b[0]))||a[0].localeCompare(b[0],'fr',{numeric:true}));
  const priority=['Techniciens de conf','Régie','Helpdesk BHD','Urgences','Sécurité'];out.Services.sort((a,b)=>(priority.includes(a[0])?priority.indexOf(a[0]):99)-(priority.includes(b[0])?priority.indexOf(b[0]):99)||a[0].localeCompare(b[0],'fr'));
  return out;
@@ -51,7 +52,7 @@ async function extractPdf(file){
  let count=0;
  const add=(cat,name,num,ext='')=>{
  name=name.trim();num=num.trim();
- if(cat!=='Unité'&&cat!=='À vérifier'){
+ if(cat!=='Unité'&&cat!=='À vérifier'&&cat!=='Secrétariat'){
   const room=name.match(/^(?:\d{5}\s+)?(G0\s*\d{4}|[NRS]\d+\.\d+|F0\s*\d{4}|SDM[- ]S\d+|WIC\s*200)$/i);
   if(room&&/^7\d{4}(?:\s*\/\s*7\d{4})?$/.test(num)){cat='Strasbourg';name=room[1];}
   else if(/^\d{5}\s+/.test(name)||/\b\d{5}\b/.test(name)){g['À vérifier'].push([name+' · '+num,'','']);return}
@@ -68,8 +69,19 @@ async function extractPdf(file){
   for(const row of rows){
    row.items.sort((a,b)=>a.x-b.x);
    // CUU: colonne des collègues à gauche, tableaux de services à droite.
-   const left=row.items.filter(i=>i.x<.445).map(i=>i.s).join(' ').trim();
-   const right=row.items.filter(i=>i.x>=.445);
+   const left=row.items.filter(i=>i.x<.425).map(i=>i.s).join(' ').trim();
+   const right=row.items.filter(i=>i.x>=.425);
+   const cell=(lo,hi)=>right.filter(i=>i.x>=lo&&i.x<hi).map(i=>i.s).join(' ').trim();
+   // Locate the secretariat table by its two extension headers, not a person's identity.
+   if(/Extension\s*BRU/i.test(cell(.79,.86))&&/Extension\s*STR/i.test(cell(.86,1))){page._cuuSecretariatY=row.y;continue}
+   if(page._cuuSecretariatY!==undefined&&row.y<page._cuuSecretariatY&&page._cuuSecretariatY-row.y<.16){
+    const surname=cell(.425,.56),given=cell(.56,.69),mobile=cell(.69,.79),bru=cell(.79,.86),str=cell(.86,1);
+    if(given&&/^\d{5}$/.test(bru)&&(!str||/^\d{5}$/.test(str))){
+     const name=/stagiaires/i.test(surname)?given:[surname,given].filter(Boolean).join(' ');
+     const safeMobile=/^0\d{3}\s*\d{2}\s*\d{2}\s*\d{2}$/.test(mobile)?mobile:'';
+     add('Secrétariat',name,[bru,str].filter(Boolean).join('/'),safeMobile);count++;continue;
+    }
+   }
    if(left){const m=left.match(/^(.+?)\s+((?:0?\d{3})\s+\d{2}\s+\d{2}\s+\d{2})(.*)$/);if(m){const name=m[1].trim(),tail=m[3],priv=/priv[ée]/i.test(left);const short=tail.match(/\b\d{5}\b(?:\s*\/\s*\d{5}\b)?/);add('Unité',name,priv?'':(short?short[0]:''),priv?'':(m[2].replace(/\s/g,'').length===9?'0':'')+m[2]);count++}}
    // Split spatially into independent columns, preventing cross-column number assignments.
    for(const [lo,hi,cat] of [[.445,.60,'Bruxelles'],[.60,.755,'Services'],[.755,.875,'Strasbourg'],[.875,1.01,'Strasbourg']]){
