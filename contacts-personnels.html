@@ -9,7 +9,7 @@ function roomFamily(s){s=s.trim();if(/^G0/i.test(s))return 'G';if(/^F0/i.test(s)
 function organize(input){
  const out={'Services':[],'Bruxelles':[],'Strasbourg':[],'Unité':[],'Secrétariat':[]};
  const add=(cat,row)=>{out[cat]??=[];const i=out[cat].findIndex(r=>norm(r[0])===norm(row[0]));if(i<0)out[cat].push(row.slice());else if(row[1]||row[2])out[cat][i]=row.slice()};
- for(const [cat,rows] of Object.entries(input)){if(cat==='À vérifier')continue;for(const row of rows){let [name,num,ext='']=row;let dest=cat;if(num==='85600'||/^(ménage|helpdesk bhd)$/i.test(name)){name='Helpdesk BHD';dest='Services'}if(cat!=='Unité'&&cat!=='Secrétariat'){const m=name.match(/^(?:\d{5}\s+)?(G0\s*\d{4}|[NRS]\d+\.\d+|F0\s*\d{4}|SDM[- ]S\d+|WIC\s*200)$/i);if(m&&/^7\d{4}/.test(num)){name=m[1];dest='Strasbourg'}else if(/^\d{1,2}\s*[ABCEGQ]\s*\d{1,2}$/i.test(name)&&/^[34]\d{4}$/.test(num))dest='Bruxelles';if(name==='Sécurité'&&num==='73012'){name='Sécurité tribunes';dest='Strasbourg'}}add(dest,[name,num,ext])}}
+ for(const [cat,rows] of Object.entries(input)){if(cat==='À vérifier')continue;for(const row of rows){let [name,num,ext='']=row;let dest=cat;if(cat==='Secrétariat'){const m=name.match(/\b0\d{3}\s*\d{2}\s*\d{2}\s*\d{2}\b/);if(m){if(!ext&&!/priv[ée]/i.test(name))ext=m[0];name=name.replace(m[0],'').replace(/\(priv[ée]\)/i,'').trim()}}if(num==='85600'||/^(ménage|helpdesk bhd)$/i.test(name)){name='Helpdesk BHD';dest='Services'}if(cat!=='Unité'&&cat!=='Secrétariat'){const m=name.match(/^(?:\d{5}\s+)?(G0\s*\d{4}|[NRS]\d+\.\d+|F0\s*\d{4}|SDM[- ]S\d+|WIC\s*200)$/i);if(m&&/^7\d{4}/.test(num)){name=m[1];dest='Strasbourg'}else if(/^\d{1,2}\s*[ABCEGQ]\s*\d{1,2}$/i.test(name)&&/^[34]\d{4}$/.test(num))dest='Bruxelles';if(name==='Sécurité'&&num==='73012'){name='Sécurité tribunes';dest='Strasbourg'}}add(dest,[name,num,ext])}}
  // Recover public-facing service extensions omitted by the previous CUU parser, using the dated source only as fallback.
  for(const [cat,rows] of [['Bruxelles',bruRooms],['Strasbourg',strRooms]])for(const row of rows)if(!out[cat].some(r=>norm(r[0])===norm(row[0])))add(cat,row);
  for(const row of [['Techniciens de conf','30300',''],['Régie','',''],['Helpdesk BHD','85600',''],['Urgences','85112',''],['Sécurité','44321','']])if(!out.Services.some(r=>norm(r[0])===norm(row[0])))add('Services',row);
@@ -41,7 +41,7 @@ function phoneEntries(num,ext){
  }
  return out;
 }
-function render(){buttons('tabs',Object.keys(groups),tab,v=>tab=v);const q=norm($('search').value),out=$('results');out.replaceChildren();for(const [g,rows] of Object.entries(groups)){if(!q&&g!==tab)continue;const hits=rows.filter(r=>norm(r.join(' ')+' '+(descriptions[r[0]]||'')).includes(q));if(!hits.length)continue;const h=document.createElement('h2');h.textContent=g;out.append(h);let previousFamily='';for(const [name,num,ext] of hits){if(g==='Strasbourg'&&!q){const family=roomFamily(name);if(family!==previousFamily){const label=document.createElement('h3');label.className='room-family';label.textContent=family==='Autres contacts'?family:'Salles '+family;out.append(label);previousFamily=family}}const a=document.createElement('article');if(g==='Services'&&['30300','85600','85112'].includes(num)||name==='Régie')a.className='priority';const title=document.createElement('strong');title.textContent=name;const label=document.createElement('div');label.append(title);if(descriptions[name]){const sub=document.createElement('small');sub.className='contact-description';sub.textContent=descriptions[name];label.append(sub)}a.append(label);const d=document.createElement('div');const phones=phoneEntries(num,ext);d.className='phone-lines';for(const p of phones){const line=document.createElement('div'),link=document.createElement('a');line.className='phone-entry';const fixed=/^[3467]\d{4}$/.test(p.display);const kind=document.createElement('small');kind.className='phone-kind';kind.textContent=fixed?(/^[34]/.test(p.display)?'Bureau BRU':'Bureau STR'):(p.dial.startsWith('+')?'Téléphone professionnel':'Poste abrégé');line.append(kind);link.href='tel:'+p.dial;const country=({'🇧🇪':'BE','🇫🇷':'FR','🇱🇺':'LU','🇩🇪':'DE','🇳🇱':'NL','🇪🇸':'ES','🇮🇹':'IT','🇬🇧':'GB','🇵🇹':'PT','🇵🇱':'PL','🇬🇷':'GR','🇮🇪':'IE','🇷🇴':'RO','🇦🇹':'AT','🇩🇰':'DK','🇸🇪':'SE','🇫🇮':'FI','🇨🇿':'CZ','🇸🇰':'SK','🇭🇺':'HU','🇭🇷':'HR','🇸🇮':'SI','🇧🇬':'BG','🇱🇹':'LT','🇱🇻':'LV','🇪🇪':'EE','🇲🇹':'MT','🇨🇾':'CY','🇨🇭':'CH','🇳🇴':'NO'})[p.f];if(country){const flag=document.createElement('span');flag.className='country-flag flag-'+country.toLowerCase();flag.setAttribute('role','img');flag.setAttribute('aria-label',country);flag.textContent=p.f;if(country==='BE'||country==='FR')flag.textContent='';link.append(flag)}link.append(document.createTextNode(p.display));line.append(link);if(p.info){const sub=document.createElement('small');sub.textContent=p.info;line.append(sub)}d.append(line)}if(!phones.length)d.textContent='Non renseigné';a.append(d);out.append(a)}}if(!out.children.length)out.textContent='Aucun résultat.'}
+function render(){buttons('tabs',Object.keys(groups),tab,v=>tab=v);const q=norm($('search').value),out=$('results');out.replaceChildren();for(const [g,rows] of Object.entries(groups)){if(!q&&g!==tab)continue;const hits=rows.filter(r=>norm(r.join(' ')+' '+(descriptions[r[0]]||'')).includes(q));if(!hits.length)continue;const h=document.createElement('h2');h.textContent=g;out.append(h);let previousFamily='';for(const [name,num,ext] of hits){if(g==='Strasbourg'&&!q){const family=roomFamily(name);if(family!==previousFamily){const label=document.createElement('h3');label.className='room-family';label.textContent=family==='Autres contacts'?family:'Salles '+family;out.append(label);previousFamily=family}}const a=document.createElement('article');if(g==='Services'&&['30300','85600','85112'].includes(num)||name==='Régie')a.className='priority';const title=document.createElement('strong');title.textContent=name;const label=document.createElement('div');label.append(title);if(descriptions[name]){const sub=document.createElement('small');sub.className='contact-description';sub.textContent=descriptions[name];label.append(sub)}a.append(label);const d=document.createElement('div');const phones=phoneEntries(num,ext);if(g==='Secrétariat')phones.sort((a,b)=>Number(/^[3467]\d{4}$/.test(a.display))-Number(/^[3467]\d{4}$/.test(b.display)));d.className='phone-lines';for(const p of phones){const line=document.createElement('div'),link=document.createElement('a');line.className='phone-entry';const fixed=/^[3467]\d{4}$/.test(p.display);const kind=document.createElement('small');kind.className='phone-kind';kind.textContent=fixed?(/^[34]/.test(p.display)?'Bureau BRU':'Bureau STR'):(p.dial.startsWith('+')?'Téléphone professionnel':'Poste abrégé');line.append(kind);link.href='tel:'+p.dial;const country=({'🇧🇪':'BE','🇫🇷':'FR','🇱🇺':'LU','🇩🇪':'DE','🇳🇱':'NL','🇪🇸':'ES','🇮🇹':'IT','🇬🇧':'GB','🇵🇹':'PT','🇵🇱':'PL','🇬🇷':'GR','🇮🇪':'IE','🇷🇴':'RO','🇦🇹':'AT','🇩🇰':'DK','🇸🇪':'SE','🇫🇮':'FI','🇨🇿':'CZ','🇸🇰':'SK','🇭🇺':'HU','🇭🇷':'HR','🇸🇮':'SI','🇧🇬':'BG','🇱🇹':'LT','🇱🇻':'LV','🇪🇪':'EE','🇲🇹':'MT','🇨🇾':'CY','🇨🇭':'CH','🇳🇴':'NO'})[p.f];if(country){const flag=document.createElement('span');flag.className='country-flag flag-'+country.toLowerCase();flag.setAttribute('role','img');flag.setAttribute('aria-label',country);flag.textContent=p.f;if(country==='BE'||country==='FR')flag.textContent='';link.append(flag)}link.append(document.createTextNode(p.display));line.append(link);if(p.info){const sub=document.createElement('small');sub.textContent=p.info;line.append(sub)}d.append(line)}if(!phones.length)d.textContent='Non renseigné';a.append(d);out.append(a)}}if(!out.children.length)out.textContent='Aucun résultat.'}
 
 let pending=null;
 async function extractPdf(file){
@@ -72,20 +72,16 @@ async function extractPdf(file){
    const left=row.items.filter(i=>i.x<.425).map(i=>i.s).join(' ').trim();
    const right=row.items.filter(i=>i.x>=.425);
    const cell=(lo,hi)=>right.filter(i=>i.x>=lo&&i.x<hi).map(i=>i.s).join(' ').trim();
-   // CUU upper-right table: measured directly against the original PDF.
-   // PDF.js y is measured from the bottom; source table spans top 17–37%.
+   // Read the entire upper-right row, extracting phone tokens independently of column shifts.
    if(row.y>=.625&&row.y<=.835){
-    const cellText=cell(.425,1);
-    const surname=cell(.425,.55),given=cell(.55,.69),mobile=cell(.69,.79),bru=cell(.79,.85),str=cell(.85,1);
-    if(/secr[ée]tariat de l/i.test(cellText)){
-     const nums=cellText.match(/\b\d{5}\b/g)||[];
-     if(nums.length>=2)add('Secrétariat','Secrétariat de l’unité',nums.slice(-2).join('/'),'');
-    }else if(given&&/^\d{5}$/.test(bru)&&(!str||/^\d{5}$/.test(str))&&!/extension/i.test(bru)){
-     const name=/stagiaires/i.test(surname)?given:[surname,given].filter(Boolean).join(' ');
-     const safeMobile=/^0\d{3}\s*\d{2}\s*\d{2}\s*\d{2}$/.test(mobile)&&!/priv[ée]/i.test(cellText)?mobile:'';
-     add('Secrétariat',name,[bru,str].filter(Boolean).join('/'),safeMobile);count++;
+    const t=cell(.425,1), mobile=t.match(/\b0\d{3}\s*\d{2}\s*\d{2}\s*\d{2}\b/);
+    const rest=mobile?t.replace(mobile[0],' '):t;
+    const nums=rest.match(/\b[3467]\d{4}\b/g)||[];
+    if(/secr[ée]tariat de l/i.test(t)&&nums.length>=2){add('Secrétariat','Secrétariat de l’unité',nums.join('/'),'');}
+    else if(nums.length&&!/extension|secr[ée]tariat de l/i.test(t)){
+      const name=(mobile?t.slice(0,mobile.index):rest.slice(0,rest.search(/\b[3467]\d{4}\b/))).replace(/stagiaires\s+schumann/i,'').trim();
+      if(name&&/[a-zÀ-ÿ]/i.test(name)){add('Secrétariat',name,nums.join('/'),mobile&&!/priv[ée]/i.test(t)?mobile[0]:'');count++}
     }
-    // Keep processing left-hand colleagues on the same row, but not right-hand room parser.
    }
    if(left){const m=left.match(/^(.+?)\s+((?:0?\d{3})\s+\d{2}\s+\d{2}\s+\d{2})(.*)$/);if(m){const name=m[1].trim(),tail=m[3],priv=/priv[ée]/i.test(left);const short=tail.match(/\b\d{5}\b(?:\s*\/\s*\d{5}\b)?/);add('Unité',name,priv?'':(short?short[0]:''),priv?'':(m[2].replace(/\s/g,'').length===9?'0':'')+m[2]);count++}}
    if(row.y>=.625&&row.y<=.835)continue;
@@ -112,7 +108,7 @@ function review(g,isPdf){
  const hint=document.createElement('p');hint.textContent=total+' contacts détectés. Aucun besoin de les cocher individuellement. Les contacts existants sont conservés.';panel.append(hint);
  const save=document.createElement('button');save.textContent='Importer tous les contacts';save.style.cssText='background:#07367d;color:white;font-weight:bold;width:100%;margin:8px 0';panel.append(save);
  save.onclick=()=>{try{
- const next=JSON.parse(JSON.stringify(groups));
+ const next=JSON.parse(JSON.stringify(groups));if(isPdf&&g['Secrétariat']?.length>=5)next['Secrétariat']=[];
  for(const [cat,rows] of entries){for(const row of rows){
   if(/priv[ée]/i.test(row.join(' ')))continue;
   const clean=row.slice(0,3);next[cat]??=[];
