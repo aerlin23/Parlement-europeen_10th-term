@@ -112,7 +112,7 @@ async function extractPdf(file){
      const nums=rest.match(/\b[3467]\d{4}\b/g)||[];
      if(/secr[ée]tariat de l/i.test(t)){if(nums.length)add('Secrétariat','Secrétariat de l’unité',nums.join('/'),'');}
      else if(nums.length&&!/extension/i.test(t)){
-       const name=(mobile?t.slice(0,mobile.index):t.slice(0,t.search(/\b[3467]\d{4}\b/))).replace(/stagiaires\s+schumann/i,'').trim();
+       const name=[read(.415,.553),read(.553,.697)].join(' ').replace(/stagiaires\s+schumann/i,'').trim();
        if(name&&/[a-zÀ-ÿ]/i.test(name)){add('Secrétariat',name,nums.join('/'),mobile?mobile[0]:'');count++}
      }
    }
@@ -138,10 +138,11 @@ function review(g,isPdf){
  const heading=document.createElement('h2');heading.textContent='Annuaire prêt à importer';panel.append(heading);
  const entries=Object.entries(g).filter(([cat])=>cat!=='À vérifier');
  const total=entries.reduce((n,[,rows])=>n+rows.length,0);
- const hint=document.createElement('p');hint.textContent=total+' contacts détectés. Aucun besoin de les cocher individuellement. Les contacts existants sont conservés.';panel.append(hint);
- const save=document.createElement('button');save.textContent='Importer tous les contacts sur cet appareil';save.style.cssText='background:#07367d;color:white;font-weight:bold;width:100%;margin:8px 0';panel.append(save);
+ const hint=document.createElement('p');hint.textContent=total+' contacts détectés. Aucun besoin de les cocher individuellement. Les catégories présentes dans un fichier JSON remplacent les anciennes données de ces catégories. Les autres catégories sont conservées.';panel.append(hint);
+ const save=document.createElement('button');save.textContent=isPdf?'Importer les contacts PDF':'Remplacer les catégories par les données JSON';save.style.cssText='background:#07367d;color:white;font-weight:bold;width:100%;margin:8px 0';panel.append(save);
  save.onclick=()=>{try{
  const next=JSON.parse(JSON.stringify(groups));
+ if(!isPdf){for(const [cat,rows] of entries){if(rows.length){const oldRows=next[cat]||[];if(cat==='Secrétariat'){for(const old of oldRows){if(!favorites.has(contactId(cat,old)))continue;const matched=rows.filter(row=>{const merged=mergeSecretariat([old,row]);return merged.length===1});if(matched.length===1)favorites.add(contactId(cat,matched[0]))}}next[cat]=[]}}}
  for(const [cat,rows] of entries){for(const row of rows){
   // The user explicitly chooses whether to import the local directory.
   const clean=row.slice(0,3);next[cat]??=[];
@@ -151,7 +152,7 @@ function review(g,isPdf){
   if(cat==='Strasbourg'&&next.Services&&/^(G0\s*\d{4}|[NRS]\d+\.\d+|F0\s*\d{4}|SDM[- ]S\d+|WIC\s*200)$/i.test(clean[0]))next.Services=next.Services.filter(r=>norm(r[0].replace(/^\d{5}\s+/,''))!==norm(clean[0]));
  }}
  for(const [cat,rows] of Object.entries(next)){if(cat==='Unité')rows.sort((a,b)=>a[0].localeCompare(b[0],'fr'))}
- if(!valid(next))throw Error('Aucun contact valide');localStorage.setItem(key,JSON.stringify(next));panel.hidden=true;start(next);
+ if(!valid(next))throw Error('Aucun contact valide');localStorage.setItem(key,JSON.stringify(next));panel.hidden=true;start(next);$('status').textContent='Importation enregistrée sur cet appareil.';
  }catch(e){$('status').textContent=e.message}};
  const details=document.createElement('details');const summary=document.createElement('summary');summary.textContent='Voir les '+total+' contacts détectés (facultatif)';details.append(summary);
  for(const [cat,rows] of entries){if(!rows.length)continue;const h=document.createElement('h3');h.textContent=cat+' ('+rows.length+')';details.append(h);for(const row of rows){const p=document.createElement('div');p.textContent=row.filter(Boolean).join(' · ');details.append(p)}}panel.append(details);
