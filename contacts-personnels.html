@@ -72,17 +72,23 @@ async function extractPdf(file){
    const left=row.items.filter(i=>i.x<.425).map(i=>i.s).join(' ').trim();
    const right=row.items.filter(i=>i.x>=.425);
    const cell=(lo,hi)=>right.filter(i=>i.x>=lo&&i.x<hi).map(i=>i.s).join(' ').trim();
-   // Locate the secretariat table by its two extension headers, not a person's identity.
-   if(/Extension\s*BRU/i.test(cell(.79,.86))&&/Extension\s*STR/i.test(cell(.86,1))){page._cuuSecretariatY=row.y;continue}
-   if(page._cuuSecretariatY!==undefined&&row.y<page._cuuSecretariatY&&page._cuuSecretariatY-row.y<.16){
-    const surname=cell(.425,.56),given=cell(.56,.69),mobile=cell(.69,.79),bru=cell(.79,.86),str=cell(.86,1);
-    if(given&&/^\d{5}$/.test(bru)&&(!str||/^\d{5}$/.test(str))){
+   // CUU upper-right table: measured directly against the original PDF.
+   // PDF.js y is measured from the bottom; source table spans top 17–37%.
+   if(row.y>=.625&&row.y<=.835){
+    const cellText=cell(.425,1);
+    const surname=cell(.425,.55),given=cell(.55,.69),mobile=cell(.69,.79),bru=cell(.79,.85),str=cell(.85,1);
+    if(/secr[ée]tariat de l/i.test(cellText)){
+     const nums=cellText.match(/\b\d{5}\b/g)||[];
+     if(nums.length>=2)add('Secrétariat','Secrétariat de l’unité',nums.slice(-2).join('/'),'');
+    }else if(given&&/^\d{5}$/.test(bru)&&(!str||/^\d{5}$/.test(str))&&!/extension/i.test(bru)){
      const name=/stagiaires/i.test(surname)?given:[surname,given].filter(Boolean).join(' ');
-     const safeMobile=/^0\d{3}\s*\d{2}\s*\d{2}\s*\d{2}$/.test(mobile)?mobile:'';
-     add('Secrétariat',name,[bru,str].filter(Boolean).join('/'),safeMobile);count++;continue;
+     const safeMobile=/^0\d{3}\s*\d{2}\s*\d{2}\s*\d{2}$/.test(mobile)&&!/priv[ée]/i.test(cellText)?mobile:'';
+     add('Secrétariat',name,[bru,str].filter(Boolean).join('/'),safeMobile);count++;
     }
+    // Keep processing left-hand colleagues on the same row, but not right-hand room parser.
    }
    if(left){const m=left.match(/^(.+?)\s+((?:0?\d{3})\s+\d{2}\s+\d{2}\s+\d{2})(.*)$/);if(m){const name=m[1].trim(),tail=m[3],priv=/priv[ée]/i.test(left);const short=tail.match(/\b\d{5}\b(?:\s*\/\s*\d{5}\b)?/);add('Unité',name,priv?'':(short?short[0]:''),priv?'':(m[2].replace(/\s/g,'').length===9?'0':'')+m[2]);count++}}
+   if(row.y>=.625&&row.y<=.835)continue;
    // Split spatially into independent columns, preventing cross-column number assignments.
    for(const [lo,hi,cat] of [[.445,.60,'Bruxelles'],[.60,.755,'Services'],[.755,.875,'Strasbourg'],[.875,1.01,'Strasbourg']]){
     const s=right.filter(i=>i.x>=lo&&i.x<hi).map(i=>i.s).join(' ').trim();
