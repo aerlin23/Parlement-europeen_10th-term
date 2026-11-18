@@ -1,5 +1,5 @@
 /* Vademecum PE : ressources critiques hors-ligne et mises à jour consenties. */
-const VERSION='pe-pwa-v270';
+const VERSION='pe-pwa-v271';
 const MEDIA='pe-offline-official-media-v1';
 const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
 const CODE=['./styles.css?v=257','./directory.js?v=225','./hemicycle.js?v=225','./interface.js?v=249','./quiz.js?v=225','./offline.js?v=225','./smart-search.js?v=225','./features.js?v=234'];
