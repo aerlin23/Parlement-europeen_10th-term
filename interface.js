@@ -351,7 +351,7 @@ function showSecretariat(changeUrl=true){
  $('identityLogo').hidden=false;$('identityLogo').src='./assets/parlement-logo.png';
  $('identityLogo').alt='Parlement européen';$('identityText').hidden=true;
  $('identityTitle').textContent='Secrétariat général';
- $('identityBrand').textContent='ADMINISTRATION';$('identityBrand').hidden=false;
+ $('identityBrand').textContent='';$('identityBrand').hidden=true;
  $('identitySubtitle').textContent='Organisation et responsables administratifs.';$('identitySubtitle').hidden=false;
  $('headerStats').hidden=true;
  $('offlineManager').hidden=false;
