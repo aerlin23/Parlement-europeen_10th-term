@@ -7,12 +7,11 @@ function nameSimilarity(a,b){
  let prefix=0;while(prefix<Math.min(x.length,y.length)&&x[prefix]===y[prefix])prefix++;
  return dice*0.7+Math.min(1,prefix/4)*0.2+(x[0]===y[0]?0.1:0);
 }
-function quizGender(m){return String(m.id)==='256960'?'FEMALE':m.gender}
+function quizGender(m){return m.gender}
 function quizPool(target,pool){
- return pool.filter(m=>m.id!==target.id&&quizGender(m)===quizGender(target)&&m.country===target.country);
+ return pool.filter(m=>m.id!==target.id&&(!quizGender(target)||quizGender(m)===quizGender(target))&&m.country===target.country);
 }
 function optionsFor(target,pool,count){
- if(!['MALE','FEMALE'].includes(quizGender(target)))return [];
  const needed=Math.min(Math.max(3,count),4)-1;
  const sameCountry=quizPool(target,pool);
  const alternatives=[...sameCountry].sort((a,b)=>nameSimilarity(target,b)-nameSimilarity(target,a));
@@ -24,13 +23,13 @@ function optionsFor(target,pool,count){
  }
  // Un petit pays peut ne pas compter assez de députés du même genre.
  if(picked.length<needed){
-   const fallback=pool.filter(m=>m.id!==target.id&&quizGender(m)===quizGender(target)&&!picked.some(p=>p.id===m.id));
+   const fallback=pool.filter(m=>m.id!==target.id&&(!quizGender(target)||quizGender(m)===quizGender(target))&&!picked.some(p=>p.id===m.id));
    fallback.sort((a,b)=>nameSimilarity(target,b)-nameSimilarity(target,a));
    picked.push(...fallback.slice(0,needed-picked.length));
  }
  return shuffle([target,...picked]);
 }
-function canQuiz(m){return ['MALE','FEMALE'].includes(quizGender(m))&&members.filter(x=>x.id!==m.id&&quizGender(x)===quizGender(m)).length>=3}
+function canQuiz(m){return members.filter(x=>x.id!==m.id&&(!quizGender(m)||quizGender(x)===quizGender(m))).length>=3}
 const QUIZ_ERRORS_KEY='trombinoscope-quiz-errors-v1-'+CONFIG.repo;
 function readQuizErrors(){try{const data=JSON.parse(localStorage.getItem(QUIZ_ERRORS_KEY)||'{}');return data&&typeof data==='object'&&!Array.isArray(data)?data:{}}catch{return {}}}
 let quizErrors=readQuizErrors();
