@@ -341,7 +341,7 @@ function showSecretariat(changeUrl=true){
  if(directoryObserver)directoryObserver.disconnect();
  $('secretariatPanel').hidden=false;$('filters').hidden=true;$('count').hidden=true;
  $('directory').hidden=true;$('training').hidden=true;
- for(const id of ['directoryTab','trainingTab']){$(id).classList.remove('active');$(id).setAttribute('aria-pressed','false')}
+ $('directoryTab').classList.add('active');$('directoryTab').setAttribute('aria-pressed','true');$('trainingTab').classList.remove('active');$('trainingTab').setAttribute('aria-pressed','false')
  document.querySelectorAll('.directories a').forEach(a=>a.removeAttribute('aria-current'));
  const mobileGroups=$('mobileGroups');if(mobileGroups){mobileGroups.open=false;mobileGroups.classList.remove('active');$('mobileGroupsSummary').textContent='Groupes politiques'}
  $('secretariatNav').setAttribute('aria-current','page');
