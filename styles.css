@@ -782,3 +782,9 @@ body.reading-large header.ep-header #identityTitle{font-size:clamp(26px,6vw,32px
 /* Locally opted-in mobile project preview. */
 html.vf-tools-mobile-preview .vf-print-icon{display:inline-flex}
 html.vf-tools-mobile-preview .vf-tools-tab{display:inline-flex}
+
+/* Keep card actions in their own row, including members without committees. */
+.card:has(.vf-card-actions){display:flex;flex-direction:column}
+.card .info:has(.vf-card-actions){display:flex;flex-direction:column;flex:1;min-width:0;padding-bottom:9px}
+.card .info .vf-card-actions{position:static;display:flex;justify-content:flex-end;align-self:stretch;margin-top:auto;padding-top:6px;flex-shrink:0}
+.card .info .vf-card-actions .vf-share-icon{position:static}
