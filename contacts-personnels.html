@@ -12,7 +12,17 @@ async function extractPdf(file){
  const doc=await pdfjs.getDocument({data:new Uint8Array(await file.arrayBuffer()),isEvalSupported:false}).promise;
  const g={'Services':[['Techniciens de conf','30300',''],['Régie','',''],['Ménage','85600','']], 'Bruxelles':[], 'Strasbourg':[], 'Unité':[], 'Secrétariat':[], 'À vérifier':[]};
  let count=0;
- const add=(cat,name,num,ext='')=>{if(name&& !g[cat].some(r=>r[0]===name&&r[1]===num&&r[2]===ext))g[cat].push([name,num,ext])};
+ const add=(cat,name,num,ext='')=>{
+ name=name.trim();num=num.trim();
+ if(cat!=='Unité'&&cat!=='À vérifier'){
+  const room=name.match(/^(?:\d{5}\s+)?(G0\s*\d{4}|[NRS]\d+\.\d+|F0\s*\d{4}|SDM[- ]S\d+|WIC\s*200)$/i);
+  if(room&&/^7\d{4}(?:\s*\/\s*7\d{4})?$/.test(num)){cat='Strasbourg';name=room[1];}
+  else if(/^\d{5}\s+/.test(name)||/\b\d{5}\b/.test(name)){g['À vérifier'].push([name+' · '+num,'','']);return}
+  else if(/^\d{1,2}\s*[ABCEGQ]\s*\d{1,2}$/i.test(name)&&/^[34]\d{4}$/.test(num))cat='Bruxelles';
+  else if(/^(Techniciens de conf|Tech\. de Conférence|Helpdesk BHD|Ménage|Urgences|Sécurité|ITEC Service desk|Interprétation|Nameplates|One-Stop Shop|Accréditations|Affichages|Clefs des locaux|Clefs mobilier|EP Posting|Journalistes|LINC IT helpdesk|Renseignements|Fauteuil roulant|Scooter|Photo)$/i.test(name))cat='Services';
+ }
+ if(name&&!g[cat].some(r=>norm(r[0])===norm(name)&&r[1]===num&&r[2]===ext))g[cat].push([name,num,ext]);
+};
  for(let p=1;p<=doc.numPages;p++){
   const page=await doc.getPage(p), vp=page.getViewport({scale:1}), tc=await page.getTextContent();
   const rows=[];
@@ -23,7 +33,7 @@ async function extractPdf(file){
    // CUU: colonne des collègues à gauche, tableaux de services à droite.
    const left=row.items.filter(i=>i.x<.445).map(i=>i.s).join(' ').trim();
    const right=row.items.filter(i=>i.x>=.445);
-   if(left){const m=left.match(/^(.+?)\s+((?:0?\d{3})\s+\d{2}\s+\d{2}\s+\d{2})(.*)$/);if(m){const name=m[1].trim(),tail=m[3],priv=/priv[ée]/i.test(left);const short=tail.match(/\b\d{5}\b(?:\s*\/\s*\d{5}\b)?/);add('Unité',name,short?short[0]:'',priv?'':(m[2].replace(/\s/g,'').length===9?'0':'')+m[2]);count++}}
+   if(left){const m=left.match(/^(.+?)\s+((?:0?\d{3})\s+\d{2}\s+\d{2}\s+\d{2})(.*)$/);if(m){const name=m[1].trim(),tail=m[3],priv=/priv[ée]/i.test(left);const short=tail.match(/\b\d{5}\b(?:\s*\/\s*\d{5}\b)?/);add('Unité',name,priv?'':(short?short[0]:''),priv?'':(m[2].replace(/\s/g,'').length===9?'0':'')+m[2]);count++}}
    // Split spatially into independent columns, preventing cross-column number assignments.
    for(const [lo,hi,cat] of [[.445,.60,'Bruxelles'],[.60,.755,'Services'],[.755,.875,'Strasbourg'],[.875,1.01,'Strasbourg']]){
     const s=right.filter(i=>i.x>=lo&&i.x<hi).map(i=>i.s).join(' ').trim();
@@ -41,12 +51,29 @@ async function extractPdf(file){
 }
 function review(g,isPdf){
  pending=g;const panel=$('review');panel.hidden=false;panel.replaceChildren();
- const heading=document.createElement('h2');heading.textContent='Vérifier avant enregistrement';panel.append(heading);
- const hint=document.createElement('p');hint.textContent=isPdf?'Extraction expérimentale CUU : vérifiez les associations nom/numéro. Les lignes non reconnues ne sont pas importées. Les contacts existants sont conservés.':'Vérifiez les contacts avant import.';panel.append(hint);
- for(const [cat,entries] of Object.entries(g)){if(!entries.length)continue;const h=document.createElement('h3');h.textContent=cat+' ('+entries.length+')';panel.append(h);for(const entry of entries){const label=document.createElement('label');label.style.display='block';const cb=document.createElement('input');cb.type='checkbox';cb.checked=!isPdf&&cat!=='À vérifier';cb.onchange=()=>entry.selected=cb.checked;entry.selected=cb.checked;label.append(cb,document.createTextNode(' '+entry.join(' · ')));panel.append(label)}}
- const save=document.createElement('button');save.textContent='Enregistrer les contacts sélectionnés';save.onclick=()=>{try{const next=JSON.parse(JSON.stringify(groups));for(const [cat,entries] of Object.entries(pending)){if(cat==='À vérifier')continue;for(const row of entries.filter(r=>r.selected)){next[cat]??=[];const i=next[cat].findIndex(r=>norm(r[0])===norm(row[0]));const clean=row.slice(0,3);if(i>=0)next[cat][i]=clean;else next[cat].push(clean)}}if(!valid(next))throw Error('Aucun contact sélectionné');localStorage.setItem(key,JSON.stringify(next));panel.hidden=true;start(next)}catch(e){$('status').textContent=e.message}};panel.append(save);
+ const heading=document.createElement('h2');heading.textContent='Annuaire prêt à importer';panel.append(heading);
+ const entries=Object.entries(g).filter(([cat])=>cat!=='À vérifier');
+ const total=entries.reduce((n,[,rows])=>n+rows.length,0);
+ const hint=document.createElement('p');hint.textContent=total+' contacts détectés. Aucun besoin de les cocher individuellement. Les contacts existants sont conservés.';panel.append(hint);
+ const save=document.createElement('button');save.textContent='Importer tous les contacts';save.style.cssText='background:#07367d;color:white;font-weight:bold;width:100%;margin:8px 0';panel.append(save);
+ save.onclick=()=>{try{
+ const next=JSON.parse(JSON.stringify(groups));
+ for(const [cat,rows] of entries){for(const row of rows){
+  if(/priv[ée]/i.test(row.join(' ')))continue;
+  const clean=row.slice(0,3);next[cat]??=[];
+  const i=next[cat].findIndex(r=>norm(r[0])===norm(clean[0]));
+  if(i>=0){if(clean[1]||clean[2]||cat==='Unité')next[cat][i]=clean;}
+  else next[cat].push(clean);
+  if(cat==='Strasbourg'&&next.Services&&/^(G0\s*\d{4}|[NRS]\d+\.\d+|F0\s*\d{4}|SDM[- ]S\d+|WIC\s*200)$/i.test(clean[0]))next.Services=next.Services.filter(r=>norm(r[0].replace(/^\d{5}\s+/,''))!==norm(clean[0]));
+ }}
+ for(const [cat,rows] of Object.entries(next)){if(cat==='Unité')rows.sort((a,b)=>a[0].localeCompare(b[0],'fr'))}
+ if(!valid(next))throw Error('Aucun contact valide');localStorage.setItem(key,JSON.stringify(next));panel.hidden=true;start(next);
+ }catch(e){$('status').textContent=e.message}};
+ const details=document.createElement('details');const summary=document.createElement('summary');summary.textContent='Voir les '+total+' contacts détectés (facultatif)';details.append(summary);
+ for(const [cat,rows] of entries){if(!rows.length)continue;const h=document.createElement('h3');h.textContent=cat+' ('+rows.length+')';details.append(h);for(const row of rows){const p=document.createElement('div');p.textContent=row.filter(Boolean).join(' · ');details.append(p)}}panel.append(details);
+ if(g['À vérifier']?.length){const d=document.createElement('details');const s=document.createElement('summary');s.textContent=g['À vérifier'].length+' lignes ambiguës ignorées';d.append(s);for(const row of g['À vérifier']){const p=document.createElement('p');p.textContent=row[0];d.append(p)}panel.append(d)}
  const cancel=document.createElement('button');cancel.textContent='Annuler';cancel.onclick=()=>{panel.hidden=true;pending=null};panel.append(cancel);
 }
-$('file').onchange=async()=>{try{const f=$('file').files[0];if(!f)return;$('status').textContent='Lecture du fichier…';const pdf=/\.pdf$/i.test(f.name)||f.type==='application/pdf';const g=pdf?await extractPdf(f):JSON.parse(await f.text());if(!valid(g))throw Error('Format invalide');review(g,pdf);$('status').textContent='Vérification requise.'}catch(e){$('status').textContent='Import impossible : '+e.message}finally{$('file').value=''}};
+$('file').onchange=async()=>{try{const f=$('file').files[0];if(!f)return;$('status').textContent='Lecture du fichier…';const pdf=/\.pdf$/i.test(f.name)||f.type==='application/pdf';const g=pdf?await extractPdf(f):JSON.parse(await f.text());if(!valid(g))throw Error('Format invalide');review(g,pdf);$('status').textContent='Prêt à importer.'}catch(e){$('status').textContent='Import impossible : '+e.message}finally{$('file').value=''}};
 
 $('search').oninput=render;$('erase').onclick=()=>{if(confirm('Effacer les contacts de cet appareil ?')){localStorage.removeItem(key);location.reload()}};$('replace').onclick=()=>{$('setup').hidden=false};try{const g=JSON.parse(localStorage.getItem(key)||'null');if(valid(g))start(g)}catch(e){}</script></html>
