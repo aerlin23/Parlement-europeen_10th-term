@@ -19,8 +19,8 @@ function organize(input){
  for(const row of [['Techniciens de conf','30300',''],['Régie','',''],['Helpdesk BHD','85600',''],['Urgences','85112',''],['Sécurité','44321','']])if(!out.Services.some(r=>norm(r[0])===norm(row[0])))add('Services',row);
  if(!out['Secrétariat'].some(r=>norm(r[0])===norm('Secrétariat de l’unité')))out['Secrétariat'].unshift(['Secrétariat de l’unité','41023/74650','']);else out['Secrétariat'].sort((a,b)=>Number(!/secrétariat de l.unit/i.test(a[0]))-Number(!/secrétariat de l.unit/i.test(b[0])));
  for(const row of extraServices)if(!out.Services.some(r=>norm(r[0])===norm(row[0])))add('Services',row);
- out.Strasbourg=out.Strasbourg.filter(r=>roomFamily(r[0])!=='G');
- const order=['F','N','R','S','SDM','WIC','Autres contacts'];out.Strasbourg.sort((a,b)=>order.indexOf(roomFamily(a[0]))-order.indexOf(roomFamily(b[0]))||a[0].localeCompare(b[0],'fr',{numeric:true}));
+ out.Strasbourg=out.Strasbourg.filter(r=>!['F','G'].includes(roomFamily(r[0])));
+ const order=['N','R','S','SDM','WIC','Autres contacts'];out.Strasbourg.sort((a,b)=>order.indexOf(roomFamily(a[0]))-order.indexOf(roomFamily(b[0]))||a[0].localeCompare(b[0],'fr',{numeric:true}));
  const priority=['Techniciens de conf','Régie','Helpdesk BHD','Urgences','Sécurité'];out.Services.sort((a,b)=>(priority.includes(a[0])?priority.indexOf(a[0]):99)-(priority.includes(b[0])?priority.indexOf(b[0]):99)||a[0].localeCompare(b[0],'fr'));
  return out;
 }
