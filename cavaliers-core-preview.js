@@ -66,7 +66,7 @@ function institutionalRow(value){
  const text=String(value??'').trim(),k=norm(text);
  const sec=k.match(/^(?:([a-z]{3,5})\s+secretariat|secretariat\s+([a-z]{3,5}))$/);
  if(sec)return ['', (sec[1]||sec[2]).toUpperCase(),'SECRETARIAT','',''];
- const extra={'greens':'VERTS','greens/efa':'VERTS/ALE','verts':'VERTS','the left':'THE LEFT','assistant parlementaire':'ASSISTANT PARLEMENTAIRE','parliamentary assistant':'ASSISTANT PARLEMENTAIRE','pres - dla/directorate for legislative acts':'DIRECTION DES ACTES LÉGISLATIFS','dg pres':'DIRECTION GÉNÉRALE DE LA PRÉSIDENCE','dg presidency':'DIRECTION GÉNÉRALE DE LA PRÉSIDENCE'};
+ const extra={'general secretariat council':'CONSEIL DE L’UNION EUROPÉENNE','general secretariat of the council':'CONSEIL DE L’UNION EUROPÉENNE','general secretariat of the council of the european union':'CONSEIL DE L’UNION EUROPÉENNE','council general secretariat':'CONSEIL DE L’UNION EUROPÉENNE','gsc':'CONSEIL DE L’UNION EUROPÉENNE','secrétariat général du conseil':'CONSEIL DE L’UNION EUROPÉENNE','secretariat general du conseil':'CONSEIL DE L’UNION EUROPÉENNE','greens':'VERTS','greens/efa':'VERTS/ALE','verts':'VERTS','the left':'THE LEFT','assistant parlementaire':'ASSISTANT PARLEMENTAIRE','parliamentary assistant':'ASSISTANT PARLEMENTAIRE','pres - dla/directorate for legislative acts':'DIRECTION DES ACTES LÉGISLATIFS','dg pres':'DIRECTION GÉNÉRALE DE LA PRÉSIDENCE','dg presidency':'DIRECTION GÉNÉRALE DE LA PRÉSIDENCE'};
  return ['',extra[k]||genericAliases[k]||text.toLocaleUpperCase('fr'),'','',''];
 }
 
