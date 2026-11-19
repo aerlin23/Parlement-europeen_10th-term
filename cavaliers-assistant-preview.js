@@ -150,9 +150,9 @@ const privateKey=s=>String(s??'').normalize('NFD').replace(/\p{M}/gu,'').toLower
 const eeasAliases=new Set(['SEAE','EEAS','EAAS','Service européen pour l’action extérieure','European External Action Service'].map(privateKey));
 function institutionalKey(value){const k=privateKey(value);return eeasAliases.has(k)?'institution:eeas':k}
 const knownPrivateGroups=[
- ['SEAE','EEAS','EAAS','EAS','Service européen pour l’action extérieure','Service européen d’action extérieure','European External Action Service'],
- ['Pietro Ducci','P. Ducci','Ducci Pietro','Ducci P.','Ducci'],
- ['Raquel de Vicente','R. de Vicente','de Vicente Raquel','de Vicente R.','de Vicente','Vicente Raquel','R. Vicente']
+ ['SEAE','EEAS','EAAS','EAS','Service européen pour l’action extérieure','Service européen d’action extérieure','European External Action Service','10 SEAE-EEAS SERVICE EUROPEEN ACTION EXTERIEURE','SEAE-EEAS SERVICE EUROPEEN ACTION EXTERIEURE','SEAE/EEAS SERVICE EUROPEEN ACTION EXTERIEURE'],
+ ['Pietro Ducci','P. Ducci','Ducci Pietro','Ducci P.','Ducci','DUCCI DIRECTEUR GENERAL POLITIQUES EXTERNES','P. DUCCI DIRECTEUR GENERAL POLITIQUES EXTERNES'],
+ ['Raquel de Vicente','R. de Vicente','de Vicente Raquel','de Vicente R.','de Vicente','Vicente Raquel','R. Vicente','DE VICENTE DIRECTRICE','R. DE VICENTE DIRECTRICE']
 ].map(g=>new Set(g.map(privateKey)));
 function privateVariants(value){
  const raw=String(value??'').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().replace(/\.(?:pdf)$/i,'').replace(/[_–—-]/g,' ');
