@@ -39,7 +39,7 @@ const viewer=$('printViewer'), sheet=$('viewerSheet'), sidebar=$('viewerNames');
 let page=0,zoom=1,viewPages=[],pageNodes=[],scrollFrame=0;
 const stage=sheet.closest('.viewer-stage');
 function updatePageNumber(){if(!viewPages.length)return;$('pageNumber').textContent=(page+1)+' / '+viewPages.length;$('prevPage').disabled=page===0;$('nextPage').disabled=page===viewPages.length-1;[...sidebar.children].forEach((b,i)=>b.setAttribute('aria-current',i===page?'true':'false'))}
-function refreshViewerPage(i){const source=viewPages[i],node=pageNodes[i];if(!source||!node)return;const img=source.parentElement?.querySelector('.original-thumbnail'),pending=source.parentElement?.querySelector('.thumbnail-status');const visual=(img||pending||source).cloneNode(true);visual.hidden=false;if(img)visual.loading='lazy';node.replaceChildren(visual)}
+function refreshViewerPage(i){const source=viewPages[i],node=pageNodes[i];if(!source||!node)return;const img=source.parentElement?.querySelector('.original-thumbnail'),pending=source.parentElement?.querySelector('.thumbnail-status');const visual=(img||pending||source).cloneNode(true);visual.removeAttribute('hidden');visual.style.removeProperty('display');if(img)visual.loading='lazy';node.replaceChildren(visual)}
 function updateFromScroll(){scrollFrame=0;if(!viewer.open||!pageNodes.length)return;const bounds=stage.getBoundingClientRect(),mid=bounds.top+bounds.height/2;let best=0,distance=Infinity;pageNodes.forEach((node,i)=>{const r=node.getBoundingClientRect(),d=mid<r.top?r.top-mid:mid>r.bottom?mid-r.bottom:0;if(d<distance){distance=d;best=i}});if(page!==best){page=best;updatePageNumber()}}
 stage.addEventListener('scroll',()=>{if(!scrollFrame)scrollFrame=requestAnimationFrame(updateFromScroll)},{passive:true});
 function goToPage(i,behavior='smooth'){if(!pageNodes.length)return;page=Math.max(0,Math.min(i,pageNodes.length-1));const r=pageNodes[page].getBoundingClientRect(),s=stage.getBoundingClientRect();stage.scrollTo({top:stage.scrollTop+r.top-s.top-8,behavior});updatePageNumber()}
@@ -119,8 +119,8 @@ async function showOfficialCavaliers(){
  const cards=[...$('entries').querySelectorAll('.compact-entry')],tiles=[...previews.querySelectorAll('.preview')];
  for(const tile of tiles){const s=tile.querySelector('svg');if(!s)continue;const label=s.getAttribute('aria-label'),result=resolveSource(entries,names,s);
  const card=tile.closest('.compact-entry');card.style.borderColor=(result.id||result.private)?'#4a9669':(result.candidates||result.privateCandidates)?'#c58a32':'#b9cbd8';card.style.background=(result.id||result.private)?'#edf7ef':(result.candidates||result.privateCandidates)?'#fff6e5':'';
- tile.querySelector('.original-thumbnail')?.remove();tile.querySelector('.thumbnail-status')?.remove();s.hidden=false;
- if(result.id||result.private){s.hidden=true;const placeholder=element('p','Chargement du PDF original…');placeholder.className='thumbnail-status';tile.prepend(placeholder);
+ tile.querySelector('.original-thumbnail')?.remove();tile.querySelector('.thumbnail-status')?.remove();s.removeAttribute('hidden');s.style.removeProperty('display');
+ if(result.id||result.private){s.setAttribute('hidden','');s.style.setProperty('display','none','important');const placeholder=element('p','Chargement du PDF original…');placeholder.className='thumbnail-status';tile.prepend(placeholder);
  originalThumbnail(result).then(src=>{if(token!==officialToken||!tile.isConnected)return;const img=element('img');img.className='original-thumbnail';img.alt='Aperçu du PDF original : '+label;img.src=src;placeholder.replaceWith(img);if(viewer.open){const i=viewPages.indexOf(s);if(i>=0)refreshViewerPage(i)}}).catch(()=>{if(token!==officialToken||!tile.isConnected)return;placeholder.textContent='Aperçu indisponible · consultez le PDF original';if(viewer.open){const i=viewPages.indexOf(s);if(i>=0)refreshViewerPage(i)}});}
  tile.querySelector('.official-cavalier-link')?.remove();
  const note=element('div',result.id?'PDF original du député':result.private?'PDF original · bibliothèque privée':result.privateCandidates?'Plusieurs PDF privés · à confirmer':result.candidates?'Député possible · à confirmer':'Cavalier généré');note.className='official-cavalier-link';note.style.cssText='font-size:12px;font-weight:600;color:'+((result.id||result.private)?'#24623a':(result.candidates||result.privateCandidates)?'#925900':'#526575');tile.append(note);
@@ -147,7 +147,9 @@ let officialToken=0;
 
 let privateEntries=[],privateZip=null,privateRevision=0;
 const privateKey=s=>String(s??'').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().replace(/[^\p{L}\p{N}&]/gu,'');
-function privateMatches(label){const k=privateKey(label);return privateEntries.filter(e=>e.aliases.some(a=>privateKey(a)===k))}
+const eeasAliases=new Set(['SEAE','EEAS','EAAS','Service européen pour l’action extérieure','European External Action Service'].map(privateKey));
+function institutionalKey(value){const k=privateKey(value);return eeasAliases.has(k)?'institution:eeas':k}
+function privateMatches(label){const k=institutionalKey(label);return privateEntries.filter(e=>[...e.aliases,e.title].some(a=>institutionalKey(a)===k))}
 function privateLabel(svg){return [svg.getAttribute('aria-label'),[...svg.querySelector('g').querySelectorAll('text')].map(t=>t.textContent).join(' ')].filter(Boolean)}
 function privateFor(svg){const labels=privateLabel(svg),hits=new Map();for(const label of labels)for(const e of privateMatches(label))hits.set(e.id,e);return [...hits.values()]}
 function localDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open('vf-private-cavaliers-v1',1);req.onupgradeneeded=()=>req.result.createObjectStore('library');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)})}
