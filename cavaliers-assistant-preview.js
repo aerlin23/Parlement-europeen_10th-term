@@ -95,11 +95,13 @@ function resolveMEP(entries,names,label){
 async function showOfficialCavaliers(){
  const token=++officialToken,entries=await getOfficialIndex(),names=buildOfficialNames(entries);if(token!==officialToken)return;
  const cards=[...$('entries').querySelectorAll('.compact-entry')],tiles=[...previews.querySelectorAll('.preview')];
- for(const tile of tiles){const s=tile.querySelector('svg');if(!s)continue;const label=s.getAttribute('aria-label'),result=resolveMEP(entries,names,label);
- tile.style.borderColor=result.id?'#4a9669':result.candidates?'#c58a32':'#b9cbd8';tile.style.background=result.id?'#edf7ef':result.candidates?'#fff6e5':'';
+ for(const tile of tiles){const s=tile.querySelector('svg');if(!s)continue;const label=s.getAttribute('aria-label'),result=resolveSource(entries,names,s);
+ tile.style.borderColor=(result.id||result.private)?'#4a9669':(result.candidates||result.privateCandidates)?'#c58a32':'#b9cbd8';tile.style.background=(result.id||result.private)?'#edf7ef':(result.candidates||result.privateCandidates)?'#fff6e5':'';
  tile.querySelector('.official-cavalier-link')?.remove();
- const note=element('div',result.id?'PDF original du député':result.candidates?'Député possible · à confirmer':'Cavalier généré');note.className='official-cavalier-link';note.style.cssText='font-size:12px;font-weight:600;color:'+(result.id?'#24623a':result.candidates?'#925900':'#526575');tile.append(note);
+ const note=element('div',result.id?'PDF original du député':result.private?'PDF original · bibliothèque privée':result.privateCandidates?'Plusieurs PDF privés · à confirmer':result.candidates?'Député possible · à confirmer':'Cavalier généré');note.className='official-cavalier-link';note.style.cssText='font-size:12px;font-weight:600;color:'+((result.id||result.private)?'#24623a':(result.candidates||result.privateCandidates)?'#925900':'#526575');tile.append(note);
  if(result.candidates){for(const [id,m] of result.candidates){const b=element('button','Confirmer : '+m.name);b.type='button';b.style.cssText='display:block;margin:4px 0;font-size:12px';b.onclick=()=>{decisions.set(officialKey(label),id);lastSignature='';showOfficialCavaliers();schedule()};note.append(b)}const no=element('button','Non, créer un cavalier');no.type='button';no.onclick=()=>{decisions.set(officialKey(label),null);lastSignature='';showOfficialCavaliers();schedule()};note.append(no)}
+ if(result.privateCandidates){for(const e of result.privateCandidates){const b=element('button',e.title);b.type='button';b.onclick=()=>{decisions.set(result.pk,e.id);lastSignature='';showOfficialCavaliers();schedule()};note.append(b)}const no=element('button','Créer un cavalier');no.type='button';no.onclick=()=>{decisions.set(result.pk,null);lastSignature='';showOfficialCavaliers();schedule()};note.append(no)}
+ if(result.private){const b=element('button','Voir le PDF original');b.type='button';b.onclick=async()=>{const url=URL.createObjectURL(new Blob([await privateZip.file(result.private.file).async('uint8array')],{type:'application/pdf'}));window.open(url,'_blank');setTimeout(()=>URL.revokeObjectURL(url),120000)};note.append(b)}
  if(result.id){const link=element('a','Voir le PDF original');link.href='./cavaliers/'+encodeURIComponent(result.id)+'.pdf';link.target='_blank';link.rel='noopener';note.append(document.createElement('br'),link)}
  }
 }
@@ -107,14 +109,31 @@ async function assembleOriginals(svgs,filename,gen){
  const entries=await getOfficialIndex();if(!Object.keys(entries).length)throw Error('Index des cavaliers indisponible');
  const names=buildOfficialNames(entries),lib=window.PDFLib;if(!lib)throw Error('Moteur PDF indisponible');
  const output=await lib.PDFDocument.create(),cache=new Map();let originals=0;
- for(const s of svgs){if(gen!==generation)return null;const label=s.getAttribute('aria-label'),resolution=resolveMEP(entries,names,label),id=resolution.id;
+ for(const s of svgs){if(gen!==generation)return null;const label=s.getAttribute('aria-label'),resolution=resolveSource(entries,names,s),id=resolution.id;
+ if(resolution.privateCandidates)throw Error('Confirmez le PDF de la bibliothèque : '+label);
  if(resolution.candidates)throw Error('Confirmez le député possible : '+label+' dans les aperçus.');
- if(id){if(!cache.has(id)){const response=await fetch('./cavaliers/'+encodeURIComponent(id)+'.pdf');if(!response.ok)throw Error('PDF original indisponible : '+label);cache.set(id,await lib.PDFDocument.load(await response.arrayBuffer()))}const src=cache.get(id);for(const page of await output.copyPages(src,src.getPageIndices()))output.addPage(page);originals++}
+ if(resolution.private){const e=resolution.private,k='local:'+e.id;if(!cache.has(k))cache.set(k,await lib.PDFDocument.load(await privateZip.file(e.file).async('uint8array')));const src=cache.get(k);for(const page of await output.copyPages(src,src.getPageIndices()))output.addPage(page);originals++}
+ else if(id){if(!cache.has(id)){const response=await fetch('./cavaliers/'+encodeURIComponent(id)+'.pdf');if(!response.ok)throw Error('PDF original indisponible : '+label);cache.set(id,await lib.PDFDocument.load(await response.arrayBuffer()))}const src=cache.get(id);for(const page of await output.copyPages(src,src.getPageIndices()))output.addPage(page);originals++}
  else {const p=await renderPage(s),image=await output.embedJpg(p.bytes),page=output.addPage([595.276,841.89]);page.drawImage(image,{x:0,y:0,width:595.276,height:841.89})}
  }
  return {file:new File([await output.save()],filename,{type:'application/pdf'}),originals};
 }
 let officialToken=0;
+
+let privateEntries=[],privateZip=null,privateRevision=0;
+const privateKey=s=>String(s??'').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().replace(/[^\p{L}\p{N}&]/gu,'');
+function privateMatches(label){const k=privateKey(label);return privateEntries.filter(e=>e.aliases.some(a=>privateKey(a)===k))}
+function privateLabel(svg){return [svg.getAttribute('aria-label'),[...svg.querySelector('g').querySelectorAll('text')].map(t=>t.textContent).join(' ')].filter(Boolean)}
+function privateFor(svg){const labels=privateLabel(svg),hits=new Map();for(const label of labels)for(const e of privateMatches(label))hits.set(e.id,e);return [...hits.values()]}
+function localDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open('vf-private-cavaliers-v1',1);req.onupgradeneeded=()=>req.result.createObjectStore('library');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)})}
+async function libraryStore(value){const db=await localDB();try{return await new Promise((resolve,reject)=>{const tx=db.transaction('library',value===undefined?'readonly':'readwrite'),store=tx.objectStore('library'),req=value===undefined?store.get('zip'):value===null?store.delete('zip'):store.put(value,'zip');tx.oncomplete=()=>resolve(req.result);tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error)})}finally{db.close()}}
+async function activateLibrary(blob){if(!window.JSZip)throw Error('Lecteur ZIP indisponible');const z=await JSZip.loadAsync(blob),manifest=z.file('manifest.json');if(!manifest)throw Error('Utilisez le ZIP indexé préparé pour le Vademecum');const data=JSON.parse(await manifest.async('string'));if(data.version!==1||!Array.isArray(data.entries)||data.entries.length>2000||!data.entries.every(e=>/^\d+$/.test(e.id)&&e.file==='pdf/'+e.id+'.pdf'&&Array.isArray(e.aliases)&&e.aliases.every(a=>typeof a==='string')&&z.file(e.file)))throw Error('Index privé invalide');privateZip=z;privateEntries=data.entries;privateRevision++;decisions.clear();lastSignature='';showOfficialCavaliers();schedule()}
+const libraryBox=element('details');libraryBox.style.cssText='border:1px solid #cbdce5;border-radius:8px;padding:10px;margin:8px 0';libraryBox.append(element('summary','Bibliothèque privée de cavaliers'));const libraryStatus=element('p','Aucune bibliothèque locale chargée');const libraryInput=element('input');libraryInput.type='file';libraryInput.accept='.zip';libraryInput.setAttribute('aria-label','Importer le ZIP indexé privé');const libraryDelete=element('button','Retirer la bibliothèque locale');libraryDelete.type='button';libraryBox.append(libraryStatus,libraryInput,libraryDelete);$('dropZone').before(libraryBox);
+libraryInput.onchange=async()=>{const file=libraryInput.files[0];if(!file)return;try{if(file.size>100*1024*1024)throw Error('Archive trop volumineuse');await activateLibrary(file);await libraryStore(file);libraryStatus.textContent=privateEntries.length+' PDF originaux disponibles sur cet appareil.'}catch(e){libraryStatus.textContent=e.message}finally{libraryInput.value=''}};
+libraryDelete.onclick=async()=>{if(!confirm('Retirer la bibliothèque privée de cet appareil ?'))return;try{await libraryStore(null);privateEntries=[];privateZip=null;privateRevision++;decisions.clear();lastSignature='';libraryStatus.textContent='Aucune bibliothèque locale chargée';showOfficialCavaliers();schedule()}catch(e){libraryStatus.textContent=e.message}};
+libraryStore().then(async blob=>{if(blob){await activateLibrary(blob);libraryStatus.textContent=privateEntries.length+' PDF originaux disponibles sur cet appareil.'}}).catch(e=>{libraryStatus.textContent='Bibliothèque locale indisponible : '+e.message});
+function resolveSource(entries,names,svg){const label=svg.getAttribute('aria-label'),m=resolveMEP(entries,names,label);if(m.id||m.candidates)return m;const pk='private:'+officialKey(privateLabel(svg).join('|'));if(decisions.has(pk)){const id=decisions.get(pk);return {private:id?privateEntries.find(e=>e.id===id):null}}const hits=privateFor(svg);return hits.length===1?{private:hits[0]}:hits.length>1?{privateCandidates:hits,pk}:m}
+
 document.addEventListener('vf-cavaliers-ready',()=>{for(const a of document.querySelectorAll('.official-cavalier-link'))a.remove();showOfficialCavaliers()});
 function inspectWorkbook(sheets,members){
  excelPanel.replaceChildren();excelPanel.hidden=false;
