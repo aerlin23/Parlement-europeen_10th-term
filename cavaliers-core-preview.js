@@ -64,6 +64,7 @@ const genericAliases={'reserved':'RÉSERVÉ','legal service':'SERVICE JURIDIQUE'
 
 function institutionalRow(value){
  const text=String(value??'').trim(),k=norm(text);
+ if(/^(?:presidence\s+d['’]\s*ue|presidence\s+de\s+l['’]\s*ue|presidence\s+du\s+conseil|presidence\s+en\s+exercice\s+du\s+conseil|eu presidency|council presidency|[a-z]{2} presidency)$/i.test(k))return ['', 'PRÉSIDENCE EN EXERCICE DU CONSEIL','','',''];
  const sec=k.match(/^(?:([a-z]{3,5})\s+secretariat|secretariat\s+([a-z]{3,5}))$/);
  if(sec)return ['', (sec[1]||sec[2]).toUpperCase(),'SECRETARIAT','',''];
  const extra={'general secretariat council':'CONSEIL DE L’UNION EUROPÉENNE','general secretariat of the council':'CONSEIL DE L’UNION EUROPÉENNE','general secretariat of the council of the european union':'CONSEIL DE L’UNION EUROPÉENNE','council general secretariat':'CONSEIL DE L’UNION EUROPÉENNE','gsc':'CONSEIL DE L’UNION EUROPÉENNE','secrétariat général du conseil':'CONSEIL DE L’UNION EUROPÉENNE','secretariat general du conseil':'CONSEIL DE L’UNION EUROPÉENNE','greens':'VERTS','greens/efa':'VERTS/ALE','verts':'VERTS','the left':'THE LEFT','assistant parlementaire':'ASSISTANT PARLEMENTAIRE','parliamentary assistant':'ASSISTANT PARLEMENTAIRE','pres - dla/directorate for legislative acts':'DIRECTION DES ACTES LÉGISLATIFS','dg pres':'DIRECTION GÉNÉRALE DE LA PRÉSIDENCE','dg presidency':'DIRECTION GÉNÉRALE DE LA PRÉSIDENCE'};
@@ -85,7 +86,7 @@ function inspectOrder(matrix){
   if(group){const n=Number(group[1]);if(q===n*8){for(const g of ['EPP','S&D','PfE','ECR','RENEW','GREENS/EFA','THE LEFT','ESN'])add(g,n)}else add(label,q,'','Consigne de groupe à vérifier');continue}
   const generic=genericAliases[norm(label)];
   if(generic){add(generic);continue}
-  if(last&&!/^(director|director general)$/i.test(last)){add(initials(label)+' '+last,q,title);continue}
+  if(last&&!/^(director|director general)$/i.test(last)){add(initials(label)+' '+last,q);continue}
   add(label,q);
  }
  return {accepted,review,ignored,headers,score:accepted.length*3+review.length,order:true};
@@ -104,7 +105,7 @@ function inspectSheet(matrix,members=[]){
   const found=detectHeader(cells);if(found){schema=found;headers++;continue}
   const raw=cells.filter(Boolean).join(' · '),record={line:i+1,raw};
   if(!schema){ignored.push({...record,reason:'Avant en-tête reconnu'});continue}
-  const values=schema.map.map(j=>j<0?'':cells[j]||'');
+  const values=schema.map.map(j=>j<0?'':cells[j]||'');values[2]='';values[4]='';
   const full=schema.full>=0?cells[schema.full]||'':values.slice(0,2).join(' ').trim();
   const status=schema.status>=0?norm(cells[schema.status]):'';
   if(!full||skip.test(norm(full))||/^\d{1,2}[:h]\d{2}/.test(full)){ignored.push({...record,reason:'Commentaire / horaire'});continue}
