@@ -85,5 +85,13 @@ function inspectSheet(matrix,members=[]){
  return {accepted,review,ignored,headers,score:headers?accepted.length*3+review.length:0};
 }
 
-return {cleanName,initials,display,parse,analyze,excelRows,header,inspectSheet,detectHeader,splitFull,memberIndex};
+
+function quantityPrefix(value){
+ const s=String(value??'').trim();
+ const m=s.match(/^(\d{1,3})\s*(?:[x×]\s*|\s+)(?=\p{L})(.+)$/iu);
+ if(!m||Number(m[1])<1||Number(m[1])>100)return {value:s,quantity:1,explicit:false};
+ return {value:m[2].trim(),quantity:Number(m[1]),explicit:/^\d+\s*[x×]/i.test(s)};
+}
+
+return {quantityPrefix,cleanName,initials,display,parse,analyze,excelRows,header,inspectSheet,detectHeader,splitFull,memberIndex};
 });
