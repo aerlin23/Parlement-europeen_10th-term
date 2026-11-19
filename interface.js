@@ -148,7 +148,7 @@ function render(){
   coverageLine('Parlement',[[n('EP_PRESIDENT'),'présidence','présidences','president'],[n('EP_VICE_PRESIDENT'),'vice-présidence','vice-présidences','vice'],[n('EP_QUAESTOR'),'questeur','questeurs','quaestor']]),
   coverageLine('Commissions',[[n('COMMITTEE_CHAIR'),'présidence','présidences','chair'],[n('COMMITTEE_VICE_CHAIR'),'vice-présidence','vice-présidences','vicechair']])
  ].filter(Boolean);
- coverage.replaceChildren(...lines);const eligible=filtered.filter(canQuiz);$('startStudy').disabled=!eligible.length;$('startStudy').textContent=`Commencer · ${eligible.length} photo${eligible.length>1?'s':''}`;$('quizAvailability').textContent='Session de 20 questions maximum. Les erreurs reviennent plus souvent, les bonnes réponses sont espacées.';}
+ coverage.replaceChildren(...lines);if(typeof refreshQuizAvailability==='function')refreshQuizAvailability();}
 
 
 const GROUP_THEMES={

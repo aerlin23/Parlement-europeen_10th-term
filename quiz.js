@@ -81,13 +81,21 @@ function updateQuizProgress(m,correct){
  quizProgress.people[key]={seen:(Number(previous.seen)||0)+1,misses:(Number(previous.misses)||0)+(correct?0:1),streak,due:quizProgress.round+delay,lastReviewed:Date.now(),responseMs:elapsed};
  saveQuizProgress();
 }
-function startSession(list=filtered){
- const eligible=list.filter(canQuiz);if(!eligible.length)return;
+let recentArrivals=[],recentStatus='loading';
+const recentNameKey=s=>String(s||'').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().replace(/[^\p{L}\p{N}]/gu,'');
+function recentQuizPool(){const byId=new Map(members.map(m=>[String(m.id),m])),byName=new Map(members.map(m=>[recentNameKey(m.name),m])),seen=new Set(),list=[];for(const entry of recentArrivals){const m=byId.get(String(entry.person||''))||byName.get(recentNameKey(entry.name));if(!m||seen.has(String(m.id))||!canQuiz(m))continue;seen.add(String(m.id));list.push(m)}return list}
+function refreshQuizAvailability(){const recent=$('quizMode').value==='recent';$('recentQuizSettings').hidden=!recent;const available=recent?recentQuizPool():filtered.filter(canQuiz);const limit=recent?Number($('recentQuizCount').value):20;const count=Math.min(limit,available.length);$('startStudy').disabled=!count;$('startStudy').textContent=recent?'Commencer · '+count+' député'+(count===1?'':'s'):'Commencer · '+available.length+' photo'+(available.length>1?'s':'');$('quizSessionDescription').textContent=recent?count+' questions · 4 propositions par question':'20 questions par session · 4 propositions par question';$('quizAvailability').textContent=recent?'Sélection indépendante des filtres. Les erreurs peuvent être rejouées en fin de session.':'Session de 20 questions maximum. Les erreurs reviennent plus souvent, les bonnes réponses sont espacées.';if(recent)$('recentQuizSource').textContent=recentStatus==='loading'?'Chargement des arrivées…':recentStatus==='error'?'Historique des arrivées indisponible.':available.length+' arrivées documentées parmi les députés actuels.'+(count<limit?' La sélection est limitée aux dates connues.':'')}
+function loadRecentArrivals(){fetch('./changes.json').then(r=>{if(!r.ok)throw Error('Historique');return r.json()}).then(data=>{recentArrivals=(Array.isArray(data.items)?data.items:[]).filter(x=>x.category==='deputes'&&x.kind==='Entrée au Parlement'&&/^\d{4}-\d{2}-\d{2}$/.test(x.date)&&x.date<=new Date().toISOString().slice(0,10)).sort((a,b)=>b.date.localeCompare(a.date)||String(a.name).localeCompare(String(b.name),'fr'));recentStatus='ready';refreshQuizAvailability()}).catch(()=>{recentStatus='error';refreshQuizAvailability()})}
+function startSession(list=null,retryMode=null){
+ const selected=$('quizMode').value,mode=retryMode||(selected==='recent'?$('recentQuizType').value:selected),recent=selected==='recent';
+ const eligible=(list|| (recent?recentQuizPool().slice(0,Number($('recentQuizCount').value)):filtered)).filter(canQuiz);if(!eligible.length)return;
  quizProgress.round++;saveQuizProgress();
- session={deck:spacedDeck(eligible),index:0,correct:0,missed:[],answered:false,mode:$('quizMode').value};
+ const deck=list||recent?shuffle([...eligible]):spacedDeck(eligible);
+ session={deck,index:0,correct:0,missed:[],answered:false,mode};
  $('studyIntro').hidden=true;$('studyEnd').hidden=true;$('studySession').hidden=false;$('filters').hidden=true;$('count').hidden=true;
  showStudy();$('training').scrollIntoView({block:'start'});
 }
+$('quizMode').addEventListener('change',refreshQuizAvailability);$('recentQuizCount').addEventListener('change',refreshQuizAvailability);$('recentQuizType').addEventListener('change',refreshQuizAvailability);loadRecentArrivals();
 // Les fichiers de prononciation des noms sont référencés par identifiant MEP.
 let namePronunciationAudio=null;
 function stopNamePronunciation(){
@@ -143,7 +151,8 @@ function showStudy(){
  $('studyPhoto').replaceChildren();$('studyAnswer').replaceChildren();
  $('quizFeedback').textContent='';$('quizFeedback').className='quiz-feedback';
  $('quizChoices').replaceChildren();$('nextStudy').hidden=true;
- const photoChoices=session.mode==='name-photo';
+ session.questionMode=session.mode==='mixed'?(session.index%2===0?'photo-name':'name-photo'):session.mode;
+ const photoChoices=session.questionMode==='name-photo';
  if(photoChoices){
   $('studyAnswer').append(el('p','prompt','Retrouve son visage :'),el('div','name-prompt',m.name));
  }else{
@@ -195,14 +204,14 @@ function answerQuiz(id){
  updateQuizProgress(m,correct);
  for(const button of buttons){
   button.disabled=true;
-  if(session.mode==='name-photo'){
+  if(session.questionMode==='name-photo'){
    const option=members.find(x=>String(x.id)===button.dataset.answerId);
    if(option)button.append(el('span','answer-mark',option.name));
   }
   if(button.dataset.answerId===String(m.id)){button.classList.add('correct');button.append(el('span','answer-mark','✓ Bonne réponse'))}
   else if(button.dataset.answerId===id){button.classList.add('incorrect');button.append(el('span','answer-mark','✕ Ton choix'))}
  }
- if(session.mode==='photo-name')$('studyAnswer').replaceChildren(el('h2','',m.name),quizIdentity(m),badges(m));
+ if(session.questionMode==='photo-name')$('studyAnswer').replaceChildren(el('h2','',m.name),quizIdentity(m),badges(m));
  else $('studyAnswer').append(quizIdentity(m));
  $('quizFeedback').textContent=correct?'Bonne réponse !':`La bonne réponse était ${m.name}.`;
  $('quizFeedback').className='quiz-feedback '+(correct?'success':'error');
@@ -211,7 +220,7 @@ function answerQuiz(id){
  $('nextStudy').textContent=session.index+1===session.deck.length?'Voir mon score':'Question suivante →';
  $('nextStudy').hidden=false;
 }
-let lastMissed=[];
+let lastMissed=[],lastQuizMode='photo-name';
 function nextQuestion(){if(!session||!session.answered)return;session.index++;if(session.index===session.deck.length)endSession(false);else showStudy()}
 function endSession(cancelled){
  stopNamePronunciation();$('listenName').hidden=true;
@@ -219,6 +228,7 @@ function endSession(cancelled){
  $('filters').hidden=false;$('count').hidden=false;$('studySession').hidden=true;
  if(cancelled){$('studyIntro').hidden=false;$('studyEnd').hidden=true}
  else{
+  lastQuizMode=session.mode;
   lastMissed=[...new Map(session.missed.map(m=>[String(m.id),m])).values()];
   const done=session.correct+session.missed.length,errors=session.missed.length,pct=done?Math.round(session.correct/done*100):0;
   $('studyResult').replaceChildren();
@@ -238,7 +248,7 @@ function endSession(cancelled){
 }
 $('nextStudy').onclick=nextQuestion;$('startStudy').onclick=()=>startSession();
 $('restartStudy').onclick=()=>{$('studyEnd').hidden=true;$('studyIntro').hidden=false;$('training').scrollIntoView({block:'start'})};
-$('retryStudy').onclick=()=>startSession(lastMissed);
+$('retryStudy').onclick=()=>startSession(lastMissed,lastQuizMode);
 
 $('resetQuizStats').onclick=()=>{
  const status=$('resetQuizStatus');
