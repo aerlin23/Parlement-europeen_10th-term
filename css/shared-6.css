@@ -1,0 +1,1 @@
+html:not(.vf-tools-preview):not(.vf-tools-mobile-preview) .vf-harmonized .mode-navigation{grid-template-columns:repeat(2,minmax(0,1fr))}html:not(.vf-tools-preview):not(.vf-tools-mobile-preview) .vf-private-cavaliers{display:none!important}
