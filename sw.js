@@ -1,5 +1,5 @@
 /* Vademecum PE : ressources critiques hors-ligne et mises à jour consenties. */
-const VERSION='pe-pwa-v325';
+const VERSION='pe-pwa-v326';
 const MEDIA='pe-offline-official-media-v1';
 const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
 const CODE=['./creation-cavaliers-editor-preview.js?v=308','./creation-cavaliers-preview.html','./cavaliers-core-preview.js?v=307','./cavaliers-assistant-preview.js?v=312','./css/navigation-final.css?v=325','./styles.css?v=257','./directory.js?v=225','./hemicycle.js?v=225','./interface.js?v=324','./quiz.js?v=324','./offline.js?v=225','./smart-search.js?v=225','./features.js?v=234'];
