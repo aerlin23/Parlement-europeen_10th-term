@@ -36,3 +36,16 @@ html body main .tabs.mode-navigation > :is(#directoryTab,#trainingTab,#cavalierT
 html:is(.vf-tools-preview,.vf-tools-mobile-preview) body main .tabs.mode-navigation {grid-template-columns:repeat(3,minmax(0,1fr)) 44px!important;align-items:stretch!important}
 html:is(.vf-tools-preview,.vf-tools-mobile-preview) body main .tabs.mode-navigation > #personalContactsTab {width:44px!important;height:58px!important;min-height:58px!important;max-height:58px!important;align-self:stretch!important;padding:0!important}
 }
+
+/* Commandes de lecture et de filtrage : palette institutionnelle. */
+@media screen {
+html body main #filters .tools > .reading-mode {background:#fff!important;border:1px solid #b8c8dc!important;border-radius:8px!important}
+html body main #filters .tools > .reading-mode button {background:#fff!important;color:#003399!important;font-weight:700!important;border-radius:5px!important}
+html body main #filters .tools > .reading-mode button[aria-pressed="true"] {background:#003399!important;color:#fff!important}
+html body main #filters .tools > .reading-mode button[data-reading="compact"] {font-size:14px!important}
+html body main #filters .tools > .reading-mode button[data-reading="normal"] {font-size:19px!important}
+html body main #filters .tools > .reading-mode button[data-reading="large"] {font-size:24px!important}
+html body main #filters .tools > #reset {background:#fff!important;color:#003399!important;border:1px solid #b8c8dc!important;border-radius:8px!important}
+html body main #filters #advanced > summary,html body main #filters #advanced > summary::before {color:#003399!important}
+html body main #filters .tools button:focus-visible {outline:2px solid #003399;outline-offset:2px}
+}
