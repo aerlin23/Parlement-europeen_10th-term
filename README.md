@@ -10,11 +10,13 @@ Application web progressive (PWA) indépendante, destinée à la consultation et
 - Recherche par nom, groupe, commission et siège (S328 pour Strasbourg, B328 pour Bruxelles).
 - Filtres contextuels et décomptes cliquables des responsabilités parlementaires.
 - Plans interactifs des deux hémicycles : couleurs et surbrillance des groupes, recherche, zoom, déplacement, plein écran, rotation selon le navigateur, identification par portrait et accès à la fiche. Strasbourg est ouvert par défaut.
-- Quiz photo/nom et nom/photo, suivi des erreurs et de la progression.
+- Quiz photo/nom et nom/photo, quiz des derniers députés arrivés d’après l’historique documenté, suivi des erreurs et de la progression.
 - Trois tailles de lecture (A−, A, A+) avec préférence locale.
 - Rubriques Commission européenne, institutions et organes, Secrétariat général.
 - Historique éditorial des mouvements parlementaires, partage des fiches et fonctionnalités hors ligne.
 - **Assistant cavaliers** : import par copier-coller ou fichier Excel (.xlsx, .xls, .csv), filtrage syntaxique des lignes, correction des participants, aperçu et impression A4 recto uniquement. Sur ordinateur et mobile, génération du PDF et impression par e-mail via Mobile Print ; impression classique ePrinter conservée sur ordinateur.
+
+- **Contacts utiles** : annuaire téléphonique importé sur chaque appareil, favoris locaux, appels et partage individuel. Les annuaires et bibliothèques privées ne sont pas distribués par le site ; importer uniquement des fichiers dont l’utilisateur est autorisé à disposer.
 
 ## Architecture
 
