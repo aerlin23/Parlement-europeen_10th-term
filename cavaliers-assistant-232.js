@@ -54,6 +54,24 @@ let importMembers=null,loadToken=0;
 const excelPanel=document.createElement('section');excelPanel.hidden=true;excelPanel.className='excel-inspection';excelPanel.style.cssText='margin:10px 0;padding:12px;border:1px solid #cbdce5;border-radius:8px';$('dropZone').after(excelPanel);
 function element(tag,text){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;return e}
 async function getImportMembers(){if(!importMembers)importMembers=fetch('./members.json').then(r=>{if(!r.ok)throw Error('Annuaire indisponible');return r.json()}).then(x=>Array.isArray(x)?x:[]).catch(()=>{importMembers=null;return []});return importMembers}
+
+// Exact full-name matches only; ambiguous and abbreviated names require manual review.
+let officialIndex=null;
+async function getOfficialIndex(){if(!officialIndex)officialIndex=fetch('./cavaliers/index.json').then(r=>{if(!r.ok)throw Error('Index indisponible');return r.json()}).then(j=>j.entries||{}).catch(()=>{officialIndex=null;return {}});return officialIndex}
+const officialKey=s=>String(s??'').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().replace(/[’']/g,"'").replace(/\s+/g,' ').trim();
+async function showOfficialCavaliers(){
+ const token=++officialToken;
+ const entries=await getOfficialIndex();if(token!==officialToken)return;
+ const names=new Map();for(const [id,item] of Object.entries(entries)){const k=officialKey(item.name);if(!names.has(k))names.set(k,[]);names.get(k).push({id,item})}
+ for(const card of $('entries').querySelectorAll('.compact-entry')){
+  const title=card.querySelector('.entry-identity strong');if(!title)continue;
+  const hits=names.get(officialKey(title.textContent))||[];
+  if(hits.length!==1)continue;
+  const {id}=hits[0];const link=element('a','Cavalier PE existant ↗');link.href='./cavaliers/'+encodeURIComponent(id)+'.pdf';link.target='_blank';link.rel='noopener';link.className='official-cavalier-link';link.style.cssText='display:inline-block;font-size:11px;margin-top:4px';card.querySelector('.entry-identity').append(link);
+ }
+}
+let officialToken=0;
+document.addEventListener('vf-cavaliers-ready',()=>{for(const a of document.querySelectorAll('.official-cavalier-link'))a.remove();showOfficialCavaliers()});
 function inspectWorkbook(sheets,members){
  excelPanel.replaceChildren();excelPanel.hidden=false;
  const outcomes=sheets.map(s=>({...s,result:core.inspectSheet(s.matrix,members)}));
