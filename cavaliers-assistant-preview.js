@@ -95,13 +95,13 @@ function inspectWorkbook(sheets,members){
  const eligible=outcomes.filter(s=>s.result.headers&&s.result.accepted.length+s.result.review.length);
  const primary=eligible.slice().sort((a,b)=>b.result.score-a.result.score)[0];
  excelPanel.append(element('strong','Lecture du fichier Excel'));
- const label=element('label','Feuille à importer : '),select=element('select');select.style.cssText='max-width:100%;margin:6px 0';label.append(select);excelPanel.append(label);
+ excelPanel.append(element('br'));const label=element('label','Feuille à importer : '),select=element('select');select.style.cssText='max-width:100%;margin:6px 0';label.append(select);excelPanel.append(label);
  outcomes.forEach((s,i)=>{const o=element('option',s.name+' — '+(s.result.headers?(s.result.accepted.length+s.result.review.length)+' participant(s) détecté(s)':'colonnes non reconnues'));o.value=String(i);select.append(o)});
  if(primary)select.value=String(outcomes.indexOf(primary));
  const detail=element('div');excelPanel.append(detail);
  function show(){
   detail.replaceChildren();const current=outcomes[Number(select.value)];if(!current)return;const result=current.result;
-  detail.append(element('p',result.accepted.length+' validé(s) · '+result.review.length+' à vérifier · '+result.ignored.length+' ligne(s) ignorée(s)'));
+  detail.append(element('p',result.accepted.length+' intitulé(s) validé(s) · '+result.accepted.reduce((n,x)=>n+(x.quantity||1),0)+' exemplaire(s) · '+result.review.length+' à vérifier · '+result.ignored.length+' ligne(s) ignorée(s)'));
   const chosen=new Set(),replacements=new Map();
   if(result.review.length){const list=element('details');list.open=true;list.append(element('summary','Vérifier les identités et la présence'));
    result.review.forEach((item,i)=>{const div=element('div');div.style.cssText='padding:7px 0;border-bottom:1px solid #d8e3e8';const check=element('input');check.type='checkbox';check.setAttribute('aria-label','Inclure cette ligne');const rowLabel=element('label');rowLabel.append(check,document.createTextNode(' Ligne '+item.line+' : '+item.raw));div.append(rowLabel,element('small',item.reason));const edits=element('div');edits.style.cssText='display:flex;gap:5px;flex-wrap:wrap;margin:5px 0';
@@ -110,7 +110,7 @@ function inspectWorkbook(sheets,members){
    fields.forEach(f=>f.addEventListener('input',update));check.onchange=()=>{if(check.checked){chosen.add(i);update()}else chosen.delete(i)};
    if(item.suggestion){const suggest=element('button','Proposition : '+item.suggestion.slice(0,2).join(' '));suggest.type='button';suggest.onclick=()=>{fields.forEach((f,n)=>f.value=item.suggestion[n]);check.checked=true;chosen.add(i);update()};edits.append(suggest)}
    div.append(edits);list.append(div)});detail.append(list)}
-  const apply=element('button','Utiliser cette feuille');apply.type='button';apply.className='primary';apply.disabled=!result.headers;apply.onclick=()=>{const rows=[...result.accepted,...result.review.map((item,i)=>chosen.has(i)?{...item,row:replacements.get(i)||item.row}:null).filter(Boolean)].sort((a,b)=>a.line-b.line);$('paste').value=rows.map(x=>x.row.join('\t')).join('\n');$('status').textContent=rows.length+' ligne(s) préparée(s). Cliquez sur « Générer les cavaliers ».';excelPanel.hidden=true};detail.append(apply);
+  const apply=element('button','Utiliser cette feuille');apply.type='button';apply.className='primary';apply.disabled=!result.headers;apply.onclick=()=>{const rows=[...result.accepted,...result.review.map((item,i)=>chosen.has(i)?{...item,row:replacements.get(i)||item.row}:null).filter(Boolean)].sort((a,b)=>a.line-b.line);const expanded=rows.flatMap(x=>Array.from({length:x.quantity||1},()=>x.row.slice()));if(expanded.length>500){$('status').textContent='Plus de 500 exemplaires : divisez la demande.';return}$('paste').value=rows.map(x=>(x.quantity||1)+' × '+core.display(x.row)).join('\n');list.replaceChildren();window.vfSetCavalierRows(expanded);counts();$('status').textContent=expanded.length+' cavaliers générés.';excelPanel.hidden=true};detail.append(apply);
   if(!result.headers){const fallback=element('button','Utiliser le copier-coller brut');fallback.type='button';fallback.onclick=()=>{$('paste').value=core.excelRows(current.matrix);excelPanel.hidden=true;$('status').textContent='Colonnes non reconnues : vérifiez manuellement la liste avant génération.'};detail.append(fallback)}
  }
  select.onchange=show;show();
