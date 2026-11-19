@@ -53,7 +53,24 @@ $('clear').addEventListener('click',()=>{list.replaceChildren();counts()});
 let importMembers=null,loadToken=0;
 const excelPanel=document.createElement('section');excelPanel.hidden=true;excelPanel.className='excel-inspection';excelPanel.style.cssText='margin:10px 0;padding:12px;border:1px solid #cbdce5;border-radius:8px';$('dropZone').after(excelPanel);
 function element(tag,text){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;return e}
-async function getImportMembers(){if(!importMembers)importMembers=fetch('./members.json').then(r=>{if(!r.ok)throw Error('Annuaire indisponible');return r.json()}).then(x=>Array.isArray(x)?x:[]).catch(()=>{importMembers=null;return []});return importMembers}
+
+async function getImportMembers(){
+ if(!importMembers)importMembers=(async()=>{
+ const load=async(p,json=true)=>{try{const r=await fetch(p);if(!r.ok)throw Error(p);return json?await r.json():await r.text()}catch{return null}};
+ const [pe,ec,sg,inst]=await Promise.all([load('./members.json'),load('./commission-members.json'),load('./interface.js',false),load('./institutions-agences.html',false)]);
+ const records=[];
+ for(const m of Array.isArray(pe)?pe:[])records.push({...m,source:'Parlement européen'});
+ for(const m of Array.isArray(ec)?ec:[])records.push({...m,source:'Commission européenne',role:[m.roleLabel,m.portfolio].filter(Boolean).join(' · ')});
+ // Read the literal arrays already used by the institutional directories; never execute fetched code.
+ const extract=(s,key)=>{try{const start=s.indexOf('const '+key+'=');if(start<0)return null;const line=s.slice(start+('const '+key+'=').length).split('\n')[0];return JSON.parse(line.slice(0,line.lastIndexOf(';')))}catch{return null}};
+ const dg=extract(sg||'','SG_PE_DATA')||[],org=extract(sg||'','SG_PE_ORG')||{};
+ const add=(name,role,source,code)=>{const words=name.trim().split(/\s+/);if(words.length<2)return;records.push({name,firstName:words.shift(),lastName:words.join(' '),role,source,code})};
+ for(const [code,name,role] of dg)add(name,role,'Secrétariat général',code);
+ for(const [code,dirs] of Object.entries(org))for(const [direction,name] of dirs)if(name&&name.trim().includes(' '))add(name,'Direction '+direction,'Secrétariat général',code);
+ for(const m of extract(inst||'','PEOPLE')||[])if(m.name)add(m.name,m.role,m.institution||'Institutions',null);
+ return records;
+ })().catch(()=>{importMembers=null;return []});return importMembers
+}
 
 // Exact full-name matches only; ambiguous and abbreviated names require manual review.
 let officialIndex=null;
