@@ -48,6 +48,47 @@ const panel=$('rejected'), list=$('rejectedList');
 function counts(){const n=list.children.length;$('rejectedCount').textContent=n;$('rejectedLabel').textContent='Lignes écartées ('+n+')';panel.hidden=!n;$('importSummary').hidden=!n&&!Number($('readyCount').textContent)&&!Number($('fixCount').textContent)}
 $('import').onclick=()=>{const result=core.analyze($('paste').value);list.replaceChildren();panel.open=false;for(const item of result.rejected){const row=document.createElement('div');row.className='rejected-row';const label=document.createElement('div');label.className='rejected-identity';const t=document.createElement('span');t.textContent=item.reason==='En-tête'?'En-tête Excel':item.raw.replace(/\t/g,' · ');const reason=document.createElement('small');reason.textContent=item.reason;label.append(t,reason);row.append(label);if(item.recover){const b=document.createElement('button');b.type='button';b.className='recover-row';b.textContent='+';b.setAttribute('aria-label','Récupérer '+item.raw);b.onclick=()=>{window.vfRecoverCavalier(item.row);row.remove();counts()};row.append(b)}list.append(row)}counts();window.vfSetCavalierRows(result.accepted);counts()};
 $('clear').addEventListener('click',()=>{list.replaceChildren();counts()});
-async function load(file){if(!file)return;try{if(file.size>10*1024*1024)throw Error('Fichier trop volumineux');if(!window.XLSX)throw Error('Lecteur Excel indisponible : utilisez le copier-coller');const wb=XLSX.read(await file.arrayBuffer(),{type:'array'});const lines=wb.SheetNames.map(n=>core.excelRows(XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,raw:false,defval:''})));$('paste').value=lines.join('\n');$('status').textContent='Fichier chargé. Vérifiez les colonnes, puis cliquez sur « Générer les cavaliers ».'}catch(e){$('status').textContent=e.message}}
+
+// All workbook processing happens in the browser. No workbook is uploaded.
+let importMembers=null,loadToken=0;
+const excelPanel=document.createElement('section');excelPanel.hidden=true;excelPanel.className='excel-inspection';excelPanel.style.cssText='margin:10px 0;padding:12px;border:1px solid #cbdce5;border-radius:8px';$('dropZone').after(excelPanel);
+function element(tag,text){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;return e}
+async function getImportMembers(){if(!importMembers)importMembers=fetch('./members.json').then(r=>{if(!r.ok)throw Error('Annuaire indisponible');return r.json()}).then(x=>Array.isArray(x)?x:[]).catch(()=>{importMembers=null;return []});return importMembers}
+function inspectWorkbook(sheets,members){
+ excelPanel.replaceChildren();excelPanel.hidden=false;
+ const outcomes=sheets.map(s=>({...s,result:core.inspectSheet(s.matrix,members)}));
+ const eligible=outcomes.filter(s=>s.result.headers&&s.result.accepted.length+s.result.review.length);
+ const primary=eligible.slice().sort((a,b)=>b.result.score-a.result.score)[0];
+ excelPanel.append(element('strong','Lecture du fichier Excel'));
+ const label=element('label','Feuille à importer : '),select=element('select');select.style.cssText='max-width:100%;margin:6px 0';label.append(select);excelPanel.append(label);
+ outcomes.forEach((s,i)=>{const o=element('option',s.name+' — '+(s.result.headers?(s.result.accepted.length+s.result.review.length)+' participant(s) détecté(s)':'colonnes non reconnues'));o.value=String(i);select.append(o)});
+ if(primary)select.value=String(outcomes.indexOf(primary));
+ const detail=element('div');excelPanel.append(detail);
+ function show(){
+  detail.replaceChildren();const current=outcomes[Number(select.value)];if(!current)return;const result=current.result;
+  detail.append(element('p',result.accepted.length+' validé(s) · '+result.review.length+' à vérifier · '+result.ignored.length+' ligne(s) ignorée(s)'));
+  const chosen=new Set(),replacements=new Map();
+  if(result.review.length){const list=element('details');list.open=true;list.append(element('summary','Vérifier les identités et la présence'));
+   result.review.forEach((item,i)=>{const div=element('div');div.style.cssText='padding:7px 0;border-bottom:1px solid #d8e3e8';const check=element('input');check.type='checkbox';check.setAttribute('aria-label','Inclure cette ligne');const rowLabel=element('label');rowLabel.append(check,document.createTextNode(' Ligne '+item.line+' : '+item.raw));div.append(rowLabel,element('small',item.reason));const edits=element('div');edits.style.cssText='display:flex;gap:5px;flex-wrap:wrap;margin:5px 0';
+   const fields=['Prénom','Nom'].map((title,n)=>{const input=element('input');input.type='text';input.value=item.row[n]||'';input.placeholder=title;input.setAttribute('aria-label',title+' ligne '+item.line);input.style.cssText='min-width:90px;flex:1';edits.append(input);return input});
+   const update=()=>replacements.set(i,[fields[0].value,fields[1].value,...item.row.slice(2)]);
+   fields.forEach(f=>f.addEventListener('input',update));check.onchange=()=>{if(check.checked){chosen.add(i);update()}else chosen.delete(i)};
+   if(item.suggestion){const suggest=element('button','Proposition : '+item.suggestion.slice(0,2).join(' '));suggest.type='button';suggest.onclick=()=>{fields.forEach((f,n)=>f.value=item.suggestion[n]);check.checked=true;chosen.add(i);update()};edits.append(suggest)}
+   div.append(edits);list.append(div)});detail.append(list)}
+  const apply=element('button','Utiliser cette feuille');apply.type='button';apply.className='primary';apply.disabled=!result.headers;apply.onclick=()=>{const rows=[...result.accepted,...result.review.map((item,i)=>chosen.has(i)?{...item,row:replacements.get(i)||item.row}:null).filter(Boolean)].sort((a,b)=>a.line-b.line);$('paste').value=rows.map(x=>x.row.join('\t')).join('\n');$('status').textContent=rows.length+' ligne(s) préparée(s). Cliquez sur « Générer les cavaliers ».';excelPanel.hidden=true};detail.append(apply);
+  if(!result.headers){const fallback=element('button','Utiliser le copier-coller brut');fallback.type='button';fallback.onclick=()=>{$('paste').value=core.excelRows(current.matrix);excelPanel.hidden=true;$('status').textContent='Colonnes non reconnues : vérifiez manuellement la liste avant génération.'};detail.append(fallback)}
+ }
+ select.onchange=show;show();
+}
+async function load(file){if(!file)return;const token=++loadToken;try{
+ if(file.size>10*1024*1024)throw Error('Fichier trop volumineux');
+ if(!window.XLSX)throw Error('Lecteur Excel indisponible : utilisez le copier-coller');
+ const wb=XLSX.read(await file.arrayBuffer(),{type:'array'});
+ const sheets=wb.SheetNames.map(name=>({name,matrix:XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,raw:false,defval:'',blankrows:true})}));
+ if(sheets.reduce((n,s)=>n+s.matrix.length,0)>20000)throw Error('Classeur trop volumineux : limitez le nombre de lignes');
+ const members=await getImportMembers();if(token!==loadToken)return;
+ inspectWorkbook(sheets,members);$('status').textContent='Sélectionnez et vérifiez la feuille à importer.';
+ }catch(e){if(token===loadToken)$('status').textContent=e.message}}
+$('clear').addEventListener('click',()=>{loadToken++;excelPanel.hidden=true;excelPanel.replaceChildren()});
 $('excelFile').onchange=e=>load(e.target.files[0]);const zone=$('dropZone');zone.ondragover=e=>e.preventDefault();zone.ondrop=e=>{e.preventDefault();load(e.dataTransfer.files[0])};
 })();
