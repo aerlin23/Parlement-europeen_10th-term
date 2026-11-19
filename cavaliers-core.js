@@ -17,5 +17,73 @@ else if(cells.length>5||!name.test(r[0])||!name.test(r[1])){reason='À vérifier
 else {const key=[...r.slice(0,2)].map(v=>v.normalize('NFC').toLocaleLowerCase('fr')).join('\0');if(seen.has(key)){reason='Doublon';recover=true}else seen.add(key)}
 if(reason)rejected.push({raw,reason,recover,row:candidate});else accepted.push(r)}return {accepted,rejected}}
 function excelRows(matrix){let map=null;return matrix.map(row=>{const cells=row.map(c=>String(c??'').replace(/[\r\n\t]/gu,' '));const found=header(cells);if(found){map=found;return 'Prénom\tNom de famille\tTitre\tOrganisation\tFonction'}if(!map)return cells.join('\t').replace(/\t+$/u,'');const mapped=map.map(i=>i<0?'':cells[i]||'');if(!mapped.some(Boolean))return cells.filter(Boolean).join(' ');return mapped.join('\t')}).join('\n')}
-return {cleanName,initials,display,parse,analyze,excelRows,header};
+
+const fullAliases=['nom complet','nom et prenom','nom et prenoms','prenom et nom','prenoms et nom','full name','fullname','name and surname','first and last name','last and first name','participant name','participant'];
+const statusAliases=['statut','presence','participation','attendance','status','participation status'];
+const headerKey=s=>norm(s).replace(/[ :_-]+/g,' ').trim();
+function detectHeader(row){
+ const cells=row.map(headerKey),map=aliases.map(a=>cells.findIndex(x=>a.includes(x))),full=cells.findIndex(x=>fullAliases.includes(x)),status=cells.findIndex(x=>statusAliases.includes(x));
+ if(map[0]>=0&&map[1]>=0)return {map,full:-1,status};
+ if(full>=0)return {map,full,status};
+ return null;
+}
+const identityKey=s=>norm(s).replace(/[’']/g,"'").replace(/[‐‑–—]/g,'-');
+function memberIndex(members){
+ const index=new Map();
+ for(const m of members||[]){
+  if(!m||!m.name)continue;
+  const parts=String(m.name).trim().split(/\s+/),cut=parts.findIndex((w,i)=>i>0&&w===w.toLocaleUpperCase('fr')&&/\p{Lu}/u.test(w));
+  const first=m.firstName||m.givenName||(cut>0?parts.slice(0,cut).join(' '):''),last=m.lastName||m.familyName||(cut>0?parts.slice(cut).join(' '):'');
+  if(!first||!last)continue;
+  const item={first,last,name:m.name,id:m.id};
+  for(const key of new Set([identityKey(first+' '+last),identityKey(last+' '+first),identityKey(initials(first)+' '+last),identityKey(initials(first).replace(/\./g,'')+' '+last)])){
+   if(!index.has(key))index.set(key,[]);index.get(key).push(item);
+  }
+ }
+ return index;
+}
+function splitFull(value){
+ const s=cleanName(value);const comma=s.indexOf(',');
+ if(comma>=0)return [s.slice(comma+1).trim(),s.slice(0,comma).trim()];
+ const parts=s.split(/\s+/),upper=w=>/\p{Lu}/u.test(w)&&w===w.toLocaleUpperCase('fr')&&w.length>1;
+ let i=parts.findIndex((w,i)=>i>0&&upper(w));
+ if(i>0&&parts.slice(i).every(upper)&&!upper(parts[0]))return [parts.slice(0,i).join(' '),parts.slice(i).join(' ')];
+ i=parts.findIndex(w=>!upper(w));
+ if(i>0)return [parts.slice(i).join(' '),parts.slice(0,i).join(' ')];
+ return [parts.shift()||'',parts.join(' ')];
+}
+function inspectSheet(matrix,members=[]){
+ const clean=matrix.map(row=>row.map(v=>String(v??'').replace(/[\r\n\t]+/g,' ').trim()));
+ const idx=memberIndex(members),accepted=[],review=[],ignored=[];let schema=null,headers=0;
+ const skip=/^(?:pause|dejeuner|lunch|agenda|participants?|delegation|total|coffee break|meeting|reunion|fin de reunion|programme|program|schedule)(?:\s|$)/i;
+ const absent=/^(?:absent(?:e)?|excuse(?:e)?|declined|cancelled|canceled|not attending|non present|no show)$/;
+ const pending=/^(?:a confirmer|tbc|tentative|pending|non confirme|unconfirmed)$/;
+ const seen=new Set();
+ for(let i=0;i<clean.length;i++){
+  const cells=clean[i];if(!cells.some(Boolean))continue;
+  const found=detectHeader(cells);if(found){schema=found;headers++;continue}
+  const raw=cells.filter(Boolean).join(' · '),record={line:i+1,raw};
+  if(!schema){ignored.push({...record,reason:'Avant en-tête reconnu'});continue}
+  const values=schema.map.map(j=>j<0?'':cells[j]||'');
+  const full=schema.full>=0?cells[schema.full]||'':values.slice(0,2).join(' ').trim();
+  const status=schema.status>=0?norm(cells[schema.status]):'';
+  if(!full||skip.test(norm(full))||/^\d{1,2}[:h]\d{2}/.test(full)){ignored.push({...record,reason:'Commentaire / horaire'});continue}
+  if(absent.test(status)){review.push({...record,row:values,reason:'Absence indiquée',suggestion:null,excluded:true});continue}
+  const match=idx.get(identityKey(full));
+  let row=values.slice(),reason='',suggestion=null;
+  if(schema.full>=0){const split=splitFull(full);row[0]=split[0];row[1]=split[1];reason='Nom complet : vérifier la séparation prénom / nom'}
+  if(match?.length===1){const m=match[0];const corrected=[m.first,m.last,...row.slice(2)];if(identityKey(row[0])!==identityKey(m.first)||identityKey(row[1])!==identityKey(m.last)){suggestion=corrected;reason='Identité PE proposée'}else if(schema.full>=0){reason='Identité PE correspondante : confirmer';suggestion=corrected}}
+  else if(match?.length>1)reason='Plusieurs identités PE possibles';
+  row[0]=cleanName(row[0]);row[1]=cleanName(row[1]);
+  if(!name.test(row[0])||!name.test(row[1]))reason='Prénom ou nom à vérifier';
+  if(pending.test(status))reason='Présence à confirmer';
+  const key=identityKey(row[0])+'\0'+identityKey(row[1]);
+  if(seen.has(key))reason='Doublon ou homonyme à vérifier';
+  seen.add(key);
+  if(reason)review.push({...record,row,reason,suggestion});else accepted.push({...record,row});
+ }
+ return {accepted,review,ignored,headers,score:headers?accepted.length*3+review.length:0};
+}
+
+return {cleanName,initials,display,parse,analyze,excelRows,header,inspectSheet,detectHeader,splitFull,memberIndex};
 });
