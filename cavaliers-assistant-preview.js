@@ -85,7 +85,7 @@ function possibleMEPs(entries,value){
  const words=String(value||'').trim().split(/\s+/);
  if(words.length<2||!/^(?:\p{L}[.\-]*){1,5}$/u.test(words[0])||!words[0].includes('.'))return [];
  const surname=officialKey(words.slice(1).join(' '));
- return Object.entries(entries).filter(([id,m])=>{const parts=m.name.trim().split(/\s+/);const cut=parts.findIndex((w,i)=>i>0&&w===w.toLocaleUpperCase('fr')&&/\p{Lu}/u.test(w));return cut>0&&officialKey(parts.slice(cut).join(' '))===surname});
+ return Object.entries(entries).filter(([id,m])=>{const parts=m.name.trim().split(/\s+/);const cut=parts.findIndex((w,i)=>i>0&&w===w.toLocaleUpperCase('fr')&&/\p{Lu}/u.test(w));if(cut<=0)return false;const family=parts.slice(cut);if(officialKey(family.join(' '))===surname)return true;return family.length>1&&family.some((_,i)=>i<family.length-1&&officialKey(family.slice(0,i+1).join(' '))===surname)&&officialKey(parts[0][0])===officialKey(words[0][0])});
 }
 function resolveMEP(entries,names,label){
  const exact=officialMatch(names,label);if(exact)return {id:exact};
