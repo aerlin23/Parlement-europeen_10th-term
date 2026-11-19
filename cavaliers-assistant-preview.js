@@ -149,7 +149,21 @@ let privateEntries=[],privateZip=null,privateRevision=0;
 const privateKey=s=>String(s??'').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().replace(/[^\p{L}\p{N}&]/gu,'');
 const eeasAliases=new Set(['SEAE','EEAS','EAAS','Service européen pour l’action extérieure','European External Action Service'].map(privateKey));
 function institutionalKey(value){const k=privateKey(value);return eeasAliases.has(k)?'institution:eeas':k}
-function privateMatches(label){const k=institutionalKey(label);return privateEntries.filter(e=>[...e.aliases,e.title].some(a=>institutionalKey(a)===k))}
+const knownPrivateGroups=[
+ ['SEAE','EEAS','EAAS','EAS','Service européen pour l’action extérieure','Service européen d’action extérieure','European External Action Service'],
+ ['Pietro Ducci','P. Ducci','Ducci Pietro','Ducci P.','Ducci'],
+ ['Raquel de Vicente','R. de Vicente','de Vicente Raquel','de Vicente R.','de Vicente','Vicente Raquel','R. Vicente']
+].map(g=>new Set(g.map(privateKey)));
+function privateVariants(value){
+ const raw=String(value??'').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().replace(/\.(?:pdf)$/i,'').replace(/[_–—-]/g,' ');
+ const clean=raw.replace(/\b(?:dg|dir|directeur general|directrice generale|directeur|directrice|director general|director|mr|mme|madame|monsieur)\b/g,' ').replace(/\b(?:expo)\b/g,' ');
+ return new Set([privateKey(raw),privateKey(clean)]);
+}
+function privateMatches(label){
+ const k=institutionalKey(label), exact=privateEntries.filter(e=>[...e.aliases,e.title].some(a=>institutionalKey(a)===k));if(exact.length)return exact;
+ const group=knownPrivateGroups.find(g=>[...privateVariants(label)].some(v=>g.has(v)));if(!group)return [];
+ return privateEntries.filter(e=>[...e.aliases,e.title].some(a=>[...privateVariants(a)].some(v=>group.has(v))));
+}
 function privateLabel(svg){return [svg.getAttribute('aria-label'),[...svg.querySelector('g').querySelectorAll('text')].map(t=>t.textContent).join(' ')].filter(Boolean)}
 function privateFor(svg){const labels=privateLabel(svg),hits=new Map();for(const label of labels)for(const e of privateMatches(label))hits.set(e.id,e);return [...hits.values()]}
 function localDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open('vf-private-cavaliers-v1',1);req.onupgradeneeded=()=>req.result.createObjectStore('library');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)})}
