@@ -13,3 +13,18 @@ html body main .tabs.mode-navigation > :is(button,a):not(.vf-tools-tab) {height:
 html body main .tabs.mode-navigation > :is(button,a):not(.vf-tools-tab) svg {width:15px!important;height:15px!important;flex-basis:15px!important}
 }
 @media screen and (max-width:380px) {html body main .tabs.mode-navigation > :is(button,a):not(.vf-tools-tab){font-size:11px!important;gap:2px!important}}
+
+/* Navigation principale : identité institutionnelle, accès privés inchangés. */
+@media screen {
+html body main .tabs.mode-navigation > :is(button,a):not(.vf-tools-tab) {color:#003399!important;border-color:#b8c8dc!important;background:#fff!important}
+html body main .tabs.mode-navigation > :is(button,a).active:not(.vf-tools-tab) {background:#003399!important;border-color:#003399!important;color:#fff!important}
+html body main #openHemicycle {background:#003399!important;border-color:#003399!important;color:#fff!important}
+html body main .tabs.mode-navigation > :is(button,a):not(.vf-tools-tab) svg {stroke-width:1.8!important}
+}
+@media screen and (max-width:650px) {
+html body main .tabs.mode-navigation > :is(button,a):not(.vf-tools-tab) {height:58px!important;min-height:58px!important;max-height:58px!important;flex-direction:column!important;gap:3px!important;padding:4px 2px!important;font-size:12px!important;line-height:1.15!important}
+html body main .tabs.mode-navigation > :is(button,a):not(.vf-tools-tab) svg {width:22px!important;height:22px!important;flex:0 0 22px!important}
+html:is(.vf-tools-preview,.vf-tools-mobile-preview) body main .tabs.mode-navigation {grid-template-columns:repeat(3,minmax(0,1fr)) 44px!important}
+html:is(.vf-tools-preview,.vf-tools-mobile-preview) body main .tabs.mode-navigation > #personalContactsTab {width:44px!important;height:58px!important;min-height:58px!important;max-height:58px!important;padding:0!important;align-self:start!important}
+}
+@media screen and (max-width:380px) {html body main .tabs.mode-navigation > :is(button,a):not(.vf-tools-tab) {font-size:11px!important;gap:3px!important}}
