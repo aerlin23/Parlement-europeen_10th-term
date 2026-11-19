@@ -6,7 +6,7 @@ function strip(s){let depth=0,out='';for(const c of String(s??'')){if(c==='('||c
 function cleanName(s){return strip(s).replace(/[\/\\]+/gu,' ').replace(/(^|\s)[\p{Pd}]+/gu,'$1').replace(/[\p{Pd}]+(?=\s|$)/gu,'').replace(/\s+/gu,' ').trim()}
 const name=/^\p{L}[\p{L}\p{M}’'.\p{Pd}]*(?:\s+\p{L}[\p{L}\p{M}’'.\p{Pd}]*)*$/u;
 function initials(s){return cleanName(s).split(/\s+/u).filter(Boolean).map(w=>w.split(/\p{Pd}+/u).map(x=>{const c=x.match(/\p{L}/u)?.[0];return c?c.toLocaleUpperCase('fr')+'.':''}).filter(Boolean).join(' ')).filter(Boolean).join(' ')}
-function display(r){return [initials(r[0]),cleanName(r[1]).toLocaleUpperCase('fr')].filter(Boolean).join(' ')}
+function display(r){if(!r[0]&&r[1])return String(r[1]).trim().toLocaleUpperCase('fr');return [initials(r[0]),cleanName(r[1]).toLocaleUpperCase('fr')].filter(Boolean).join(' ')}
 function parse(line){const cells=line.split(line.includes('\t')?'\t':'|');if(cells.length>1)return [cleanName(cells[0]),cleanName(cells[1]),...cells.slice(2,5).map(strip)].concat(['','','']).slice(0,5);const words=cleanName(line).split(' ');return [words.shift()||'',words.join(' '),'','','']}
 function analyze(text){const accepted=[],rejected=[],seen=new Set();for(const raw of String(text).split(/\r?\n/u)){if(!raw.trim())continue;const cells=raw.split(raw.includes('\t')?'\t':'|');const n=norm(raw),r=parse(raw);let reason='',recover=false;const par=/^\s*[(（].*[)）]\s*$/u.test(raw);const candidate=par?parse(raw.trim().slice(1,-1)):r;
 if(header(cells)||/^(prenom|first name)\s+(nom|surname|last name)/u.test(n)){reason='En-tête'}
@@ -52,7 +52,38 @@ function splitFull(value){
  if(i>0)return [parts.slice(i).join(' '),parts.slice(0,i).join(' ')];
  return [parts.shift()||'',parts.join(' ')];
 }
+
+function orderSchema(cells){
+ const h=cells.map(norm),qty=h.findIndex(x=>/^(qt|qte|quantite|quantity|qty)$/.test(x));
+ if(qty<0)return null;
+ const label=h.findIndex(x=>/^(name or institution|personne ou institution|person or institution|participant \/ service)/.test(x));
+ const first=h.findIndex(x=>/^prenom\s*\/\s*first name\s*\/\s*institution/.test(x)),last=h.findIndex(x=>/^nom\s*\/\s*last name/.test(x)),title=h.findIndex(x=>/^titre\s*\/\s*title/.test(x));
+ return label>=0||first>=0?{qty,label,first,last,title}:null;
+}
+const genericAliases={'reserved':'RÉSERVÉ','legal service':'SERVICE JURIDIQUE','european commission':'COMMISSION EUROPÉENNE','commission europeenne':'COMMISSION EUROPÉENNE','council of the european union':'CONSEIL DE L’UNION EUROPÉENNE','dg com':'DIRECTION GÉNÉRALE COMMUNICATION','dg comm':'DIRECTION GÉNÉRALE COMMUNICATION','eeas':'SEAE','european court of auditors':'COUR DES COMPTES EUROPÉENNE','european economic and social committee (eesc)':'COMITÉ ÉCONOMIQUE ET SOCIAL EUROPÉEN'};
+function inspectOrder(matrix){
+ const accepted=[],review=[],ignored=[];let schema=null,headers=0;
+ for(let i=0;i<matrix.length;i++){
+  const cells=matrix[i].map(v=>String(v??'').replace(/[\r\n\t]+/g,' ').trim());
+  if(!cells.some(Boolean))continue;
+  const found=orderSchema(cells);if(found){schema=found;headers++;continue}
+  if(!schema)continue;
+  const q=Number(cells[schema.qty]),label=cells[schema.label>=0?schema.label:schema.first]||'',last=schema.last>=0?cells[schema.last]||'':'',title=schema.title>=0?cells[schema.title]||'':'';
+  const rec={line:i+1,raw:cells.filter(Boolean).join(' · '),quantity:q};
+  if(!label){ignored.push({...rec,reason:'Ligne sans intitulé'});continue}
+  const add=(text,count=q,detail='',reason='')=>{const row=['',text.toLocaleUpperCase('fr'),detail,'',''];const item={...rec,row,quantity:count};if(!Number.isInteger(count)||count<1||count>100)review.push({...item,quantity:1,reason:'Quantité à vérifier'});else if(reason)review.push({...item,reason});else accepted.push(item)};
+  const group=norm(label).match(/set of (\d+) nameplates per each political group/);
+  if(group){const n=Number(group[1]);if(q===n*8){for(const g of ['EPP','S&D','PfE','ECR','RENEW','GREENS/EFA','THE LEFT','ESN'])add(g,n)}else add(label,q,'','Consigne de groupe à vérifier');continue}
+  const generic=genericAliases[norm(label)];
+  if(generic){add(generic);continue}
+  if(last&&!/^(director|director general)$/i.test(last)){add(initials(label)+' '+last,q,title);continue}
+  add(label,q);
+ }
+ return {accepted,review,ignored,headers,score:accepted.length*3+review.length,order:true};
+}
+
 function inspectSheet(matrix,members=[]){
+ if(matrix.some(row=>orderSchema(row)))return inspectOrder(matrix);
  const clean=matrix.map(row=>row.map(v=>String(v??'').replace(/[\r\n\t]+/g,' ').trim()));
  const idx=memberIndex(members),accepted=[],review=[],ignored=[];let schema=null,headers=0;
  const skip=/^(?:pause|dejeuner|lunch|agenda|participants?|delegation|total|coffee break|meeting|reunion|fin de reunion|programme|program|schedule)(?:\s|$)/i;
@@ -93,5 +124,5 @@ function quantityPrefix(value){
  return {value:m[2].trim(),quantity:Number(m[1]),explicit:/^\d+\s*[x×]/i.test(s)};
 }
 
-return {quantityPrefix,cleanName,initials,display,parse,analyze,excelRows,header,inspectSheet,detectHeader,splitFull,memberIndex};
+return {orderSchema,inspectOrder,quantityPrefix,cleanName,initials,display,parse,analyze,excelRows,header,inspectSheet,detectHeader,splitFull,memberIndex};
 });
