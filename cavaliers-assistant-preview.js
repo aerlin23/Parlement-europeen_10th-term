@@ -29,7 +29,7 @@ async function renderPage(svg){
  return {w:canvas.width,h:canvas.height,bytes:new Uint8Array(await blob.arrayBuffer())};
 }
 let timer,lastSignature='';
-function schedule(){const signature=JSON.stringify([...previews.querySelectorAll('svg')].map(s=>[s.parentElement.dataset.surname,s.outerHTML]));if(signature===lastSignature&&pdfFile)return;lastSignature=signature;const gen=++generation;pdfFile=null;$('pdfName').textContent='';shareButton.disabled=true;$('downloadMobilePdf').disabled=true;clearTimeout(timer);const svgs=[...previews.querySelectorAll('svg')];if(!svgs.length){status.textContent=previews.dataset.excluded==='0'||!previews.dataset.excluded?'Importez la liste avant de préparer le PDF.':'Aucun cavalier valide : corrigez les lignes encadrées en orange.';return}$('retryPdf').hidden=true;status.textContent='Préparation du PDF…';timer=setTimeout(async()=>{try{const pages=[];for(const s of svgs){if(gen!==generation)return;pages.push(await renderPage(s))}if(gen!==generation)return;const surname=(svgs[0].parentElement.dataset.surname||'').replace(/[\\/:*?"<>|]/g,'-').trim()||'Participants';const filename=pages.length===1?'Cavalier - '+surname+'.pdf':'Cavaliers - '+surname+' et autres ('+pages.length+').pdf';pdfFile=pdfFromJpegs(pages,filename);$('pdfName').textContent=filename;shareButton.disabled=false;$('downloadMobilePdf').disabled=false;status.textContent=Number(previews.dataset.excluded)?previews.dataset.excluded+' ligne(s) à corriger, non imprimée(s).':''}catch(e){if(gen===generation){lastSignature='';status.textContent='Impossible de préparer le PDF. Réessayez ou utilisez l’impression classique sur ordinateur.'; $('retryPdf').hidden=false}}},200)}
+function schedule(){const signature=JSON.stringify([...previews.querySelectorAll('svg')].map(s=>[s.parentElement.dataset.surname,s.outerHTML]));if(signature===lastSignature&&pdfFile)return;lastSignature=signature;const gen=++generation;pdfFile=null;$('pdfName').textContent='';shareButton.disabled=true;$('downloadMobilePdf').disabled=true;clearTimeout(timer);const svgs=[...previews.querySelectorAll('svg')];if(!svgs.length){status.textContent=previews.dataset.excluded==='0'||!previews.dataset.excluded?'Importez la liste avant de préparer le PDF.':'Aucun cavalier valide : corrigez les lignes encadrées en orange.';return}$('retryPdf').hidden=true;status.textContent='Préparation du PDF…';timer=setTimeout(async()=>{try{const filename='Cavaliers - '+svgs.length+' exemplaires.pdf';const result=await assembleOriginals(svgs,filename,gen);if(!result||gen!==generation)return;pdfFile=result.file;$('pdfName').textContent=filename;shareButton.disabled=false;$('downloadMobilePdf').disabled=false;status.textContent=result.originals+' cavalier(s) original(aux) intégré(s).';}catch(e){if(gen===generation){lastSignature='';status.textContent='Impossible de préparer le PDF : '+e.message; $('retryPdf').hidden=false}}},200)}
 document.addEventListener('vf-cavaliers-ready',schedule);$('retryPdf').onclick=()=>{lastSignature='';schedule()};schedule();
 $('downloadMobilePdf').onclick=()=>{if(!pdfFile)return;const a=document.createElement('a');a.href=URL.createObjectURL(pdfFile);a.download=pdfFile.name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),30000)};
 shareButton.onclick=async()=>{if(!pdfFile)return;try{if(navigator.canShare&&navigator.canShare({files:[pdfFile]})){try{if(navigator.clipboard?.writeText){navigator.clipboard.writeText(email).catch(()=>{});}}catch(e){} await navigator.share({files:[pdfFile],title:pdfFile.name});status.textContent='Dans votre messagerie, utilisez '+email+' comme destinataire.'}else{$('downloadMobilePdf').click();status.textContent='Joignez le PDF téléchargé au message. Destinataire : '+email;const link=document.createElement('a');link.href='mailto:'+email+'?subject='+encodeURIComponent(pdfFile.name);link.textContent='Ouvrir un e-mail Mobile Print';status.append(document.createTextNode(' · '),link)}}catch(e){if(e.name!=='AbortError')status.textContent='Partage impossible : téléchargez le PDF et joignez-le au mail.'}};
@@ -41,7 +41,7 @@ function drawPage(){if(!viewPages.length)return;page=Math.max(0,Math.min(page,vi
 window.vfOpenPreview=()=>{viewPages=[...previews.querySelectorAll('svg')];if(!viewPages.length)return;page=0;zoom=1;sidebar.replaceChildren();viewPages.forEach((s,i)=>{const b=document.createElement('button');b.type='button';b.textContent=(i+1)+'. '+s.getAttribute('aria-label');b.onclick=()=>{page=i;drawPage()};sidebar.append(b)});$('viewerTotal').textContent=viewPages.length+' pages';drawPage();viewer.showModal();$('closeViewer').focus()};
 $('closeViewer').onclick=()=>viewer.close();$('prevPage').onclick=()=>{page--;drawPage()};$('nextPage').onclick=()=>{page++;drawPage()};$('zoomOut').onclick=()=>{zoom=Math.max(.7,zoom-.1);drawPage()};$('zoomIn').onclick=()=>{zoom=Math.min(2,zoom+.1);drawPage()};
 shareButton.hidden=false;$('copyPrint').hidden=false;$('viewerInstructions').hidden=false;$('classicPrint').hidden=mobile;
-$('classicPrint').onclick=()=>{const area=$('printSheets');area.replaceChildren();for(const s of viewPages){const div=document.createElement('div');div.className='print-sheet';div.append(s.cloneNode(true));area.append(div)}viewer.close();document.body.classList.add('printing-cavaliers');try{window.print()}finally{document.body.classList.remove('printing-cavaliers');area.replaceChildren();viewer.showModal()}};
+$('classicPrint').onclick=()=>{if(!pdfFile){status.textContent='Attendez la préparation du PDF complet.';return}const url=URL.createObjectURL(pdfFile);window.open(url,'_blank');setTimeout(()=>URL.revokeObjectURL(url),120000)};
 let touchStart=0;sheet.addEventListener('touchstart',e=>{touchStart=e.changedTouches[0].clientX},{passive:true});sheet.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-touchStart;if(Math.abs(dx)>55){page+=dx<0?1:-1;drawPage()}},{passive:true});
 const core=window.CavalierCore;
 const panel=$('rejected'), list=$('rejectedList');
@@ -76,17 +76,25 @@ async function getImportMembers(){
 // Exact full-name matches only; ambiguous and abbreviated names require manual review.
 let officialIndex=null;
 async function getOfficialIndex(){if(!officialIndex)officialIndex=fetch('./cavaliers/index.json').then(r=>{if(!r.ok)throw Error('Index indisponible');return r.json()}).then(j=>j.entries||{}).catch(()=>{officialIndex=null;return {}});return officialIndex}
-const officialKey=s=>String(s??'').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().replace(/[’']/g,"'").replace(/\s+/g,' ').trim();
+const officialKey=s=>String(s??'').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().replace(/[.\s\-’']/g,'');
+function buildOfficialNames(entries){const names=new Map();for(const [id,item] of Object.entries(entries)){const words=item.name.trim().split(/\s+/);const cut=words.findIndex((w,i)=>i>0&&w===w.toLocaleUpperCase('fr')&&/\p{Lu}/u.test(w));const keys=[item.name];if(cut>0){const f=words.slice(0,cut).join(' '),l=words.slice(cut).join(' ');keys.push(core.initials(f)+' '+l,l+' '+f)}for(const k of new Set(keys.map(officialKey))){if(!names.has(k))names.set(k,[]);names.get(k).push(id)}}return names}
+function officialMatch(names,value){const ids=names.get(officialKey(value))||[];return ids.length===1?ids[0]:null}
 async function showOfficialCavaliers(){
- const token=++officialToken;
- const entries=await getOfficialIndex();if(token!==officialToken)return;
- const names=new Map();for(const [id,item] of Object.entries(entries)){const k=officialKey(item.name);if(!names.has(k))names.set(k,[]);names.get(k).push({id,item})}
+ const token=++officialToken;const names=buildOfficialNames(await getOfficialIndex());if(token!==officialToken)return;
  for(const card of $('entries').querySelectorAll('.compact-entry')){
-  const title=card.querySelector('.entry-identity strong');if(!title)continue;
-  const hits=names.get(officialKey(title.textContent))||[];
-  if(hits.length!==1)continue;
-  const {id}=hits[0];const link=element('a','Cavalier PE existant ↗');link.href='./cavaliers/'+encodeURIComponent(id)+'.pdf';link.target='_blank';link.rel='noopener';link.className='official-cavalier-link';link.style.cssText='display:inline-block;font-size:11px;margin-top:4px';card.querySelector('.entry-identity').append(link);
+ const title=card.querySelector('.entry-identity strong');if(!title)continue;const id=officialMatch(names,title.textContent);if(!id)continue;
+ const link=element('a','PDF original du député ↗');link.href='./cavaliers/'+encodeURIComponent(id)+'.pdf';link.target='_blank';link.rel='noopener';link.className='official-cavalier-link';card.querySelector('.entry-identity').append(link);
  }
+}
+async function assembleOriginals(svgs,filename,gen){
+ const entries=await getOfficialIndex();if(!Object.keys(entries).length)throw Error('Index des cavaliers indisponible');
+ const names=buildOfficialNames(entries),lib=window.PDFLib;if(!lib)throw Error('Moteur PDF indisponible');
+ const output=await lib.PDFDocument.create(),cache=new Map();let originals=0;
+ for(const s of svgs){if(gen!==generation)return null;const label=s.getAttribute('aria-label'),id=officialMatch(names,label);
+ if(id){if(!cache.has(id)){const response=await fetch('./cavaliers/'+encodeURIComponent(id)+'.pdf');if(!response.ok)throw Error('PDF original indisponible : '+label);cache.set(id,await lib.PDFDocument.load(await response.arrayBuffer()))}const src=cache.get(id);for(const page of await output.copyPages(src,src.getPageIndices()))output.addPage(page);originals++}
+ else {const p=await renderPage(s),image=await output.embedJpg(p.bytes),page=output.addPage([595.276,841.89]);page.drawImage(image,{x:0,y:0,width:595.276,height:841.89})}
+ }
+ return {file:new File([await output.save()],filename,{type:'application/pdf'}),originals};
 }
 let officialToken=0;
 document.addEventListener('vf-cavaliers-ready',()=>{for(const a of document.querySelectorAll('.official-cavalier-link'))a.remove();showOfficialCavaliers()});
