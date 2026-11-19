@@ -1,6 +1,6 @@
 (()=>{'use strict';
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg',labels=['Prénom','Nom de famille','Titre','Organisation','Fonction'],collator=new Intl.Collator('fr',{sensitivity:'base'});let rows=[];
-const core=window.CavalierCore,clean=s=>String(s||'').normalize('NFC').trim().replace(/\s+/gu,' '),cleanName=core.cleanName,full=core.display;
+const core=window.CavalierCore,clean=s=>core.strip(s),cleanName=core.cleanName,full=core.display;
 const ctx=document.createElement('canvas').getContext('2d');
 function width(s,n){ctx.font='700 '+n+'px Arial, sans-serif';return ctx.measureText(s).width}
 function fit(s,cap,max=530){let n=cap;while(n>12&&width(s,n)>max)n-=.5;return n}
