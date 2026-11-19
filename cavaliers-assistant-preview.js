@@ -79,18 +79,36 @@ async function getOfficialIndex(){if(!officialIndex)officialIndex=fetch('./caval
 const officialKey=s=>String(s??'').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().replace(/[.\s\-’']/g,'');
 function buildOfficialNames(entries){const names=new Map();for(const [id,item] of Object.entries(entries)){const words=item.name.trim().split(/\s+/);const cut=words.findIndex((w,i)=>i>0&&w===w.toLocaleUpperCase('fr')&&/\p{Lu}/u.test(w));const keys=[item.name];if(cut>0){const f=words.slice(0,cut).join(' '),l=words.slice(cut).join(' ');keys.push(core.initials(f)+' '+l,l+' '+f);if(words.slice(0,cut).length>1)keys.push(words.slice(0,cut).map(w=>w[0]).join('')+' '+l)}for(const k of new Set(keys.map(officialKey))){if(!names.has(k))names.set(k,[]);names.get(k).push(id)}}return names}
 function officialMatch(names,value){const ids=names.get(officialKey(value))||[];return ids.length===1?ids[0]:null}
+
+const decisions=new Map();
+function possibleMEPs(entries,value){
+ const words=String(value||'').trim().split(/\s+/);
+ if(words.length<2||!/^(?:\p{L}[.\-]*){1,5}$/u.test(words[0])||!words[0].includes('.'))return [];
+ const surname=officialKey(words.slice(1).join(' '));
+ return Object.entries(entries).filter(([id,m])=>{const parts=m.name.trim().split(/\s+/);const cut=parts.findIndex((w,i)=>i>0&&w===w.toLocaleUpperCase('fr')&&/\p{Lu}/u.test(w));return cut>0&&officialKey(parts.slice(cut).join(' '))===surname});
+}
+function resolveMEP(entries,names,label){
+ const exact=officialMatch(names,label);if(exact)return {id:exact};
+ const k=officialKey(label);if(decisions.has(k))return {id:decisions.get(k)};
+ const candidates=possibleMEPs(entries,label);return candidates.length?{candidates}:{id:null};
+}
 async function showOfficialCavaliers(){
- const token=++officialToken;const names=buildOfficialNames(await getOfficialIndex());if(token!==officialToken)return;
- for(const card of $('entries').querySelectorAll('.compact-entry')){
- const title=card.querySelector('.entry-identity strong');if(!title)continue;const id=officialMatch(names,title.textContent);if(!id)continue;
- const link=element('a','PDF original du député ↗');link.href='./cavaliers/'+encodeURIComponent(id)+'.pdf';link.target='_blank';link.rel='noopener';link.className='official-cavalier-link';card.querySelector('.entry-identity').append(link);
+ const token=++officialToken,entries=await getOfficialIndex(),names=buildOfficialNames(entries);if(token!==officialToken)return;
+ const cards=[...$('entries').querySelectorAll('.compact-entry')],tiles=[...previews.querySelectorAll('.preview')];
+ for(const tile of tiles){const s=tile.querySelector('svg');if(!s)continue;const label=s.getAttribute('aria-label'),result=resolveMEP(entries,names,label);
+ tile.style.borderColor=result.id?'#4a9669':result.candidates?'#c58a32':'#b9cbd8';tile.style.background=result.id?'#edf7ef':result.candidates?'#fff6e5':'';
+ tile.querySelector('.official-cavalier-link')?.remove();
+ const note=element('div',result.id?'PDF original du député':result.candidates?'Député possible · à confirmer':'Cavalier généré');note.className='official-cavalier-link';note.style.cssText='font-size:12px;font-weight:600;color:'+(result.id?'#24623a':result.candidates?'#925900':'#526575');tile.append(note);
+ if(result.candidates){for(const [id,m] of result.candidates){const b=element('button','Confirmer : '+m.name);b.type='button';b.style.cssText='display:block;margin:4px 0;font-size:12px';b.onclick=()=>{decisions.set(officialKey(label),id);lastSignature='';showOfficialCavaliers();schedule()};note.append(b)}const no=element('button','Non, créer un cavalier');no.type='button';no.onclick=()=>{decisions.set(officialKey(label),null);lastSignature='';showOfficialCavaliers();schedule()};note.append(no)}
+ if(result.id){const link=element('a','Voir le PDF original');link.href='./cavaliers/'+encodeURIComponent(result.id)+'.pdf';link.target='_blank';link.rel='noopener';note.append(document.createElement('br'),link)}
  }
 }
 async function assembleOriginals(svgs,filename,gen){
  const entries=await getOfficialIndex();if(!Object.keys(entries).length)throw Error('Index des cavaliers indisponible');
  const names=buildOfficialNames(entries),lib=window.PDFLib;if(!lib)throw Error('Moteur PDF indisponible');
  const output=await lib.PDFDocument.create(),cache=new Map();let originals=0;
- for(const s of svgs){if(gen!==generation)return null;const label=s.getAttribute('aria-label'),id=officialMatch(names,label);
+ for(const s of svgs){if(gen!==generation)return null;const label=s.getAttribute('aria-label'),resolution=resolveMEP(entries,names,label),id=resolution.id;
+ if(resolution.candidates)throw Error('Confirmez le député possible : '+label+' dans les aperçus.');
  if(id){if(!cache.has(id)){const response=await fetch('./cavaliers/'+encodeURIComponent(id)+'.pdf');if(!response.ok)throw Error('PDF original indisponible : '+label);cache.set(id,await lib.PDFDocument.load(await response.arrayBuffer()))}const src=cache.get(id);for(const page of await output.copyPages(src,src.getPageIndices()))output.addPage(page);originals++}
  else {const p=await renderPage(s),image=await output.embedJpg(p.bytes),page=output.addPage([595.276,841.89]);page.drawImage(image,{x:0,y:0,width:595.276,height:841.89})}
  }
@@ -124,7 +142,7 @@ function inspectWorkbook(sheets,members){
  }
  select.onchange=show;show();
 }
-async function load(file){if(!file)return;const token=++loadToken;try{
+async function load(file){if(!file)return;decisions.clear();const token=++loadToken;try{
  if(file.size>10*1024*1024)throw Error('Fichier trop volumineux');
  if(!window.XLSX)throw Error('Lecteur Excel indisponible : utilisez le copier-coller');
  const wb=XLSX.read(await file.arrayBuffer(),{type:'array'});
@@ -133,6 +151,6 @@ async function load(file){if(!file)return;const token=++loadToken;try{
  const members=await getImportMembers();if(token!==loadToken)return;
  inspectWorkbook(sheets,members);$('status').textContent='Sélectionnez et vérifiez la feuille à importer.';
  }catch(e){if(token===loadToken)$('status').textContent=e.message}}
-$('clear').addEventListener('click',()=>{loadToken++;preparedRows=null;preparedText='';excelPanel.hidden=true;excelPanel.replaceChildren()});
+$('clear').addEventListener('click',()=>{loadToken++;decisions.clear();preparedRows=null;preparedText='';excelPanel.hidden=true;excelPanel.replaceChildren()});
 $('excelFile').onchange=e=>load(e.target.files[0]);const zone=$('dropZone');zone.ondragover=e=>e.preventDefault();zone.ondrop=e=>{e.preventDefault();load(e.dataTransfer.files[0])};
 })();
