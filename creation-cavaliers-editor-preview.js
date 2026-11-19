@@ -78,6 +78,7 @@ function editor(){
 }
 window.vfSetCavalierRows=items=>{expanded=-1;rows=items.map(r=>r.slice());lastRemoved=null;editor()};
 window.vfRecoverCavalier=r=>{rows.push(r.slice());expanded=rows.length-1;editor();$('entries').lastElementChild?.scrollIntoView({block:'nearest'})};
-$('addCompact').onclick=()=>$('add').click();$('add').onclick=()=>{rows.push(['','','','','']);expanded=rows.length-1;editor();$('entries').lastElementChild?.querySelector('input').focus()};$('clear').onclick=()=>{rows=[];lastRemoved=null;expanded=-1;$('paste').value='';editor()};$('sort').onclick=()=>{expanded=-1;rows.sort((a,b)=>collator.compare(clean(a[1]),clean(b[1]))||collator.compare(clean(a[0]),clean(b[0])));editor()};
+$('addCompact').onclick=()=>$('add').click();$('add').onclick=()=>{rows.push(['','','','','']);expanded=rows.length-1;editor();$('entries').lastElementChild?.querySelector('input').focus()};$('clear').addEventListener('click',e=>{if((rows.length||$('paste').value.trim())&&!confirm('Effacer toute la liste et les cavaliers préparés ?')){e.preventDefault();e.stopImmediatePropagation()}},true);
+$('clear').onclick=()=>{rows=[];lastRemoved=null;expanded=-1;$('paste').value='';editor()};$('sort').onclick=()=>{expanded=-1;rows.sort((a,b)=>collator.compare(clean(a[1]),clean(b[1]))||collator.compare(clean(a[0]),clean(b[0])));editor()};
 $('print').onclick=()=>{if(!$('print').disabled)window.vfOpenPreview?.()};
 })();
