@@ -28,7 +28,7 @@ Application web progressive (PWA) indépendante, destinée à la consultation et
 | `offline.js` | Téléchargement et mises à jour PWA |
 | `smart-search.js` | Suggestions de recherche |
 | `features.js` | Partage et historique des changements |
-| `creation-cavaliers.html`, `creation-cavaliers-227.js`, `cavaliers-assistant-229.js`, `cavaliers-core.js` | Assistant cavaliers |
+| `creation-cavaliers.html`, `creation-cavaliers-227.js`, `cavaliers-assistant-232.js`, `cavaliers-core.js` | Assistant cavaliers |
 | `commission-europeenne.html`, `institutions-agences.html` | Rubriques complémentaires |
 | `members.json`, `committees.json`, `coordinators.json` | Données parlementaires |
 | `hemicycle-seats.json` | Correspondances député–siège |
@@ -58,32 +58,20 @@ Les portraits proviennent principalement des ressources officielles. Les places,
 
 L'installation PWA est proposée par les navigateurs compatibles. Précharger les ressources avant une utilisation hors ligne ; certaines ressources officielles peuvent ne pas être disponibles. La rotation automatique dépend des restrictions du navigateur. Les préférences de lecture et certaines informations de navigation sont conservées localement sur l'appareil.
 
-## État de maintenance
 
-Version 219 : séparation conservatrice des scripts classiques et du CSS, correction du score du quiz, cache durable des médias téléchargés et URLs de ressources versionnées. Les tests navigateur restent nécessaires avant de considérer la refonte validée.
+## Qualité et cycle de publication
 
-## Version 220 (branche de validation)
+- Branche `main` : publication GitHub Pages.
+- Branche `validation-infrastructure-v292` : changements en validation, sans publication automatique sur le site.
+- Sauvegarde `sauvegarde-v289-2026-11-19` : point de restauration historique.
+- Exécuter depuis la racine : `node tests/vademecum-audit.cjs` puis `node tests/cavaliers-core.test.cjs`.
+- GitHub Actions exécute ces contrôles à chaque push et pull request. Un résultat vert ne remplace pas les essais sur Android, iOS, ordinateur, réseau coupé et impression.
+- Avant fusion, vérifier les différences, le rendu et la concordance des versions du cache. Éviter de modifier directement la branche de publication pour les changements structurels.
 
-Recherche combinée par pays, groupe et commission/fonction ; cinq consultations récentes conservées sur l'appareil ; révision adaptative tenant compte du délai depuis la dernière réponse et du temps de réponse ; filtres facultatifs de pays, commission et fonction sur les plans. Aucun quiz de localisation ajouté. Les filtres de commission portent sur les titulaires.
+## Contacts et confidentialité
 
-Version 221 : filtre du plan limité au pays, intégré à la ligne de recherche ; les couleurs et filtres politiques existants restent disponibles.
+Les contacts importés, favoris et sauvegardes locales sont conservés sur l'appareil. Ils ne doivent jamais être ajoutés au dépôt public. Les tests utilisent des valeurs fictives. Le mode expérimental ou masqué n'est pas une authentification. Les ressources publiques restent accessibles et l'historique Git doit faire l'objet d'un traitement distinct si des informations sensibles y ont figuré.
 
-## Assistant cavaliers
+## État de validation
 
-Accessible depuis le menu principal sur ordinateur et mobile : [ouvrir l’assistant](https://aerlin23.github.io/Parlement-europeen_10th-term/creation-cavaliers.html).
-
-Les fichiers importés sont traités dans le navigateur. Le lecteur Excel est chargé depuis un CDN et requiert une connexion lors du chargement. Vérifier les noms et les exclusions avant impression : le filtrage ne constitue pas une validation d’identité. Imprimer en A4, recto uniquement, à 100 %, puis plier les feuilles. Sur ordinateur et mobile, partager le PDF avec la messagerie et coller l’adresse `mobileprint@europarl.europa.eu` ; la copie automatique et le partage dépendent du navigateur. Consulter le [guide officiel Mobile Print](https://mfd.europarl.europa.eu/pdf/mobile-printing-qsg_en.pdf). Ne transmettre que les documents autorisés par les règles internes applicables.
-
-Version PWA 236 : accès public à l’assistant. Les réunions conjointes restent en mode expérimental.
-
-### Maintenance Assistant cavaliers (227)
-
-Import centralisé dans `cavaliers-core.js`, reconnaissance des en-têtes français/anglais et des colonnes réordonnées, dédoublonnage par prénom et nom, annulation de la dernière suppression. Tests de régression : `node tests/cavaliers-core.test.cjs`. Le PDF partagé reste matriciel (JPEG intégré), et les tests navigateur et impression physique restent nécessaires. Les anciennes ressources versionnées sont conservées pour les clients qui utilisent encore des pages mises en cache.
-
-Version PWA 244 : restauration de l’en-tête institutionnel d’origine, avec les logos et couleurs des groupes politiques. Les onglets Vademecum, S’entraîner et Cavaliers restent réunis dans une navigation à trois boutons.
-
-Version PWA 245 : l’Assistant cavaliers reprend le grand en-tête bleu et le logo institutionnel de l’annuaire, sans modifier les en-têtes des groupes politiques. Le bandeau secondaire est supprimé.
-
-Réunions conjointes (251, expérimental) : tri par groupes dans l’ordre du Vademecum, puis présidence, vice-présidences dans l’ordre renseigné et autres titulaires par nom. Les listes et trombinoscopes imprimables suivent le même ordre.
-
-Version PWA 252 : harmonisation visuelle de Réunions conjointes avec l’Assistant cavaliers (bandeau institutionnel, navigation et panneaux), sans changement du tri ni du mode expérimental.
+La version publique de référence est v291. La branche de validation prépare la restauration locale des contacts et favoris, les contrôles automatiques et la documentation. Les bibliothèques externes, la mutualisation CSS et l'isolation des outils personnels restent à traiter. Aucun résultat de test navigateur ou audit de sécurité complet n'est revendiqué.
