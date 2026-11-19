@@ -50,11 +50,9 @@ html body main #filters #advanced > summary,html body main #filters #advanced > 
 html body main #filters .tools button:focus-visible {outline:2px solid #003399;outline-offset:2px}
 }
 
-/* Progression de la navigation mobile selon la taille de lecture. */
+/* Navigation mobile : taille intermédiaire fixe, indépendante de la lecture. */
 @media screen and (max-width:900px) {
-html body {--mode-tab-height:62px;--mode-icon-size:27px;--mode-label-size:13px;--mode-group-size:12px}
-html body.compact {--mode-tab-height:58px;--mode-icon-size:25px;--mode-label-size:12px;--mode-group-size:11px}
-html body.reading-large {--mode-tab-height:68px;--mode-icon-size:30px;--mode-label-size:14px;--mode-group-size:13px}
+html body {--mode-tab-height:60px;--mode-icon-size:26px;--mode-label-size:12.5px;--mode-group-size:11.5px}
 html body main .tabs.mode-navigation > :is(#directoryTab,#trainingTab,#cavalierToolsTab,#personalContactsTab),
 html:is(.vf-tools-preview,.vf-tools-mobile-preview) body main .tabs.mode-navigation > #personalContactsTab {
 height:var(--mode-tab-height)!important;min-height:var(--mode-tab-height)!important;max-height:var(--mode-tab-height)!important;font-size:var(--mode-label-size)!important;line-height:1.15!important;
@@ -63,8 +61,4 @@ html body main .tabs.mode-navigation > :is(#directoryTab,#trainingTab,#cavalierT
 html body main .tabs.mode-navigation > :is(#directoryTab,#trainingTab,#cavalierToolsTab) span {font-size:inherit!important;overflow-wrap:normal;max-width:100%}
 html body main .directories>a,html body main .directories>details>summary {font-size:var(--mode-group-size)!important}
 }
-@media screen and (max-width:360px) {
-html body.reading-large {--mode-label-size:12px}
-html body:not(.compact):not(.reading-large) {--mode-label-size:12px}
-html body.compact {--mode-label-size:11px}
-}
+@media screen and (max-width:360px) {html body {--mode-label-size:11.5px}}
