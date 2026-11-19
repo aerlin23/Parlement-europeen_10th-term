@@ -61,6 +61,15 @@ function orderSchema(cells){
  return label>=0||first>=0?{qty,label,first,last,title}:null;
 }
 const genericAliases={'reserved':'RÉSERVÉ','legal service':'SERVICE JURIDIQUE','european commission':'COMMISSION EUROPÉENNE','commission europeenne':'COMMISSION EUROPÉENNE','council of the european union':'CONSEIL DE L’UNION EUROPÉENNE','dg com':'DIRECTION GÉNÉRALE COMMUNICATION','dg comm':'DIRECTION GÉNÉRALE COMMUNICATION','eeas':'SEAE','european court of auditors':'COUR DES COMPTES EUROPÉENNE','european economic and social committee (eesc)':'COMITÉ ÉCONOMIQUE ET SOCIAL EUROPÉEN'};
+
+function institutionalRow(value){
+ const text=String(value??'').trim(),k=norm(text);
+ const sec=k.match(/^(?:([a-z]{3,5})\s+secretariat|secretariat\s+([a-z]{3,5}))$/);
+ if(sec)return ['', (sec[1]||sec[2]).toUpperCase(),'SECRETARIAT','',''];
+ const extra={'greens':'VERTS','greens/efa':'VERTS/ALE','verts':'VERTS','the left':'THE LEFT','assistant parlementaire':'ASSISTANT PARLEMENTAIRE','parliamentary assistant':'ASSISTANT PARLEMENTAIRE','pres - dla/directorate for legislative acts':'DIRECTION DES ACTES LÉGISLATIFS','dg pres':'DIRECTION GÉNÉRALE DE LA PRÉSIDENCE','dg presidency':'DIRECTION GÉNÉRALE DE LA PRÉSIDENCE'};
+ return ['',extra[k]||genericAliases[k]||text.toLocaleUpperCase('fr'),'','',''];
+}
+
 function inspectOrder(matrix){
  const accepted=[],review=[],ignored=[];let schema=null,headers=0;
  for(let i=0;i<matrix.length;i++){
@@ -71,7 +80,7 @@ function inspectOrder(matrix){
   const q=Number(cells[schema.qty]),label=cells[schema.label>=0?schema.label:schema.first]||'',last=schema.last>=0?cells[schema.last]||'':'',title=schema.title>=0?cells[schema.title]||'':'';
   const rec={line:i+1,raw:cells.filter(Boolean).join(' · '),quantity:q};
   if(!label){ignored.push({...rec,reason:'Ligne sans intitulé'});continue}
-  const add=(text,count=q,detail='',reason='')=>{const row=['',text.toLocaleUpperCase('fr'),detail,'',''];const item={...rec,row,quantity:count};if(!Number.isInteger(count)||count<1||count>100)review.push({...item,quantity:1,reason:'Quantité à vérifier'});else if(reason)review.push({...item,reason});else accepted.push(item)};
+  const add=(text,count=q,detail='',reason='')=>{const row=institutionalRow(text);if(detail)row[2]=detail;const item={...rec,row,quantity:count};if(!Number.isInteger(count)||count<1||count>100)review.push({...item,quantity:1,reason:'Quantité à vérifier'});else if(reason)review.push({...item,reason});else accepted.push(item)};
   const group=norm(label).match(/set of (\d+) nameplates per each political group/);
   if(group){const n=Number(group[1]);if(q===n*8){for(const g of ['EPP','S&D','PfE','ECR','RENEW','GREENS/EFA','THE LEFT','ESN'])add(g,n)}else add(label,q,'','Consigne de groupe à vérifier');continue}
   const generic=genericAliases[norm(label)];
@@ -124,5 +133,5 @@ function quantityPrefix(value){
  return {value:m[2].trim(),quantity:Number(m[1]),explicit:/^\d+\s*[x×]/i.test(s)};
 }
 
-return {orderSchema,inspectOrder,quantityPrefix,cleanName,initials,display,parse,analyze,excelRows,header,inspectSheet,detectHeader,splitFull,memberIndex};
+return {institutionalRow,orderSchema,inspectOrder,quantityPrefix,cleanName,initials,display,parse,analyze,excelRows,header,inspectSheet,detectHeader,splitFull,memberIndex};
 });
