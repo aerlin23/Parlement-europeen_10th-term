@@ -211,7 +211,7 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
   const positions=await getSeatMap(city);
   if(!area.isConnected)return;
   const point=overview?(city==='bru'?[597.5,537.5]:[595,527.5]):positions[number-1];
-  if(!point||!point[0]||!point[1]){area.textContent='Cette place ne possède pas de position graphique fiable sur le plan du '+(city==='bru'?'11 novembre 2026':'19 octobre 2026')+'. Consulte le plan officiel pour la vérifier.';return}
+  if(!point||!point[0]||!point[1]){area.textContent='Cette place ne possède pas de position graphique fiable sur le plan du '+(city==='bru'?'11 novembre 2026':'23 novembre 2026')+'. Consulte le plan officiel pour la vérifier.';return}
   area.replaceChildren();
   const fullView=city==='bru'?'335 350 525 375':'340 350 510 375';const svg=seatSVG('svg',{viewBox:fullView,class:'seat-map-canvas',role:'group','aria-label':'Plan interactif des sièges de '+(city==='bru'?'Bruxelles':'Strasbourg')+', place '+number+' repérée en bleu foncé'});
   svg.setAttribute('preserveAspectRatio',dialog.classList.contains('seat-map-expanded')?'xMidYMid slice':'xMidYMid meet');
@@ -484,6 +484,6 @@ function hemicycleBlock(m){
   const row=el('span','hemicycle-row');row.dataset.city=key;
   row.append(hemicycleMarker(),el('span','',label),el('span','hemicycle-number',String(seats[key])));row.setAttribute('role','button');row.tabIndex=0;row.setAttribute('aria-label',`Voir la place ${seats[key]} sur le plan de ${key==='str'?'Strasbourg':'Bruxelles'} pour ${m.name}`);row.addEventListener('click',()=>showSeatOnPlan(key,seats[key],m.name,m.group));row.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();showSeatOnPlan(key,seats[key],m.name,m.group)}});box.append(row);
  }
- box.title='Plans officiels du Parlement européen · Strasbourg 19/10/2026 · Bruxelles 11/11/2026';
+ box.title='Plans officiels du Parlement européen · Strasbourg 23/11/2026 · Bruxelles 11/11/2026';
  return box;
 }
