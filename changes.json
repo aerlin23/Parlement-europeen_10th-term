@@ -1,8 +1,28 @@
 {
   "schemaVersion": 1,
-  "updatedManually": "2026-11-14",
+  "updatedManually": "2026-11-20",
   "notice": "Historique éditorial, dates des événements distinctes de la date de mise à jour. Sources à vérifier avant tout usage institutionnel.",
   "items": [
+    {
+      "date": "2026-11-17",
+      "category": "groupes",
+      "kind": "Changement de groupe",
+      "name": "Branko Grims",
+      "person": "220908",
+      "oldValue": "Non-inscrits",
+      "newValue": "Patriotes pour l’Europe",
+      "description": "Rejoint le groupe PFE.",
+      "source": "https://www.patriotsforeurope.eu/posts/patriots-for-europe-continues-to-grow-as-slovenian-mep-branko-grims-joins-the-group"
+    },
+    {
+      "date": "2026-11-17",
+      "category": "fonctions",
+      "kind": "Nouvelle fonction",
+      "name": "Branko Grims",
+      "person": "220908",
+      "description": "Devient vice-président du groupe PFE (et non du Parlement européen).",
+      "source": "https://www.patriotsforeurope.eu/posts/patriots-for-europe-continues-to-grow-as-slovenian-mep-branko-grims-joins-the-group"
+    },
     {
       "date": "2026-11-12",
       "category": "fonctions",
