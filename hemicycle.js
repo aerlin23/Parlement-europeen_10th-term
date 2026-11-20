@@ -182,7 +182,9 @@ async function showSeatOnPlan(city,number=null,memberName='',memberGroup='',opti
  searchBox.hidden=false;
  searchToggle.setAttribute('aria-expanded',String(!searchBox.hidden));
  searchToggle.onclick=()=>{searchBox.hidden=!searchBox.hidden;searchToggle.setAttribute('aria-expanded',String(!searchBox.hidden));if(!searchBox.hidden)searchInput.focus()};
- dialog.append(head,detail,citySwitch,searchBox,area,controls);if(!reuse){backdrop.append(dialog);document.body.append(backdrop)}
+ const planDate=el('div','seat-plan-source-date','Plan officiel du '+(city==='bru'?'11/11/2026':'23/11/2026'));
+ planDate.style.cssText='position:absolute;right:8px;bottom:max(5px,env(safe-area-inset-bottom));z-index:8;font-size:10px;line-height:1.3;color:#526575;background:#f8fafce6;padding:2px 4px;border-radius:3px;pointer-events:none;white-space:nowrap';
+ dialog.append(head,detail,citySwitch,searchBox,area,controls,planDate);if(!reuse){backdrop.append(dialog);document.body.append(backdrop)}
  const previousFocus=previous?.previousFocus||document.activeElement;
  let releaseCameraListeners=()=>{};
  const dismiss=()=>{
