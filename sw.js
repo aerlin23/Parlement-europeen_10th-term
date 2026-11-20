@@ -1,5 +1,5 @@
 /* Vademecum PE : ressources critiques hors-ligne et mises à jour consenties. */
-const VERSION='pe-pwa-v353';
+const VERSION='pe-pwa-v354';
 const MEDIA='pe-offline-official-media-v1';
 const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
 const CODE=['./creation-cavaliers-editor-preview.js?v=345','./creation-cavaliers-preview.html','./cavaliers-core-preview.js?v=307','./cavaliers-assistant-preview.js?v=344','./css/navigation-final.css?v=325','./styles.css?v=257','./directory.js?v=225','./hemicycle.js?v=352','./interface.js?v=324','./quiz.js?v=324','./offline.js?v=336','./smart-search.js?v=225','./features.js?v=234'];
@@ -66,6 +66,17 @@ self.addEventListener('fetch',event=>{
    }catch{return Response.error()}
   })());
   return;
+ }
+ // Cache only the pinned document-processing dependencies after a successful load.
+ const libraryURLs=new Set([
+  'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js',
+  'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js',
+  'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js',
+  'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js',
+  'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js'
+ ]);
+ if(libraryURLs.has(url.href)){
+  event.respondWith((async()=>{const cache=await caches.open('vf-document-libraries-v1');try{const response=await fetch(request);if(response.ok||response.type==='opaque')await cache.put(request,response.clone());return response}catch{return (await cache.match(request))||Response.error()}})());return;
  }
  if(url.origin!==self.location.origin)return;
  // Les PDF de cavaliers sont servis à la demande, sans cache hors ligne systématique.
