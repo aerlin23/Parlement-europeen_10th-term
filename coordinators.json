@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-14",
+  "updated": "2026-11-20",
   "description": "Coordinateurs des groupes politiques au sein des commissions. Sources propres aux commissions privilégiées; les nominations historiques sont signalées et ne constituent pas une preuve de mandat actuel.",
   "entries": [
     {
@@ -147,15 +147,6 @@
       "sourceStatus": "historical-nomination"
     },
     {
-      "id": "96936",
-      "committee": "PECH",
-      "group": "PPE",
-      "role": "coordinator",
-      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
-      "sourceDate": "2024-07-17",
-      "sourceStatus": "historical-nomination"
-    },
-    {
       "id": "96761",
       "committee": "JURI",
       "group": "PPE",
@@ -185,15 +176,6 @@
     {
       "id": "256943",
       "committee": "FEMM",
-      "group": "PPE",
-      "role": "coordinator",
-      "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
-      "sourceDate": "2024-07-17",
-      "sourceStatus": "historical-nomination"
-    },
-    {
-      "id": "257035",
-      "committee": "PETI",
       "group": "PPE",
       "role": "coordinator",
       "source": "https://www.eppgroup.eu/fr/salle-de-presse/le-groupe-ppe-elit-les-orateurs-des-commissions-parlementaires",
@@ -806,15 +788,6 @@
     {
       "id": "256915",
       "committee": "FEMM",
-      "group": "Verts/ALE",
-      "role": "coordinator",
-      "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
-      "sourceDate": "2024-07-23",
-      "sourceStatus": "historical-nomination"
-    },
-    {
-      "id": "197439",
-      "committee": "CONT",
       "group": "Verts/ALE",
       "role": "coordinator",
       "source": "https://agenceurope.eu/en/bulletin/article/13459/30/greens-efa-group-appoints-its-coordinators-within-european-parliaments-parliamentary-committees",
