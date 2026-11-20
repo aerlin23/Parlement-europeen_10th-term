@@ -91,3 +91,15 @@ Réunions conjointes (251, expérimental) : tri par groupes dans l’ordre du Va
 Version PWA 252 : harmonisation visuelle de Réunions conjointes avec l’Assistant cavaliers (bandeau institutionnel, navigation et panneaux), sans changement du tri ni du mode expérimental.
 
 Version PWA 339 : actualisation des 720 affectations de Strasbourg selon le plan du 23 novembre 2026 (247 différences, dont deux sièges précédemment non renseignés). Bruxelles et la géométrie des plans sont conservés.
+
+
+## Maintenance v354 — 20 novembre 2026
+
+- Contrôles automatiques : `node tests/data-integrity.test.cjs`, `node tests/cavaliers-core.test.cjs` et syntaxe JavaScript. Workflow GitHub Actions intégré ; consulter les résultats avant de considérer une version validée.
+- SheetJS CE 0.20.3 remplace 0.18.5 dans les deux assistants (CVE-2023-30533 et CVE-2024-22363).
+- Les bibliothèques documentaires versionnées peuvent être conservées après un premier chargement réussi sous le service worker actif. Tester hors ligne sur appareil ; les PDF originaux distants ne sont pas tous préchargés.
+- Annuaire institutionnel simplifié, SEAE représenté par la haute représentante, recherche par nom/fonction/institution/pays/acronyme.
+- Version affichée synchronisée avec le service worker ; dates des plans hémicycle visibles séparément. Strasbourg : affectations du 23/11/2026, géométrie du 19/10/2026 ; Bruxelles : 11/11/2026.
+- Mode nuit, partage de page, recherche de cavaliers existants (version personnelle), formulaire compact.
+- Trois affectations de coordinateurs à confirmer : Gabriel Mato/PECH, Alma Ezcurra Almansa/PETI, Damian Boeselager/CONT. Ne pas déduire un remplaçant sans source.
+- Confidentialité : le dépôt et GitHub Pages sont publics. Un onglet masqué ou un indicateur local ne constitue pas un contrôle d'accès. Ne jamais publier de données internes non autorisées ; utiliser un stockage local ou un hébergement authentifié. Les archives privées importées ne doivent pas être ajoutées au dépôt.
