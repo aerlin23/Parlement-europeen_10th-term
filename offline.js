@@ -66,12 +66,12 @@ if('serviceWorker' in navigator){
   check.hidden=false;
   let registration,applying=false,updating=false,checking=false,lastCheck=0;
   const watched=new WeakSet();
+  const reloadOnce=()=>{if(updating)return;updating=true;notice.hidden=true;location.reload()};
   const displayUpdate=()=>{
-   if(registration?.waiting&&!applying){
-    notice.hidden=false;
-    return true;
-   }
-   return false;
+   const ready=!!registration?.waiting && registration.waiting.state==='installed';
+   notice.hidden=!(ready||applying);
+   if(!applying){apply.disabled=false;apply.textContent='Mettre à jour';}
+   return ready;
   };
   const watch=worker=>{
    if(!worker||watched.has(worker))return;
@@ -100,7 +100,7 @@ if('serviceWorker' in navigator){
   };
   try{
    navigator.serviceWorker.addEventListener('controllerchange',()=>{
-    if(!updating){updating=true;location.reload()}
+    reloadOnce()
    });
    registration=await navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'});
    registration.addEventListener('updatefound',()=>{watch(registration.installing);displayUpdate()});
@@ -108,17 +108,26 @@ if('serviceWorker' in navigator){
    apply.onclick=()=>{
     if(session){notice.firstChild.textContent='Termine le quiz avant la mise à jour. ';return}
     const worker=registration.waiting;
-    if(!worker||applying)return;
+    if(!worker||worker.state!=='installed'){displayUpdate();return} 
+    if(applying)return;
     applying=true;apply.disabled=true;apply.textContent='Mise à jour…';
     worker.addEventListener('statechange',()=>{
+     if(worker.state==='activated'&&applying){reloadOnce();return}
      if(worker.state==='redundant'&&applying){applying=false;apply.disabled=false;apply.textContent='Mettre à jour';notice.firstChild.textContent='Mise à jour interrompue. Réessaie. ';displayUpdate()}
     });
-    worker.postMessage({type:'SKIP_WAITING'});
+    try{worker.postMessage({type:'SKIP_WAITING'})}catch(e){applying=false;displayUpdate();return}
+    setTimeout(()=>{
+     if(!applying||updating)return;
+     if(worker.state==='activated'||registration.active===worker){reloadOnce();return}
+     applying=false;displayUpdate();
+     if(registration.waiting===worker)notice.firstChild.textContent='Mise à jour en attente. Réessaie. ';
+     else status.textContent=' · Vérifie à nouveau la mise à jour.';
+    },20000);
    };
    check.onclick=()=>refresh(true);
    refresh();
    document.addEventListener('visibilitychange',()=>{if(!document.hidden){displayUpdate();refresh()}});
-   window.addEventListener('pageshow',()=>{displayUpdate();refresh()});
+   window.addEventListener('pageshow',event=>{if(event.persisted&&applying&&(!registration.waiting||registration.active?.state==='activated')){if(!registration.waiting){reloadOnce();return}}displayUpdate();refresh()});
    window.addEventListener('focus',()=>{displayUpdate();refresh()});
    window.addEventListener('online',()=>refresh());
   }catch(error){status.textContent=' · Vérification indisponible';check.onclick=()=>location.reload();console.warn('Mise à jour PWA indisponible',error)}
