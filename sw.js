@@ -1,5 +1,5 @@
 /* Vademecum PE : ressources critiques hors-ligne et mises à jour consenties. */
-const VERSION='pe-pwa-v352';
+const VERSION='pe-pwa-v353';
 const MEDIA='pe-offline-official-media-v1';
 const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
 const CODE=['./creation-cavaliers-editor-preview.js?v=345','./creation-cavaliers-preview.html','./cavaliers-core-preview.js?v=307','./cavaliers-assistant-preview.js?v=344','./css/navigation-final.css?v=325','./styles.css?v=257','./directory.js?v=225','./hemicycle.js?v=352','./interface.js?v=324','./quiz.js?v=324','./offline.js?v=336','./smart-search.js?v=225','./features.js?v=234'];
@@ -9,6 +9,7 @@ self.addEventListener('install',event=>{
 });
 self.addEventListener('message',event=>{
  if(event.data?.type==='SKIP_WAITING')event.waitUntil(self.skipWaiting());
+ if(event.data?.type==='GET_VERSION'&&event.ports[0])event.ports[0].postMessage({version:VERSION});
 });
 self.addEventListener('activate',event=>{
  event.waitUntil((async()=>{
