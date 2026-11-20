@@ -44,7 +44,7 @@ function seatSVG(name,attributes={},content){
 }
 // Couleurs dédiées aux sièges : lisibles et distinctes sur le fond clair.
 const SEAT_GROUP_COLORS={'PPE':'#2177bd','S&D':'#d7576e','PfE':'#414da0','ECR':'#4196c7','Renew':'#e3af2e','Verts/ALE':'#65a64c','The Left':'#b64584','ESN':'#53667f','NI':'#8f969f'};
-const SEAT_GROUP_LABELS={'PPE':'PPE','S&D':'S&D','PfE':'Patriotes','ECR':'ECR','Renew':'Renew','Verts/ALE':'Verts/ALE','The Left':'The Left','ESN':'ESN','NI':'Non-inscrits'};
+const SEAT_GROUP_LABELS={'PPE':'PPE','S&D':'S&D','PfE':'PFE','ECR':'ECR','Renew':'Renew','Verts/ALE':'Verts/ALE','The Left':'The Left','ESN':'ESN','NI':'Non-inscrits'};
 function seatGroupsForCity(city){
  const assigned=new Map();
  for(const m of members){
