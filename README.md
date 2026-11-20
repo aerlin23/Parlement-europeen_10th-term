@@ -44,7 +44,7 @@ Application web progressive (PWA) indépendante, destinée à la consultation et
 - [Liste officielle des députés](https://www.europarl.europa.eu/meps/en/full-list/xml).
 - [Données ouvertes du Parlement européen](https://data.europarl.europa.eu/api/v2/meps/show-current).
 - [Commissions parlementaires](https://www.europarl.europa.eu/committees/fr/home).
-- [Plans officiels des hémicycles](https://www.europarl.europa.eu/plenary/fr/hemicycle.html) : références utilisées pour les plans intégrés, Strasbourg 19 octobre 2026 et Bruxelles 11 novembre 2026.
+- [Plans officiels des hémicycles](https://www.europarl.europa.eu/plenary/fr/hemicycle.html) : références utilisées pour les plans intégrés, Strasbourg 23 novembre 2026 et Bruxelles 11 novembre 2026.
 - [Entrées et départs](https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming).
 - Fonctions et coordinateurs : sources et dates figurant dans les données lorsque disponibles.
 
@@ -89,3 +89,5 @@ Version PWA 245 : l’Assistant cavaliers reprend le grand en-tête bleu et le l
 Réunions conjointes (251, expérimental) : tri par groupes dans l’ordre du Vademecum, puis présidence, vice-présidences dans l’ordre renseigné et autres titulaires par nom. Les listes et trombinoscopes imprimables suivent le même ordre.
 
 Version PWA 252 : harmonisation visuelle de Réunions conjointes avec l’Assistant cavaliers (bandeau institutionnel, navigation et panneaux), sans changement du tri ni du mode expérimental.
+
+Version PWA 339 : actualisation des 720 affectations de Strasbourg selon le plan du 23 novembre 2026 (247 différences, dont deux sièges précédemment non renseignés). Bruxelles et la géométrie des plans sont conservés.
