@@ -164,11 +164,27 @@ function privateVariants(value){
  const clean=raw.replace(/\b(?:dg|dir|directeur general|directrice generale|directeur|directrice|director general|director|mr|mme|madame|monsieur)\b/g,' ').replace(/\b(?:expo)\b/g,' ');
  return new Set([privateKey(raw),privateKey(clean)]);
 }
+// Match an initial and a complete surname against a full name, in either order.
+function privatePersonKeys(value){
+ const words=String(value??'').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().replace(/\([^)]*\)/g,' ').replace(/\bpdf$/i,'').match(/[\p{L}]+/gu)||[];
+ const keys=new Set();
+ if(words.length<2)return keys;
+ for(const w of [words,[...words].reverse()]){
+  if(w[0].length===1&&w.slice(1).join('').length>=3)keys.add(w[0]+':'+w.slice(1).join(''));
+ }
+ return keys;
+}
+function privateInitialMatch(label,alias){
+ const keys=privatePersonKeys(label),other=privatePersonKeys(alias);
+ const words=v=>String(v??'').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().replace(/\([^)]*\)/g,' ').replace(/\bpdf$/i,'').match(/[\p{L}]+/gu)||[];
+ function matches(ks,v){const w=words(v);if(w.length<2)return false;return [w,[w.at(-1),...w.slice(0,-1)]].some(a=>ks.has(a[0][0]+':'+a.slice(1).join('')))}
+ return matches(keys,alias)||matches(other,label);
+}
 function privateMatches(label){
  const k=institutionalKey(label), exact=privateEntries.filter(e=>[...e.aliases,e.title].some(a=>institutionalKey(a)===k));if(exact.length)return exact;
  const key=unorderedNameKey(label);if(key.includes('|')){const reordered=privateEntries.filter(e=>[...e.aliases,e.title].some(a=>unorderedNameKey(a)===key));if(reordered.length)return reordered;}
- const group=knownPrivateGroups.find(g=>[...privateVariants(label)].some(v=>g.has(v)));if(!group)return [];
- return privateEntries.filter(e=>[...e.aliases,e.title].some(a=>[...privateVariants(a)].some(v=>group.has(v))));
+ const group=knownPrivateGroups.find(g=>[...privateVariants(label)].some(v=>g.has(v)));if(group){const known=privateEntries.filter(e=>[...e.aliases,e.title].some(a=>[...privateVariants(a)].some(v=>group.has(v))));if(known.length)return known;}
+ return privateEntries.filter(e=>[...e.aliases,e.title].some(a=>privateInitialMatch(label,a)));
 }
 function privateLabel(svg){return [svg.getAttribute('aria-label'),[...svg.querySelector('g').querySelectorAll('text')].map(t=>t.textContent).join(' ')].filter(Boolean)}
 function privateFor(svg){const labels=privateLabel(svg),hits=new Map();for(const label of labels)for(const e of privateMatches(label))hits.set(e.id,e);return [...hits.values()]}
