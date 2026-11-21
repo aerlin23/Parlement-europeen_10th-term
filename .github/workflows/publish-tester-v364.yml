@@ -1,0 +1,47 @@
+name: Publish isolated Vademecum tester v364
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/publish-tester-v364.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: publish-tester-v364
+  cancel-in-progress: false
+jobs:
+  preview:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Publish only tester files in a separate folder
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin tester-v364-cavaliers
+          mkdir -p /tmp/vf-tester-v364
+          git archive origin/tester-v364-cavaliers | tar -xf - -C /tmp/vf-tester-v364
+          rm -rf preview-v364
+          mkdir -p preview-v364
+          rsync -a \
+            --exclude='.github/' --exclude='tests/' --exclude='preview-v362/' \
+            --exclude='preview-v364/' --exclude='reports-local/' \
+            /tmp/vf-tester-v364/ preview-v364/
+          git add -A preview-v364
+          git diff --cached --quiet && { echo 'Tester preview already current'; exit 0; }
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Publish v364 tester preview without changing production files'
+          git push origin HEAD:main
+      - name: Check published tester files
+        run: |
+          test -s preview-v364/home.html
+          test -s preview-v364/sw.js
+          test -s preview-v364/cavaliers-core-preview.js
+          grep -q "pe-pwa-v364" preview-v364/sw.js
