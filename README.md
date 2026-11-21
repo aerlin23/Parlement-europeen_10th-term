@@ -40,6 +40,8 @@ Application web progressive indépendante pour la consultation et la reconnaissa
 - Strasbourg : affectations du document daté du 23/11/2026 pour la session à venir ; géométrie du 19/10/2026. Bruxelles : document du 11/11/2026.
 - Trois anciennes nominations de coordinateurs retirées en v355 ; successeurs non confirmés. La couverture des coordinateurs n'est pas exhaustive.
 
+[Mesures Lighthouse et limites](PERFORMANCE.md) · [Confidentialité et sécurité](SECURITY.md)
+
 ## Confidentialité et sécurité
 Le dépôt et le site sont publics. Les onglets cachés ne constituent pas une authentification. Ne pas publier de contacts internes ou de bibliothèques privées ; les importer localement uniquement si autorisé. Les données passées peuvent rester dans l'historique Git. Les dépendances documentaires externes sont épinglées par version ; leur intégrité et disponibilité doivent être contrôlées. L'adresse de contact publiée et les conditions de réutilisation des portraits restent à examiner.
 
