@@ -21,6 +21,6 @@ for(const [fg,bg,desc] of [
  ['#f5f9ff','#354e6b','Committee chip'],
  ['#513c0a','#f5e8bf','Brussels number'],
  ['#153968','#e7effe','Strasbourg number'],
- ['#fff','#2b507b','Night mode toggle']
+ ['#fff','#244364','Night mode toggle']
 ])assert.ok(contrast(fg,bg)>=4.5,desc+' contrast below WCAG AA');
 console.log('PASS: CSS is night-scoped, precached and palette passes WCAG AA text contrast');
