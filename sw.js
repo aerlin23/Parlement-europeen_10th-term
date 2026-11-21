@@ -2,7 +2,7 @@
 const VERSION='pe-pwa-v364';
 const MEDIA='pe-offline-official-media-v1';
 const IS_STAGING=self.registration.scope.includes('/preview-v364/');
-const CACHE_VERSION=IS_STAGING?'pe-preview-v364-red':VERSION;
+const CACHE_VERSION=IS_STAGING?'pe-preview-v364-print':VERSION;
 const CORE=CACHE_VERSION+'-core',PHOTOS=CACHE_VERSION+'-portraits';
 const DOCUMENT_LIBRARIES='vf-document-libraries-v2';
 const LIBRARY_URLS=new Set([
@@ -14,7 +14,7 @@ const LIBRARY_URLS=new Set([
  'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.mjs',
  'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.mjs'
 ]);
-const CODE=['./css/directory-night-contrast.css?v=363','./js/cavalier-vector-pdf.js','./css/shared-cavaliers-base.css','./css/shared-layout.css','./css/shared-dark-controls.css','./css/shared-header.css','./css/shared-theme-toggle.css','./css/shared-night-theme.css','./css/shared-night-update.css','./js/version-display.js','./creation-cavaliers-editor-preview.js?v=364','./creation-cavaliers-preview.html','./cavaliers-core-preview.js?v=364','./cavaliers-assistant-preview.js?v=364','./css/navigation-final.css?v=325','./styles.css?v=360','./directory.js?v=225','./hemicycle.js?v=352','./interface.js?v=324','./quiz.js?v=360','./offline.js?v=336','./smart-search.js?v=225','./features.js?v=234'];
+const CODE=['./css/directory-night-contrast.css?v=364','./js/cavalier-vector-pdf.js','./css/shared-cavaliers-base.css','./css/shared-layout.css','./css/shared-dark-controls.css','./css/shared-header.css','./css/shared-theme-toggle.css','./css/shared-night-theme.css','./css/shared-night-update.css','./js/version-display.js','./creation-cavaliers-editor-preview.js?v=364','./creation-cavaliers-preview.html','./cavaliers-core-preview.js?v=364','./cavaliers-assistant-preview.js?v=364','./css/navigation-final.css?v=325','./styles.css?v=360','./directory.js?v=225','./hemicycle.js?v=352','./interface.js?v=324','./quiz.js?v=360','./offline.js?v=336','./smart-search.js?v=225','./features.js?v=364'];
 const OFFLINE=['./cavaliers/index.json','./outils.html','./outils.html?v=252','./outils.js?v=251','./creation-cavaliers.html','./contacts-personnels.html','./creation-cavaliers.html?v=305','./cavaliers-core.js?v=364','./creation-cavaliers-227.js','./cavaliers-assistant-232.js','./','./index.html','./smart-search.js','./features.js','./secretariat-general.html','./commission-europeenne.html','./institutions-agences.html','./assets/presidences-conseil-ue-2026-2030.svg','./presidences-cinema.html','./assets/presidences-conseil-ue-cinema.avif','./commission-members.json','./members.json','./coordinators.json','./changes.json','./hemicycle-seats.json','./hemicycle-str-coordinates.json','./hemicycle-bru-coordinates.json','./committees.json','./photo-assets.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png','./assets/greens-logo.svg','./assets/sg-juan-carlos-jimenez-marin.webp','./assets/sg-markus-winkler.webp','./assets/sg-alessandro-chiocchetti-user.webp','./assets/sg-markus-winkler-official.webp'];
 const ESSENTIAL=['./index.html','./members.json','./committees.json','./coordinators.json','./changes.json',...CODE];
 // Pages principales préchargées en priorité ; ressources secondaires non bloquantes.
