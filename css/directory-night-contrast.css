@@ -81,3 +81,66 @@ html.vf-night body #vfNightToggle:focus-visible {
   outline: 2px solid #ffcc00;
   outline-offset: 3px;
 }
+
+/* v374 : navigation des groupes — identité politique lisible uniquement en mode nuit.
+   Les teintes principales correspondent à GROUP_THEMES dans interface.js. */
+html.vf-night body main .directories > a.group-nav-item {
+  --party-color:#536d8e;
+  --party-tint:#2a3c53;
+  background:var(--party-tint)!important;
+  border:1px solid var(--party-color)!important;
+  color:#f5f9ff!important;
+  font-weight:700;
+}
+html.vf-night body main .directories > a.group-nav-item[href*="group=PPE"]{--party-color:#4281ba;--party-tint:#1c3b59}
+html.vf-night body main .directories > a.group-nav-item[href*="group=S%26D"]{--party-color:#c27882;--party-tint:#58303b}
+html.vf-night body main .directories > a.group-nav-item[href*="group=PfE"]{--party-color:#6985c2;--party-tint:#192d5f}
+html.vf-night body main .directories > a.group-nav-item[href*="group=ECR"]{--party-color:#559ad0;--party-tint:#1b405e}
+html.vf-night body main .directories > a.group-nav-item[href*="group=Renew"]{--party-color:#668bef;--party-tint:#203f82}
+html.vf-night body main .directories > a.group-nav-item[href*="group=Verts%2FALE"]{--party-color:#83b94d;--party-tint:#294822}
+html.vf-night body main .directories > a.group-nav-item[href*="group=The%20Left"]{--party-color:#d56e72;--party-tint:#572b34}
+html.vf-night body main .directories > a.group-nav-item[href*="group=ESN"]{--party-color:#7396bd;--party-tint:#273b54}
+html.vf-night body main .directories > a.group-nav-item[href*="group=NI"]{--party-color:#9ca8b7;--party-tint:#3d4552}
+html.vf-night body main .directories > a.group-nav-item[aria-current="page"] {
+  background:var(--party-color)!important;
+  border-color:#e4edfa!important;
+  box-shadow:inset 0 0 0 1px #ffffff55,0 0 0 1px #ffffff22;
+  color:#fff!important;
+}
+html.vf-night body main .directories > a.group-nav-item[href*="group=PPE"][aria-current="page"]{background:#0155a0!important}
+html.vf-night body main .directories > a.group-nav-item[href*="group=S%26D"][aria-current="page"]{background:#923e4b!important}
+html.vf-night body main .directories > a.group-nav-item[href*="group=PfE"][aria-current="page"]{background:#263c7d!important}
+html.vf-night body main .directories > a.group-nav-item[href*="group=ECR"][aria-current="page"]{background:#1066a8!important}
+html.vf-night body main .directories > a.group-nav-item[href*="group=Renew"][aria-current="page"]{background:#0039bf!important}
+html.vf-night body main .directories > a.group-nav-item[href*="group=Verts%2FALE"][aria-current="page"]{background:#428207!important}
+html.vf-night body main .directories > a.group-nav-item[href*="group=The%20Left"][aria-current="page"]{background:#a51b21!important}
+html.vf-night body main .directories > a.group-nav-item[href*="group=ESN"][aria-current="page"]{background:#315178!important}
+html.vf-night body main .directories > a.group-nav-item[href*="group=NI"][aria-current="page"]{background:#4b5563!important}
+html.vf-night body main .directories > a.group-nav-item:focus-visible {
+  outline:3px solid #ffcc00!important;
+  outline-offset:3px;
+}
+/* Direction et coordination des commissions : surfaces sombres, titres et liens contrastés. */
+html.vf-night body main .committee-leadership .leader-row {
+  background:#20354d!important;
+  border:1px solid #6284ad!important;
+  color:#e9f2ff!important;
+}
+html.vf-night body main .committee-leadership .leader-row.group-coordinators{
+  background:#352a47!important;
+  border-color:#9274b0!important;
+}
+html.vf-night body main .committee-leadership .leader-heading{color:#d2e5ff!important}
+html.vf-night body main .committee-leadership .group-coordinators .leader-heading{color:#f0d7ff!important}
+html.vf-night body main .committee-leadership .leader-entry{color:#e7effb!important}
+html.vf-night body main .committee-leadership .leader-entry a{
+  color:#bcdfff!important;
+  text-decoration:underline;
+  text-decoration-color:#bcdfff88;
+  text-underline-offset:2px;
+}
+html.vf-night body main .committee-leadership .leader-entry small{color:#d6e2f2!important}
+html.vf-night body main .committee-leadership .leader-note{color:#e4cfea!important}
+html.vf-night body main .committee-leadership .leader-entry a:focus-visible{
+  outline:2px solid #ffcc00!important;outline-offset:3px;
+}
