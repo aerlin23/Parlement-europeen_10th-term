@@ -52,7 +52,7 @@ console.log('PASS: Contacts theme structure and dark palette WCAG AA checks');
 // L'import doit rester visible sans annuaire et migrer sous l'engrenage dès le chargement.
 assert.ok(contacts.includes("$('settingsPanel').prepend($('setup'))"),'Loaded contacts import should be accessible only via settings');
 assert.ok(contacts.includes("grid-template-columns:78px minmax(0,1fr)"),'Aligned BRU/STR columns missing');
-assert.ok(sw.includes("const VERSION='pe-pwa-v377'"),'Contacts UI update should refresh offline cache');
+assert.ok(sw.includes("const VERSION='pe-pwa-v378'"),'Contacts UI update should refresh offline cache');
 
 // Contrôles statiques : l'identité des groupes et les commissions ne changent qu'en mode nuit.
 for(const group of ['PPE','S%26D','PfE','ECR','Renew','Verts%2FALE','The%20Left','ESN','NI'])assert.ok(css.includes('group='+group),'Night group color missing: '+group);
@@ -75,3 +75,9 @@ assert.ok(sw.includes('./styles.css?v=376')&&sw.includes('./features.js?v=376'),
 // Le thème de l'annuaire officiel ne dépend plus des anciennes clés preview.
 assert.ok(!html.includes("if(!personal&&!root.matches('.vf-tools-preview,.vf-tools-mobile-preview'))return"),'Night toggle is still restricted to preview installations');
 assert.ok(html.includes("b.id='vfNightToggle'"),'Official Vademecum theme control absent');
+
+const interfaceSource=fs.readFileSync(path.join(root,'interface.js'),'utf8');
+assert.ok(interfaceSource.includes("link.href='./index.html'"),'Dynamic logo must always return to Vademecum home');
+assert.ok(!interfaceSource.includes("link.target=theme?'':'_blank'"),'External logo target still restored by interface');
+assert.ok(html.includes('class="ep-logo" href="./index.html"'),'Official logo still links to external site');
+assert.ok(sw.includes('./interface.js?v=378'),'Fresh navigation script missing from offline cache');
