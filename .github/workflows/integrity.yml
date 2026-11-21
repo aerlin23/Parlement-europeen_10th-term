@@ -22,6 +22,7 @@ jobs:
         run: python3 -m unittest discover -s tests -p 'test_*.py' -v
       - run: node tests/data-integrity.test.cjs
       - run: node tests/cavaliers-core.test.cjs
+      - run: node tests/cavaliers-ambiguous.test.cjs
       - run: node tests/offline-policy.test.cjs
       - run: node tests/vector-pdf.test.cjs
       - run: node tests/official-roster.test.cjs
