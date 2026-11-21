@@ -1,4 +1,4 @@
-name: Publish isolated Vademecum tester v364 (matching blue Mobile Print in both themes)
+name: Publish Vademecum tester v364 (light-day dark-night Mobile Print)
 on:
   push:
     branches: [main]
