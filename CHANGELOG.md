@@ -1,5 +1,12 @@
 # Historique des versions
 
+## v378 — logo du Parlement : retour à l'accueil
+
+- Suppression de l'ouverture du portail officiel lors du clic sur le logo du Parlement européen.
+- Logo renvoyant vers l'accueil interne du Vademecum, y compris sur les pages annexes.
+- Correction de la logique JavaScript qui rétablissait le lien externe lors du changement de groupe.
+- Cache hors ligne actualisé, sans modifier les liens officiels présents dans les sources et rubriques documentaires.
+
 ## v377 — Thème clair/sombre accessible sur iPhone et tous les appareils
 
 - Suppression de la restriction « version testeur » qui empêchait le bouton soleil/lune d'apparaître dans le Vademecum officiel sur un nouvel appareil, notamment l'iPhone.

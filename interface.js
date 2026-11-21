@@ -184,8 +184,9 @@ function applyGroupTheme(){
  logo.alt=theme?'Logo '+theme.name:'Parlement européen';
  logo.onerror=()=>{if(field('group')!==selected)return;if(theme&&theme.file){logo.hidden=true;mark.hidden=false;mark.textContent=theme.name}else{logo.onerror=null}};
  if(theme&&theme.file){logo.hidden=false;mark.hidden=true}
- link.href=theme?'?group='+encodeURIComponent(selected):'https://www.europarl.europa.eu/portal/fr';
- link.target=theme?'':'_blank';
+ link.href='./index.html';
+ link.removeAttribute('target');
+ link.removeAttribute('rel');
  for(const a of document.querySelectorAll('.directories a')){const url=new URL(a.href),isGroup=!!theme&&url.searchParams.get('group')===selected,isHome=!theme&&a.textContent.trim()==='Tous les députés';if(isGroup||isHome)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')}
  const mi=$('mobileInstitutions'),ms=$('mobileInstitutionsSummary');if(mi&&ms){mi.open=false;ms.classList.remove('selected');mi.querySelectorAll('[aria-current]').forEach(a=>a.removeAttribute('aria-current'))}
  const mobileGroups=$('mobileGroups'),mobileSummary=$('mobileGroupsSummary');if(mobileGroups&&mobileSummary){mobileGroups.classList.toggle('active',!!theme);mobileSummary.textContent=theme?'Groupes · '+selected:'Groupes politiques';mobileGroups.open=false}
