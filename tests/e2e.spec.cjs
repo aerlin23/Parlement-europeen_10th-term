@@ -135,3 +135,28 @@ test('testeur cavaliers : nom ambigu visible en rouge, non imprimable avant conf
  await expect(page.locator('#print')).toBeEnabled();
  await expect(page.locator('#entries .preview svg')).toBeVisible();
 });
+
+test('Mobile Print : mode nuit lisible et mode clair inchangé',async({page})=>{
+ await page.goto('/index.html');
+ await expect.poll(()=>page.locator('#grid > .card').count()).toBeGreaterThan(0);
+ await page.evaluate(()=>{
+  const dialog=document.createElement('dialog');
+  dialog.className='vf-cavalier-dialog vf-mobile-print-dialog';
+  dialog.innerHTML='<div class="vf-cavalier-bar"><strong>Cavalier — Mika AALTOLA</strong><button>×</button></div><div><button class="vf-mobile-print-send">Imprimer via Mobile Print</button><a class="vf-mobile-print-open">Voir le cavalier (PDF)</a><a class="vf-mobile-print-download">Télécharger le cavalier (PDF)</a><button class="vf-mobile-print-copy">Copier l’adresse Mobile Print</button><small class="vf-mobile-print-info">Préparation du PDF</small><small class="vf-mobile-print-notes">Mail professionnel <a>Guide officiel</a></small></div>';
+  document.body.append(dialog);
+  dialog.showModal();
+ });
+ const dlg=page.locator('dialog.vf-mobile-print-dialog');
+ const light=await dlg.evaluate(el=>({background:getComputedStyle(el).backgroundColor,color:getComputedStyle(el).color}));
+ await page.evaluate(()=>document.documentElement.classList.add('vf-night'));
+ await expect(dlg).toHaveCSS('background-color','rgb(36, 53, 74)');
+ await expect(dlg).toHaveCSS('color','rgb(245, 248, 255)');
+ await expect(dlg.locator('.vf-mobile-print-send')).toHaveCSS('color','rgb(255, 255, 255)');
+ await expect(dlg.locator('.vf-mobile-print-open')).toHaveCSS('color','rgb(229, 241, 255)');
+ await expect(dlg.locator('.vf-mobile-print-notes')).toHaveCSS('color','rgb(214, 228, 245)');
+ await page.evaluate(()=>document.documentElement.classList.remove('vf-night'));
+ const restored=await dlg.evaluate(el=>({background:getComputedStyle(el).backgroundColor,color:getComputedStyle(el).color}));
+ expect(restored).toEqual(light);
+ await expect(dlg.locator('.vf-mobile-print-send')).toHaveCSS('background-color','rgb(37, 75, 120)');
+ await dlg.locator('.vf-cavalier-bar button').click({force:true});
+});
