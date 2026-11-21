@@ -113,7 +113,7 @@ test('mode nuit : contraste des fiches de députés et retour au mode clair',asy
 });
 
 const isolationCases = {
-  official: { path: '/', version: '376', contrast: './css/directory-night-contrast.css?v=374' },
+  official: { path: '/', version: '377', contrast: './css/directory-night-contrast.css?v=374' },
   older: { path: '/preview-v362/', version: '362', contrast: null },
   tester: { path: '/preview-v364/', version: '364', contrast: './css/directory-night-contrast.css?v=364' }
 };
@@ -310,4 +310,26 @@ test('cavalier Mobile Print : fenêtre claire en mode jour et nuit préservée',
  // Le mode nuit avait déjà son fond sombre ; le correctif ne doit pas le blanchir.
  expect(dark.background).toBe('rgb(28, 43, 64)');
  await page.locator('dialog.vf-cavalier-dialog').evaluate(d=>d.close());
+});
+
+
+test('thème officiel : iPhone/WebKit et Android peuvent choisir mode jour ou nuit',async({page})=>{
+  // Sans ancienne préférence : le bouton doit être présent même sur un nouvel iPhone.
+  await page.goto('/index.html');
+  await page.evaluate(()=>{localStorage.removeItem('vf-night-theme');localStorage.removeItem('vf-tools-preview-2026');localStorage.removeItem('vf-tools-mobile-preview-2026')});
+  await page.reload();
+  const toggle=page.locator('#vfNightToggle');
+  await expect(toggle).toBeVisible();
+  await expect(page.locator('html')).not.toHaveClass(/vf-night/);
+  await expect(toggle).toHaveAttribute('aria-label','Mode nuit');
+  await toggle.click();
+  await expect(page.locator('html')).toHaveClass(/vf-night/);
+  await expect(toggle).toHaveAttribute('aria-label','Mode clair');
+  await page.reload();
+  await expect(page.locator('html')).toHaveClass(/vf-night/);
+  await toggle.click();
+  await expect(page.locator('html')).not.toHaveClass(/vf-night/);
+  await page.reload();
+  await expect(page.locator('html')).not.toHaveClass(/vf-night/);
+  await expect(toggle).toHaveAttribute('aria-label','Mode nuit');
 });
