@@ -24,6 +24,7 @@ test('hémicycles : ouverture et bascule Bruxelles / Strasbourg',async({page})=>
  await expect(dialog.locator('.seat-map-canvas')).toBeVisible();
  await dialog.locator('.seat-city-button[data-city="bru"]').click();
  await expect(dialog).toHaveAttribute('data-city','bru');
+ await page.screenshot({path:'test-results/hemicycle-bruxelles-'+test.info().project.name+'.png'});
  await dialog.locator('.seat-city-button[data-city="str"]').click();
  await expect(dialog).toHaveAttribute('data-city','str');
  // Captures produites pour une revue humaine des deux plans, pas une validation visuelle automatique.
@@ -49,4 +50,16 @@ test('PWA : accueil et annuaire accessibles hors ligne après installation',asyn
  await expect(page.locator('#search')).toBeVisible();
  await expect.poll(()=>page.locator('#grid > *').count()).toBeGreaterThan(0);
  await context.setOffline(false);
+});
+
+test('assistant cavaliers : génération et téléchargement PDF',async({page})=>{
+ await page.goto('/creation-cavaliers.html');
+ await page.locator('#paste').fill('Jean-Pierre|Dupont');
+ await page.locator('#import').click();
+ await expect(page.locator('.preview svg').first()).toBeVisible();
+ await expect(page.locator('#downloadMobilePdf')).toBeEnabled({timeout:45000});
+ const downloadPromise=page.waitForEvent('download');
+ await page.locator('#downloadMobilePdf').click();
+ const download=await downloadPromise;
+ expect(download.suggestedFilename()).toMatch(/\.pdf$/i);
 });
