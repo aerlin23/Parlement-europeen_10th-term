@@ -43,6 +43,14 @@ Application web progressive indépendante pour la consultation et la reconnaissa
 ## Confidentialité et sécurité
 Le dépôt et le site sont publics. Les onglets cachés ne constituent pas une authentification. Ne pas publier de contacts internes ou de bibliothèques privées ; les importer localement uniquement si autorisé. Les données passées peuvent rester dans l'historique Git. Les dépendances documentaires externes sont épinglées par version ; leur intégrité et disponibilité doivent être contrôlées. L'adresse de contact publiée et les conditions de réutilisation des portraits restent à examiner.
 
+## Préparer le fonctionnement hors connexion
+- Ouvrir l’application en ligne et attendre l’installation du service worker. Les fichiers principaux sont mis en cache à l’installation ; les rubriques secondaires sont téléchargées au mieux.
+- Depuis l’accueil, utiliser **Télécharger les ressources hors ligne** pour enregistrer les portraits, les voix officielles et les bibliothèques documentaires. Le téléchargement complet peut utiliser beaucoup de stockage et de données mobiles.
+- Une première connexion reste nécessaire. Les PDF de cavaliers officiels non consultés et certains médias externes ne sont pas garantis hors ligne.
+- Les favoris, contacts importés et bibliothèques privées sont conservés localement par le navigateur ; ne pas vider les données du site pour mettre l’application à jour.
+- Après une mise à jour, tester l’accueil, une recherche, les deux hémicycles, un quiz et la création d’un cavalier en mode avion.
+- Les contrôles hors ligne automatisés sont structurels ; un test réel sur appareils et navigateurs reste nécessaire.
+
 ## Développement et publication
 1. Travailler sur une branche dédiée ; référence stable : stable-v355.
 2. Vérifier les changements de données contre les sources officielles ; ne pas publier automatiquement des corrections non relues.
