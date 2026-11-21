@@ -7,12 +7,10 @@ for(const target of ['../cavaliers-core.js','../cavaliers-core-preview.js']){
   ['Dupont, Jean','J. DUPONT'],
   ['Jean-Pierre | Dupont-Martin','J.-P. DUPONT-MARTIN'],
   ['Łukasz Żółkiewski','Ł. ŻÓŁKIEWSKI'],
-  ['Ștefan Mușoiu','Ș. MUȘOIU'],
-  ['Dr. Jean | Dupont','D. DUPONT']
+  ['Ștefan Mușoiu','Ș. MUȘOIU']
  ];
  for(const [input,expected] of ok){
   // Explicitly delimited names are authoritative; unseparated two-word inputs remain accepted.
-  if(input==='Dr. Jean | Dupont')continue;
   const res=core.analyze(input);
   assert.equal(res.accepted.length,1,target+' should accept '+input);
   assert.equal(core.display(res.accepted[0]),expected,target+' wrong cavalier for '+input);
@@ -28,7 +26,8 @@ for(const target of ['../cavaliers-core.js','../cavaliers-core-preview.js']){
   assert.equal(res.rejected.length,1);
   assert.match(res.rejected[0].reason,/vérifier/i);
   assert.equal(res.rejected[0].recover,true);
-  assert.ok(res.rejected[0].row[0]&&res.rejected[0].row[1],'No suggested split');
+  assert.equal(res.rejected[0].row[0],expectedFirst,'Wrong suggested first name');
+  assert.equal(res.rejected[0].row[1],expectedLast,'Wrong suggested surname');
  }
  const honorific=core.parse('Dr. Jean Dupont');
  assert.equal(honorific[0],'Jean');
