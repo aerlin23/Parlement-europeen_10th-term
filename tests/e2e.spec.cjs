@@ -169,3 +169,33 @@ for (const order of [['official', 'older', 'tester'], ['tester', 'older', 'offic
     }
   });
 }
+
+test('Civilité et nom : PDF local, homonymes et original parlementaire',async({page})=>{
+ await page.goto('/preview-v364/creation-cavaliers-preview.html');
+ const archive=await page.evaluate(async()=>{
+  const zip=new JSZip();
+  const pdf=await PDFLib.PDFDocument.create();pdf.addPage();const bytes=await pdf.save();
+  const entries=['A. TESTNOM','Louise EXEMPLE','Paul EXEMPLE'].map((title,i)=>{
+   const id=String(i+1),file='pdf/'+id+'.pdf';
+   zip.file(file,bytes);return {id,file,title,aliases:[title]};
+  });
+  zip.file('manifest.json',JSON.stringify({version:1,entries}));
+  return zip.generateAsync({type:'base64'});
+ });
+ await page.getByLabel('Importer le ZIP indexé privé').setInputFiles({name:'test.zip',mimeType:'application/zip',buffer:Buffer.from(archive,'base64')});
+ await expect(page.getByText('3 PDF originaux disponibles sur cet appareil.')).toBeAttached();
+ const generate=async value=>{await page.locator('#paste').fill(value);await page.locator('#import').click()};
+ await generate('M. Testnom');
+ await expect(page.locator('#readyCount')).toHaveText('1');
+ await expect(page.locator('.official-cavalier-link')).toContainText('bibliothèque privée');
+ await generate('Mme Exemple');
+ await expect(page.locator('#readyCount')).toHaveText('0');
+ await page.getByRole('button',{name:'Paul EXEMPLE',exact:true}).click();
+ await expect(page.locator('.preview svg')).toHaveAttribute('data-private-id','3');
+ await generate('M. Metsola');
+ await expect(page.locator('.official-cavalier-link a')).toHaveAttribute('href',/cavaliers\/\d+\.pdf$/);
+ await expect(page.locator('.entry-identity')).toContainText('Roberta METSOLA');
+ await generate('M. Inconnaissable');
+ await expect(page.locator('#readyCount')).toHaveText('0');
+ await expect(page.locator('#print')).toBeDisabled();
+});
