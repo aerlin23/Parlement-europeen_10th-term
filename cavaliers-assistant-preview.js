@@ -53,7 +53,65 @@ const core=window.CavalierCore;
 const panel=$('rejected'), list=$('rejectedList');
 function counts(){const n=list.children.length;$('rejectedCount').textContent=n;$('rejectedLabel').textContent='Lignes écartées ('+n+')';panel.hidden=!n;$('importSummary').hidden=!n&&!Number($('readyCount').textContent)&&!Number($('fixCount').textContent)}
 let preparedRows=null,preparedText='';
-$('import').onclick=()=>{let result;if(preparedRows&&$('paste').value===preparedText){result={accepted:preparedRows.map(r=>r.slice()),rejected:[]}}else{const accepted=[],rejected=[];for(const line of $('paste').value.split(/\r?\n/)){if(!line.trim())continue;const q=core.quantityPrefix(line);if(q.explicit||q.quantity>1){const row=core.institutionalRow(q.value);const n=q.explicit||confirm('Créer '+q.quantity+' exemplaires de '+core.display(row)+' ?')?q.quantity:1;for(let i=0;i<n;i++)accepted.push(row.slice())}else{const x=core.analyze(line);accepted.push(...x.accepted);rejected.push(...x.rejected)}}result={accepted,rejected}}const ambiguous=result.rejected.filter(item=>item.recover&&item.reason==='À vérifier : découpage du nom'&&item.row);const discarded=result.rejected.filter(item=>!ambiguous.includes(item));if(result.accepted.length+ambiguous.length>500){$('status').textContent='Plus de 500 exemplaires : divisez la demande.';return}list.replaceChildren();panel.open=false;for(const item of discarded){const row=document.createElement('div');row.className='rejected-row';const label=document.createElement('div');label.className='rejected-identity';const t=document.createElement('span');t.textContent=item.reason==='En-tête'?'En-tête Excel':item.raw.replace(/\t/g,' · ');const reason=document.createElement('small');reason.textContent=item.reason;label.append(t,reason);row.append(label);if(item.recover){const b=document.createElement('button');b.type='button';b.className='recover-row';b.textContent='+';b.setAttribute('aria-label','Récupérer '+item.raw);b.onclick=()=>{window.vfRecoverCavalier(item.row);row.remove();counts()};row.append(b)}list.append(row)}counts();window.vfSetCavalierRows([...result.accepted,...ambiguous.map(x=>x.row) ],ambiguous.map((_,i)=>result.accepted.length+i));counts()};
+// Resolve a courtesy title followed by a surname before the ordinary first-name split.
+function surnameRequest(line){
+ const match=core.strip(line).match(/^(?:m|mme|monsieur|madame|mr|mrs|ms)\.?\s+(\p{L}[\p{L}\p{M}’'.-]*)$/iu);
+ return match?.[1];
+}
+function surnameChoices(surname,entries){
+ const key=officialKey(surname);
+ const local=privateEntries.filter(entry=>[entry.title,...entry.aliases].some(alias=>{
+  if(institutionalKey(alias)===institutionalKey(surname))return true;
+  const [first,last]=core.splitFull(alias);
+  return first && officialKey(last)===key;
+ }));
+ const people=Object.entries(entries).flatMap(([id,item])=>{
+  const [first,last]=core.splitFull(item.name);
+  return officialKey(last)===key?[{label:item.name,row:[first,last,'','','',{officialId:id}]}]:[];
+ });
+ const choices=local.map(entry=>({label:entry.title,row:['',entry.title,'','','',{privateId:entry.id,revision:privateRevision}]}));
+ // A local original for the same person takes precedence over the standard MEP card.
+ for(const person of people){
+  if(!local.some(entry=>[entry.title,...entry.aliases].some(alias=>
+    officialKey(alias)===officialKey(person.label)||privateInitialMatch(alias,person.label))))choices.push(person);
+ }
+ return choices;
+}
+let pasteGeneration=0;
+$('clear').addEventListener('click',()=>{pasteGeneration++});
+$('import').onclick=async()=>{
+ const generation=++pasteGeneration,text=$('paste').value;
+ let result;
+ if(preparedRows&&text===preparedText){result={accepted:preparedRows.map(r=>r.slice()),rejected:[]}}
+ else{
+  const accepted=[],rejected=[],lines=text.split(/\r?\n/);
+  let entries={};
+  if(lines.some(surnameRequest)){
+   [entries]=await Promise.all([getOfficialIndex(),libraryReady]);
+   if(generation!==pasteGeneration||text!==$('paste').value)return;
+  }
+  for(const line of lines){
+   if(!line.trim())continue;
+   const surname=surnameRequest(line);
+   if(surname){
+    const choices=surnameChoices(surname,entries);
+    if(choices.length===1)accepted.push(choices[0].row);
+    else rejected.push({raw:line,reason:choices.length?'Plusieurs cavaliers possibles':'Nom introuvable dans les bibliothèques',choices,recover:true,row:['',surname,'','','']});
+    continue;
+   }
+   const q=core.quantityPrefix(line);
+   if(q.explicit||q.quantity>1){
+    const row=core.institutionalRow(q.value);
+    const n=q.explicit||confirm('Créer '+q.quantity+' exemplaires de '+core.display(row)+' ?')?q.quantity:1;
+    for(let i=0;i<n;i++)accepted.push(row.slice());
+   }else{const x=core.analyze(line);accepted.push(...x.accepted);rejected.push(...x.rejected)}
+  }
+  result={accepted,rejected};
+ }
+ const ambiguous=result.rejected.filter(item=>item.recover&&item.reason==='À vérifier : découpage du nom'&&item.row);const discarded=result.rejected.filter(item=>!ambiguous.includes(item));if(result.accepted.length+ambiguous.length>500){$('status').textContent='Plus de 500 exemplaires : divisez la demande.';return}list.replaceChildren();panel.open=discarded.some(item=>item.choices?.length);for(const item of discarded){const row=document.createElement('div');row.className='rejected-row';const label=document.createElement('div');label.className='rejected-identity';const t=document.createElement('span');t.textContent=item.reason==='En-tête'?'En-tête Excel':item.raw.replace(/\t/g,' · ');const reason=document.createElement('small');reason.textContent=item.reason;label.append(t,reason);row.append(label);for(const choice of item.choices||[]){
+  const button=element('button',choice.label);button.type='button';
+  button.onclick=()=>{window.vfRecoverCavalier(choice.row);row.remove();counts()};row.append(button);
+ }if(item.recover){const b=document.createElement('button');b.type='button';b.className='recover-row';b.textContent='+';b.setAttribute('aria-label','Récupérer '+item.raw);b.onclick=()=>{window.vfRecoverCavalier(item.row);row.remove();counts()};row.append(b)}list.append(row)}counts();window.vfSetCavalierRows([...result.accepted,...ambiguous.map(x=>x.row) ],ambiguous.map((_,i)=>result.accepted.length+i));counts()};
 $('clear').addEventListener('click',()=>{list.replaceChildren();counts()});
 
 // All workbook processing happens in the browser. No workbook is uploaded.
@@ -128,7 +186,7 @@ async function showOfficialCavaliers(){
  if(result.id||result.private){s.setAttribute('hidden','');s.style.setProperty('display','none','important');const placeholder=element('p','Chargement du PDF original…');placeholder.className='thumbnail-status';tile.prepend(placeholder);
  originalThumbnail(result).then(src=>{if(token!==officialToken||!tile.isConnected)return;const img=element('img');img.className='original-thumbnail';img.alt='Aperçu du PDF original : '+label;img.src=src;placeholder.replaceWith(img);if(viewer.open){const i=viewPages.indexOf(s);if(i>=0)refreshViewerPage(i)}}).catch(()=>{if(token!==officialToken||!tile.isConnected)return;placeholder.textContent='Aperçu indisponible · consultez le PDF original';if(viewer.open){const i=viewPages.indexOf(s);if(i>=0)refreshViewerPage(i)}});}
  tile.querySelector('.official-cavalier-link')?.remove();
- const note=element('div',result.id?'Cavalier existant · PDF original du député':result.private?'Cavalier existant · bibliothèque privée':result.privateCandidates?'Plusieurs PDF privés · à confirmer':result.candidates?'Député possible · à confirmer':'Cavalier généré');note.className='official-cavalier-link';note.style.cssText='font-size:12px;font-weight:600;color:'+((result.id||result.private)?'#24623a':(result.candidates||result.privateCandidates)?'#925900':'#526575');tile.append(note);
+ const note=element('div',result.missingOriginal?'Bibliothèque modifiée · générez à nouveau la liste':result.id?'Cavalier existant · PDF original du député':result.private?'Cavalier existant · bibliothèque privée':result.privateCandidates?'Plusieurs PDF privés · à confirmer':result.candidates?'Député possible · à confirmer':'Cavalier généré');note.className='official-cavalier-link';note.style.cssText='font-size:12px;font-weight:600;color:'+((result.id||result.private)?'#24623a':(result.candidates||result.privateCandidates)?'#925900':'#526575');tile.append(note);
  if(result.candidates){for(const [id,m] of result.candidates){const b=element('button','Confirmer : '+m.name);b.type='button';b.style.cssText='display:block;margin:4px 0;font-size:12px';b.onclick=()=>{decisions.set(officialKey(label),id);lastSignature='';showOfficialCavaliers();schedule()};note.append(b)}const no=element('button','Non, créer un cavalier');no.type='button';no.onclick=()=>{decisions.set(officialKey(label),null);lastSignature='';showOfficialCavaliers();schedule()};note.append(no)}
  if(result.privateCandidates){for(const e of result.privateCandidates){const b=element('button',e.title);b.type='button';b.onclick=()=>{decisions.set(result.pk,e.id);lastSignature='';showOfficialCavaliers();schedule()};note.append(b)}const no=element('button','Créer un cavalier');no.type='button';no.onclick=()=>{decisions.set(result.pk,null);lastSignature='';showOfficialCavaliers();schedule()};note.append(no)}
  if(result.private){const b=element('button','Voir le PDF original');b.type='button';b.onclick=async()=>{const url=URL.createObjectURL(new Blob([await privateZip.file(result.private.file).async('uint8array')],{type:'application/pdf'}));window.open(url,'_blank');setTimeout(()=>URL.revokeObjectURL(url),120000)};note.append(b)}
@@ -140,6 +198,7 @@ async function assembleOriginals(svgs,filename,gen){
  const names=buildOfficialNames(entries),lib=window.PDFLib;if(!lib)throw Error('Moteur PDF indisponible');
  const output=await lib.PDFDocument.create(),cache=new Map();let originals=0;
  for(const s of svgs){if(gen!==generation)return null;const label=s.getAttribute('aria-label'),resolution=resolveSource(entries,names,s),id=resolution.id;
+ if(resolution.missingOriginal)throw Error('Bibliothèque modifiée : générez à nouveau la liste.');
  if(resolution.privateCandidates)throw Error('Confirmez le PDF de la bibliothèque : '+label);
  if(resolution.candidates)throw Error('Confirmez le député possible : '+label+' dans les aperçus.');
  if(resolution.private){const e=resolution.private,k='local:'+e.id;if(!cache.has(k))cache.set(k,await lib.PDFDocument.load(await privateZip.file(e.file).async('uint8array')));const src=cache.get(k);for(const page of await output.copyPages(src,src.getPageIndices()))output.addPage(page);originals++}
@@ -202,8 +261,15 @@ async function activateLibrary(blob){if(!window.JSZip)throw Error('Lecteur ZIP i
 const libraryBox=element('details');libraryBox.style.cssText='border:1px solid #cbdce5;border-radius:8px;padding:10px;margin:8px 0';libraryBox.append(element('summary','Bibliothèque privée de cavaliers'));const libraryStatus=element('p','Aucune bibliothèque locale chargée');const libraryInput=element('input');libraryInput.type='file';libraryInput.accept='.zip';libraryInput.setAttribute('aria-label','Importer le ZIP indexé privé');const libraryDelete=element('button','Retirer la bibliothèque locale');libraryDelete.type='button';libraryBox.append(libraryStatus,libraryInput,libraryDelete);$('dropZone').before(libraryBox);
 libraryInput.onchange=async()=>{const file=libraryInput.files[0];if(!file)return;try{if(file.size>100*1024*1024)throw Error('Archive trop volumineuse');await activateLibrary(file);await libraryStore(file);libraryStatus.textContent=privateEntries.length+' PDF originaux disponibles sur cet appareil.'}catch(e){libraryStatus.textContent=e.message}finally{libraryInput.value=''}};
 libraryDelete.onclick=async()=>{if(!confirm('Retirer la bibliothèque privée de cet appareil ?'))return;try{await libraryStore(null);privateEntries=[];privateZip=null;privateRevision++;decisions.clear();lastSignature='';libraryStatus.textContent='Aucune bibliothèque locale chargée';showOfficialCavaliers();schedule()}catch(e){libraryStatus.textContent=e.message}};
-libraryStore().then(async blob=>{if(blob){await activateLibrary(blob);libraryStatus.textContent=privateEntries.length+' PDF originaux disponibles sur cet appareil.'}}).catch(e=>{libraryStatus.textContent='Bibliothèque locale indisponible : '+e.message});
-function resolveSource(entries,names,svg){const label=svg.getAttribute('aria-label'),m=resolveMEP(entries,names,label);if(m.id||m.candidates)return m;const pk='private:'+officialKey([...privateLabel(svg),svg.dataset.firstName,svg.dataset.lastName].join('|'));if(decisions.has(pk)){const id=decisions.get(pk);return {private:id?privateEntries.find(e=>e.id===id):null}}const hits=privateFor(svg);if(hits.length===1)return {private:hits[0]};if(hits.length>1)return {privateCandidates:hits,pk};const fallback=privateSurnameCandidates(svg);return fallback.length?{privateCandidates:fallback,pk}:m}
+const libraryReady=libraryStore().then(async blob=>{if(blob){await activateLibrary(blob);libraryStatus.textContent=privateEntries.length+' PDF originaux disponibles sur cet appareil.'}}).catch(e=>{libraryStatus.textContent='Bibliothèque locale indisponible : '+e.message});
+function resolveSource(entries,names,svg){
+ if(svg.dataset.privateId){
+  const entry=privateEntries.find(e=>e.id===svg.dataset.privateId);
+  if(entry&&String(privateRevision)===svg.dataset.libraryRevision)return {private:entry};
+  return {missingOriginal:true};
+ }
+ if(svg.dataset.officialId)return entries[svg.dataset.officialId]?{id:svg.dataset.officialId}:{missingOriginal:true};
+ const label=svg.getAttribute('aria-label'),m=resolveMEP(entries,names,label);if(m.id||m.candidates)return m;const pk='private:'+officialKey([...privateLabel(svg),svg.dataset.firstName,svg.dataset.lastName].join('|'));if(decisions.has(pk)){const id=decisions.get(pk);return {private:id?privateEntries.find(e=>e.id===id):null}}const hits=privateFor(svg);if(hits.length===1)return {private:hits[0]};if(hits.length>1)return {privateCandidates:hits,pk};const fallback=privateSurnameCandidates(svg);return fallback.length?{privateCandidates:fallback,pk}:m}
 
 document.addEventListener('vf-cavaliers-ready',()=>{for(const a of document.querySelectorAll('.official-cavalier-link'))a.remove();showOfficialCavaliers()});
 function inspectWorkbook(sheets,members){
