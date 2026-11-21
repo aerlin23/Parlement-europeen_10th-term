@@ -765,8 +765,42 @@ body.reading-large header.ep-header #identityTitle{font-size:clamp(26px,6vw,32px
 .vf-cavalier-dialog iframe{width:100%;height:calc(100% - 56px);border:0}
 .vf-tools-tab{display:none}@media(min-width:901px) and (hover:hover) and (pointer:fine){.vf-tools-preview .vf-tools-tab{display:inline-flex;align-items:center;justify-content:center;padding:9px 18px;border:1px solid #cbdce5;border-radius:7px;color:#315d78;background:#f7fafc;font-weight:600;text-decoration:none}} 
 .seat-plan-search{display:flex;align-items:center;gap:4px}.seat-plan-search>input{flex:1;min-width:0;width:0}.seat-plan-search[hidden]{display:none}.seat-country-filter{flex:0 0 auto;width:62px;max-width:42%;min-width:0;font-size:11px;padding:3px 2px;border:1px solid #c5d5df;border-radius:5px;background:#f1f6fa;color:#244457}.seat-country-filter:focus{width:auto;max-width:55%}
-/* Sur mobile, garder recherche et pays sur une ligne, avec un pays lisible. */
-@media(max-width:650px){.seat-map-dialog .seat-plan-search>input{flex:7 1 0;min-width:0}.seat-map-dialog .seat-country-filter,.seat-map-dialog .seat-country-filter:focus{flex:3 1 0;width:auto;min-width:105px;max-width:none;box-sizing:border-box;font-size:13px;padding:8px 6px}}
+/* Hémicycle mobile : alignement strict du champ de recherche et du filtre Pays. */
+@media(max-width:650px){
+ .seat-map-dialog:not(.seat-map-expanded) .seat-plan-search{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(124px,32%);
+  align-items:stretch;
+  column-gap:8px;
+  width:100%;
+  box-sizing:border-box;
+ }
+ .seat-map-dialog:not(.seat-map-expanded) .seat-plan-search>input,
+ .seat-map-dialog:not(.seat-map-expanded) .seat-plan-search>.seat-country-filter,
+ .seat-map-dialog:not(.seat-map-expanded) .seat-plan-search>.seat-country-filter:focus{
+  display:block;
+  width:100%;
+  min-width:0;
+  max-width:none;
+  height:48px;
+  min-height:48px;
+  margin:0;
+  box-sizing:border-box;
+  border-radius:9px;
+  font-size:14px;
+  line-height:normal;
+  align-self:stretch;
+ }
+ .seat-map-dialog:not(.seat-map-expanded) .seat-plan-search>input{
+  flex:none;
+  padding:0 12px;
+ }
+ .seat-map-dialog:not(.seat-map-expanded) .seat-plan-search>.seat-country-filter,
+ .seat-map-dialog:not(.seat-map-expanded) .seat-plan-search>.seat-country-filter:focus{
+  flex:none;
+  padding:0 12px;
+ }
+}
 
 /* Quatre filtres avancés de largeur identique sur mobile. */
 @media(max-width:650px){#advanced>.extra{grid-template-columns:repeat(2,minmax(0,1fr))}#advanced>.extra>label:nth-child(n){grid-column:auto;min-width:0}#advanced>.extra>label select{width:100%;min-width:0;font-size:13px}}
