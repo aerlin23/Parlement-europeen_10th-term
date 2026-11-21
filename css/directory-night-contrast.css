@@ -83,9 +83,36 @@ html.vf-night body #vfNightToggle:focus-visible {
 }
 
 
-/* Fenêtre Mobile Print : même thème bleu nuit lisible en mode jour et nuit.
+
+/* Mode jour : panneau Mobile Print clair, ciblé sur ce seul dialogue. */
+html:not(.vf-night) body dialog#vfMobilePrintDialog.vf-cavalier-dialog.vf-mobile-print-dialog {
+ box-sizing:border-box; height:auto!important; max-height:85dvh!important;
+ background:#fff!important; color:#223746!important; border:1px solid #ccd9e7!important;
+}
+html:not(.vf-night) body #vfMobilePrintDialog .vf-cavalier-bar strong {color:#223746!important}
+html:not(.vf-night) body #vfMobilePrintDialog .vf-cavalier-bar button {
+ background:#f4f7fb!important;color:#223746!important;border:1px solid #c0cfdd!important;
+}
+html:not(.vf-night) body #vfMobilePrintDialog .vf-mobile-print-send {
+ background:#254b78!important;color:#fff!important;border:1px solid #254b78!important;
+}
+html:not(.vf-night) body #vfMobilePrintDialog :is(.vf-mobile-print-open,.vf-mobile-print-download) {
+ background:#f4f8fc!important;color:#254b78!important;border:1px solid #b6c8d8!important;
+ border-radius:7px;text-decoration:underline;
+}
+html:not(.vf-night) body #vfMobilePrintDialog .vf-mobile-print-copy {
+ background:#eaf0f6!important;color:#223746!important;border:1px solid #b6c8d8!important;font-weight:700;
+}
+html:not(.vf-night) body #vfMobilePrintDialog :is(.vf-mobile-print-info,.vf-mobile-print-notes) {
+ color:#4c6172!important;
+}
+html:not(.vf-night) body #vfMobilePrintDialog .vf-mobile-print-notes a {
+ background:transparent!important;color:#254b78!important;text-decoration:underline;
+}
+
+/* Fenêtre Mobile Print : style bleu nuit uniquement en mode nuit.
    Ciblé sur cette fenêtre uniquement, sans modifier les autres boîtes de dialogue. */
-html body dialog#vfMobilePrintDialog.vf-cavalier-dialog.vf-mobile-print-dialog {
+html.vf-night body dialog#vfMobilePrintDialog.vf-cavalier-dialog.vf-mobile-print-dialog {
   box-sizing: border-box;
   height: auto !important;
   max-height: 85dvh !important;
@@ -93,44 +120,44 @@ html body dialog#vfMobilePrintDialog.vf-cavalier-dialog.vf-mobile-print-dialog {
   color: #f5f8ff !important;
   border: 1px solid #728aa6 !important;
 }
-html body #vfMobilePrintDialog .vf-cavalier-bar strong {
+html.vf-night body #vfMobilePrintDialog .vf-cavalier-bar strong {
   color: #f5f8ff !important;
 }
-html body #vfMobilePrintDialog .vf-cavalier-bar button {
+html.vf-night body #vfMobilePrintDialog .vf-cavalier-bar button {
   background: #f5f8ff !important;
   color: #253c53 !important;
   border: 1px solid #a3b5c8 !important;
 }
-html body #vfMobilePrintDialog .vf-mobile-print-send {
+html.vf-night body #vfMobilePrintDialog .vf-mobile-print-send {
   background: #356fae !important;
   color: #fff !important;
   border: 1px solid #8fbee8 !important;
 }
-html body #vfMobilePrintDialog .vf-mobile-print-send:disabled {
+html.vf-night body #vfMobilePrintDialog .vf-mobile-print-send:disabled {
   opacity: .62;
 }
-html body #vfMobilePrintDialog :is(.vf-mobile-print-open,.vf-mobile-print-download) {
+html.vf-night body #vfMobilePrintDialog :is(.vf-mobile-print-open,.vf-mobile-print-download) {
   color: #e5f1ff !important;
   background: #304861 !important;
   border: 1px solid #7294b8 !important;
   border-radius: 7px;
   text-decoration: underline;
 }
-html body #vfMobilePrintDialog .vf-mobile-print-copy {
+html.vf-night body #vfMobilePrintDialog .vf-mobile-print-copy {
   background: #f4f8fe !important;
   color: #193952 !important;
   border: 1px solid #b2c9e0 !important;
   font-weight: 700;
 }
-html body #vfMobilePrintDialog :is(.vf-mobile-print-info,.vf-mobile-print-notes) {
+html.vf-night body #vfMobilePrintDialog :is(.vf-mobile-print-info,.vf-mobile-print-notes) {
   color: #d6e4f5 !important;
 }
-html body #vfMobilePrintDialog .vf-mobile-print-notes a {
+html.vf-night body #vfMobilePrintDialog .vf-mobile-print-notes a {
   color: #d8c2ff !important;
   background: transparent !important;
   text-decoration: underline;
 }
-html body #vfMobilePrintDialog :is(a,button):focus-visible {
+html.vf-night body #vfMobilePrintDialog :is(a,button):focus-visible {
   outline: 2px solid #ffcc00 !important;
   outline-offset: 2px;
 }
