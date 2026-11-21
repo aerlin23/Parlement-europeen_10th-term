@@ -1,0 +1,36 @@
+name: Lighthouse performance and accessibility
+on:
+  push:
+    branches: [consolidation-v2]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save lighthouse@12.8.2
+      - name: Start local website
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/vademecum-http.log 2>&1 &
+          sleep 3
+          curl -fsS http://127.0.0.1:4173/index.html > /dev/null
+      - name: Mobile
+        run: |
+          mkdir -p lighthouse-results
+          npx lighthouse http://127.0.0.1:4173/index.html --chrome-flags="--headless --no-sandbox" --output html --output json --output-path lighthouse-results/mobile
+      - name: Desktop
+        run: |
+          npx lighthouse http://127.0.0.1:4173/index.html --preset desktop --chrome-flags="--headless --no-sandbox" --output html --output json --output-path lighthouse-results/desktop
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-results
+          path: lighthouse-results/
+          if-no-files-found: ignore
