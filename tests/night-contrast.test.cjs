@@ -52,7 +52,7 @@ console.log('PASS: Contacts theme structure and dark palette WCAG AA checks');
 // L'import doit rester visible sans annuaire et migrer sous l'engrenage dès le chargement.
 assert.ok(contacts.includes("$('settingsPanel').prepend($('setup'))"),'Loaded contacts import should be accessible only via settings');
 assert.ok(contacts.includes("grid-template-columns:78px minmax(0,1fr)"),'Aligned BRU/STR columns missing');
-assert.ok(sw.includes("const VERSION='pe-pwa-v375'"),'Contacts UI update should refresh offline cache');
+assert.ok(sw.includes("const VERSION='pe-pwa-v376'"),'Contacts UI update should refresh offline cache');
 
 // Contrôles statiques : l'identité des groupes et les commissions ne changent qu'en mode nuit.
 for(const group of ['PPE','S%26D','PfE','ECR','Renew','Verts%2FALE','The%20Left','ESN','NI'])assert.ok(css.includes('group='+group),'Night group color missing: '+group);
@@ -62,3 +62,12 @@ assert.ok(css.includes('html.vf-night body main .directories > a.group-nav-item'
 assert.ok(contacts.includes('class="contact-settings-cog"'),'Contacts slim cog icon missing');
 assert.ok(contacts.includes('aria-label="Paramètres de l’annuaire"'),'Contacts settings accessible name missing');
 assert.ok(contacts.includes("b.id='vfNightToggle'"),'Contacts floating theme toggle removed');
+
+// v376 : le correctif clair ne doit pas toucher au rendu du mode nuit.
+const stylesV376=fs.readFileSync('styles.css','utf8');
+const featuresV376=fs.readFileSync('features.js','utf8');
+assert.ok(stylesV376.includes('html:not(.vf-night) body dialog.vf-cavalier-dialog'),'Light-only Mobile Print modal override missing');
+assert.ok(stylesV376.includes('color-scheme:light!important'),'Native dark dialog not overridden in light mode');
+assert.ok(stylesV376.includes('button.vf-mobile-print-send'),'Primary print button override missing');
+assert.ok(featuresV376.includes("send.className='vf-mobile-print-send'"),'Print button selector missing');
+assert.ok(sw.includes('./styles.css?v=376')&&sw.includes('./features.js?v=376'),'Updated styles and scripts not cached');
