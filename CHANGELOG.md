@@ -1,5 +1,12 @@
 # Historique des versions
 
+## v377 — Thème clair/sombre accessible sur iPhone et tous les appareils
+
+- Suppression de la restriction « version testeur » qui empêchait le bouton soleil/lune d'apparaître dans le Vademecum officiel sur un nouvel appareil, notamment l'iPhone.
+- Bouton flottant accessible en bas à droite sur toutes les installations, sans modifier le mode nuit existant ni les réglages des contacts.
+- Mode clair par défaut sans préférence personnelle, conservation des choix déjà enregistrés (`vf-night-theme`).
+- Tests navigateur iPhone/WebKit du basculement clair/nuit et de sa persistance après rechargement.
+
 ## v376 — fenêtre Mobile Print en mode jour
 
 - Fenêtre d’impression des cavaliers des fiches députés : fond blanc et textes contrastés en mode jour, indépendamment du thème sombre du téléphone (`color-scheme`).
