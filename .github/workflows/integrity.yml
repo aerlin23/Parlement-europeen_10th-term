@@ -21,6 +21,7 @@ jobs:
       - run: node tests/data-integrity.test.cjs
       - run: node tests/cavaliers-core.test.cjs
       - run: node tests/private-cavalier-matching.test.cjs
+      - run: node tests/mep-cavalier-transposition.test.cjs
       - run: node tests/offline-policy.test.cjs
       - run: node tests/vector-pdf.test.cjs
       - run: node tests/official-roster.test.cjs
