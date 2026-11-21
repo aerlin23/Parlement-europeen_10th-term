@@ -1,5 +1,11 @@
 # Historique des versions
 
+## v373 — Contacts utiles : alignement et paramètres
+
+- Lignes des bureaux BRU et STR alignées sur deux colonnes stables dans les fiches développées sur mobile.
+- Import / mise à jour de l'annuaire déplacé à l'intérieur des paramètres (engrenage) dès qu'un annuaire est chargé ; premier import visible en l'absence de données.
+- Aucune modification des données de contacts ni de la recherche intelligente.
+
 ## v372 — photos des autres institutions et proposition Contacts utiles
 - Cache hors ligne des portraits externes d’autres institutions et ajout au téléchargement des médias (b5f1f84ab).
 - Sur cette branche non fusionnée : harmonisation du thème et de l’import de Contacts utiles.
