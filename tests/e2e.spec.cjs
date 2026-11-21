@@ -307,6 +307,7 @@ test('cavalier Mobile Print : fenêtre claire en mode jour et nuit préservée',
  expect(light.link).toBe('rgb(37, 75, 120)');
  await page.evaluate(()=>document.documentElement.classList.add('vf-night'));
  const dark=await styles();
- expect(dark.background).toBe('rgb(255, 255, 255)');
+ // Le mode nuit avait déjà son fond sombre ; le correctif ne doit pas le blanchir.
+ expect(dark.background).toBe('rgb(28, 43, 64)');
  await page.locator('dialog.vf-cavalier-dialog').evaluate(d=>d.close());
 });
