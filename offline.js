@@ -23,6 +23,35 @@ async function downloadOfficialOfflineMedia(){
    }
   }catch(error){console.warn('Médias de la Commission indisponibles pour téléchargement',error)}
 
+ // Les dépendances documentaires sont préparées sur demande, pas à chaque visite.
+ // Le cache partagé persiste lors des changements de version de la PWA.
+ const libraries=[
+  'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js',
+  'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js',
+  'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js',
+  'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js',
+  'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js',
+  'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.mjs',
+  'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.mjs'
+ ];
+ const libraryFailures=[];
+ try{
+  const libraryCache=await caches.open('vf-document-libraries-v2');
+  let prepared=0;
+  for(const url of libraries){
+   try{
+    const request=new Request(url,{mode:'cors',credentials:'omit'});
+    if(!await libraryCache.match(request)){
+     const response=await fetch(request);
+     if(!response.ok)throw Error('HTTP '+response.status);
+     await libraryCache.put(request,response.clone());
+    }
+   }catch(error){libraryFailures.push(new URL(url).pathname.split('/').pop()+' : '+(error?.message||'réseau'))}
+   prepared++;
+   status.textContent='Préparation des bibliothèques : '+prepared+'/'+libraries.length+' · erreurs : '+libraryFailures.length;
+  }
+ }catch(error){libraryFailures.push('Stockage des bibliothèques indisponible')}
+
  const failedFiles=[];
  const memberById=new Map(members.map(m=>[String(m.id),m.name]));
  let done=0,failed=0,already=0,next=0;
@@ -52,8 +81,8 @@ async function downloadOfficialOfflineMedia(){
    }
   };
   await Promise.all(Array.from({length:4},()=>worker()));
-  status.textContent=failed
-   ? 'Terminé : '+(done-failed)+'/'+done+' fichiers conservés ('+already+' déjà présents). '+failed+' échec(s) : '+failedFiles.slice(0,5).join(' ; ')+(failedFiles.length>5?' ; …':'')+'. Vérifie le fonctionnement en mode avion.'
+  status.textContent=failed||libraryFailures.length
+   ? 'Terminé : '+(done-failed)+'/'+done+' fichiers conservés ('+already+' déjà présents). '+failed+' échec(s) médias : '+failedFiles.slice(0,5).join(' ; ')+(failedFiles.length>5?' ; …':'')+' ; bibliothèques : '+(libraryFailures.length?libraryFailures.join(' ; '):'OK')+'. Vérifie le fonctionnement en mode avion.'
    : 'Terminé : '+done+' ressources conservées ('+already+' déjà présents). Vérifie le fonctionnement en mode avion.';
  }catch(error){status.textContent='Échec du stockage : espace insuffisant, navigateur incompatible ou accès réseau bloqué.'}
  finally{button.disabled=false;button.textContent='Compléter / actualiser les fichiers hors ligne'}
@@ -100,7 +129,8 @@ if('serviceWorker' in navigator){
   };
   try{
    navigator.serviceWorker.addEventListener('controllerchange',()=>{
-    reloadOnce()
+    // Ne pas interrompre un quiz ou une saisie sur une activation extérieure.
+    if(applying)reloadOnce();else displayUpdate();
    });
    registration=await navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'});
    registration.addEventListener('updatefound',()=>{watch(registration.installing);displayUpdate()});
