@@ -1,12 +1,32 @@
 /* Vademecum PE : ressources critiques hors-ligne et mises à jour consenties. */
-const VERSION='pe-pwa-v355';
+const VERSION='pe-pwa-v362';
 const MEDIA='pe-offline-official-media-v1';
-const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
-const CODE=['./creation-cavaliers-editor-preview.js?v=345','./creation-cavaliers-preview.html','./cavaliers-core-preview.js?v=307','./cavaliers-assistant-preview.js?v=344','./css/navigation-final.css?v=325','./styles.css?v=257','./directory.js?v=225','./hemicycle.js?v=352','./interface.js?v=324','./quiz.js?v=324','./offline.js?v=336','./smart-search.js?v=225','./features.js?v=234'];
-const OFFLINE=['./outils.html','./outils.html?v=252','./outils.js?v=251','./creation-cavaliers.html','./contacts-personnels.html','./creation-cavaliers.html?v=305','./cavaliers-core.js?v=2','./creation-cavaliers-227.js','./cavaliers-assistant-232.js','./','./index.html','./smart-search.js','./features.js','./secretariat-general.html','./commission-europeenne.html','./institutions-agences.html','./assets/presidences-conseil-ue-2026-2030.svg','./presidences-cinema.html','./assets/presidences-conseil-ue-cinema.avif','./commission-members.json','./members.json','./coordinators.json','./changes.json','./hemicycle-seats.json','./hemicycle-str-coordinates.json','./hemicycle-bru-coordinates.json','./committees.json','./photo-assets.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png','./assets/greens-logo.svg','./assets/sg-juan-carlos-jimenez-marin.webp','./assets/sg-markus-winkler.webp','./assets/sg-alessandro-chiocchetti-user.webp','./assets/sg-markus-winkler-official.webp'];
+const IS_STAGING=self.registration.scope.includes('/preview-v362/');
+const CACHE_VERSION=IS_STAGING?'pe-preview-v362':VERSION;
+const CORE=CACHE_VERSION+'-core',PHOTOS=CACHE_VERSION+'-portraits';
+const DOCUMENT_LIBRARIES='vf-document-libraries-v2';
+const LIBRARY_URLS=new Set([
+ 'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js',
+ 'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js',
+ 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js',
+ 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js',
+ 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js',
+ 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.mjs',
+ 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.mjs'
+]);
+const CODE=['./js/cavalier-vector-pdf.js','./css/shared-cavaliers-base.css','./css/shared-layout.css','./css/shared-dark-controls.css','./css/shared-header.css','./css/shared-theme-toggle.css','./css/shared-night-theme.css','./css/shared-night-update.css','./js/version-display.js','./creation-cavaliers-editor-preview.js?v=345','./creation-cavaliers-preview.html','./cavaliers-core-preview.js?v=361','./cavaliers-assistant-preview.js?v=344','./css/navigation-final.css?v=325','./styles.css?v=360','./directory.js?v=225','./hemicycle.js?v=352','./interface.js?v=324','./quiz.js?v=360','./offline.js?v=336','./smart-search.js?v=225','./features.js?v=234'];
+const OFFLINE=['./cavaliers/index.json','./outils.html','./outils.html?v=252','./outils.js?v=251','./creation-cavaliers.html','./contacts-personnels.html','./creation-cavaliers.html?v=305','./cavaliers-core.js?v=361','./creation-cavaliers-227.js','./cavaliers-assistant-232.js','./','./index.html','./smart-search.js','./features.js','./secretariat-general.html','./commission-europeenne.html','./institutions-agences.html','./assets/presidences-conseil-ue-2026-2030.svg','./presidences-cinema.html','./assets/presidences-conseil-ue-cinema.avif','./commission-members.json','./members.json','./coordinators.json','./changes.json','./hemicycle-seats.json','./hemicycle-str-coordinates.json','./hemicycle-bru-coordinates.json','./committees.json','./photo-assets.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png','./assets/greens-logo.svg','./assets/sg-juan-carlos-jimenez-marin.webp','./assets/sg-markus-winkler.webp','./assets/sg-alessandro-chiocchetti-user.webp','./assets/sg-markus-winkler-official.webp'];
+const ESSENTIAL=['./index.html','./members.json','./committees.json','./coordinators.json','./changes.json',...CODE];
+// Pages principales préchargées en priorité ; ressources secondaires non bloquantes.
+const SECONDARY=['./creation-cavaliers.html','./contacts-personnels.html','./commission-europeenne.html','./institutions-agences.html','./outils.html','./secretariat-general.html','./hemicycle-seats.json','./hemicycle-str-coordinates.json','./hemicycle-bru-coordinates.json','./commission-members.json','./photo-assets.json','./cavaliers-core.js?v=361','./creation-cavaliers-227.js','./cavaliers-assistant-232.js','./outils.js?v=251'];
 self.addEventListener('install',event=>{
- event.waitUntil((async()=>{const cache=await caches.open(CORE);await cache.addAll(['./index.html','./members.json','./committees.json','./coordinators.json','./changes.json',...CODE].map(url=>new Request(url,{cache:'reload'})));await Promise.allSettled(OFFLINE.filter(url=>!['./index.html','./members.json','./committees.json','./coordinators.json'].includes(url)).map(url=>cache.add(url)));})());
+ event.waitUntil((async()=>{
+  const cache=await caches.open(CORE);
+  await cache.addAll([...new Set(ESSENTIAL)].map(url=>new Request(url,{cache:'reload'})));
+  await Promise.allSettled([...new Set([...SECONDARY,...OFFLINE])].filter(url=>!ESSENTIAL.includes(url)).map(url=>cache.add(new Request(url,{cache:'reload'}))));
+ })());
 });
+
 self.addEventListener('message',event=>{
  if(event.data?.type==='SKIP_WAITING')event.waitUntil(self.skipWaiting());
  if(event.data?.type==='GET_VERSION'&&event.ports[0])event.ports[0].postMessage({version:VERSION});
@@ -14,7 +34,7 @@ self.addEventListener('message',event=>{
 self.addEventListener('activate',event=>{
  event.waitUntil((async()=>{
   const keys=await caches.keys();
-  await Promise.all(keys.filter(k=>k.startsWith('pe-pwa-')&&k!==CORE&&k!==PHOTOS).map(k=>caches.delete(k)));
+  await Promise.all(keys.filter(k=>k.startsWith(IS_STAGING?'pe-preview-':'pe-pwa-')&&k!==CORE&&k!==PHOTOS).map(k=>caches.delete(k)));
   await self.clients.claim();
  })());
 });
@@ -22,7 +42,8 @@ async function fromNetworkOrCache(request,isDocument){
  const cache=await caches.open(CORE);
  try{
   const response=await fetch(new Request(request,{cache:'no-store'}));
-  if(response.ok)await cache.put(request,response.clone());
+  if(response.ok){await cache.put(request,response.clone());return response;}
+  if(response.status>=500){const fallback=await cache.match(request);if(fallback)return fallback;}
   return response;
  }catch{
   const exact=await cache.match(request);if(exact)return exact;
@@ -67,16 +88,19 @@ self.addEventListener('fetch',event=>{
   })());
   return;
  }
- // Cache only the pinned document-processing dependencies after a successful load.
- const libraryURLs=new Set([
-  'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js',
-  'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js',
-  'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js',
-  'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js',
-  'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js'
- ]);
- if(libraryURLs.has(url.href)){
-  event.respondWith((async()=>{const cache=await caches.open('vf-document-libraries-v1');try{const response=await fetch(request);if(response.ok||response.type==='opaque')await cache.put(request,response.clone());return response}catch{return (await cache.match(request))||Response.error()}})());return;
+ // Bibliothèques documentaires : cache utilisable sans réseau après le premier chargement.
+ if(LIBRARY_URLS.has(url.href)){
+  event.respondWith((async()=>{
+   const cache=await caches.open(DOCUMENT_LIBRARIES);
+   const saved=await cache.match(request);
+   if(saved)return saved;
+   try{
+    const response=await fetch(request);
+    if(response.ok||response.type==='opaque')await cache.put(request,response.clone());
+    return response;
+   }catch{return Response.error()}
+  })());
+  return;
  }
  if(url.origin!==self.location.origin)return;
  // Les PDF de cavaliers sont servis à la demande, sans cache hors ligne systématique.

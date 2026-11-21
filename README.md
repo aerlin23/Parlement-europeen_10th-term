@@ -1,105 +1,70 @@
 # Vademecum PE — 10e législature (2024–2029)
 
-Application web progressive (PWA) indépendante, destinée à la consultation et à la reconnaissance des députés européens et des responsables institutionnels. Elle ne constitue pas une publication officielle du Parlement européen.
+Application web progressive indépendante pour la consultation et la reconnaissance des députés européens et des responsables institutionnels, conçue pour les besoins opérationnels des huissiers. Ce n'est pas une publication officielle du Parlement européen.
 
-**Accès :** https://aerlin23.github.io/Parlement-europeen_10th-term/
+[Application publique](https://aerlin23.github.io/Parlement-europeen_10th-term/) · [Historique des versions](CHANGELOG.md)
 
-## Fonctionnalités
-
-- Annuaire des députés : portraits, pays, groupes politiques, fonctions, commissions titulaires et suppléants.
-- Recherche par nom, groupe, commission et siège (S328 pour Strasbourg, B328 pour Bruxelles).
-- Filtres contextuels et décomptes cliquables des responsabilités parlementaires.
-- Plans interactifs des deux hémicycles : couleurs et surbrillance des groupes, recherche, zoom, déplacement, plein écran, rotation selon le navigateur, identification par portrait et accès à la fiche. Strasbourg est ouvert par défaut.
-- Quiz photo/nom et nom/photo, quiz des derniers députés arrivés d’après l’historique documenté, suivi des erreurs et de la progression.
-- Trois tailles de lecture (A−, A, A+) avec préférence locale.
-- Rubriques Commission européenne, institutions et organes, Secrétariat général.
-- Historique éditorial des mouvements parlementaires, partage des fiches et fonctionnalités hors ligne.
-- **Assistant cavaliers** : import par copier-coller ou fichier Excel (.xlsx, .xls, .csv), filtrage syntaxique des lignes, correction des participants, aperçu et impression A4 recto uniquement. Sur ordinateur et mobile, génération du PDF et impression par e-mail via Mobile Print ; impression classique ePrinter conservée sur ordinateur.
-
-- **Contacts utiles** : annuaire téléphonique importé sur chaque appareil, favoris locaux, appels et partage individuel. Les annuaires et bibliothèques privées ne sont pas distribués par le site ; importer uniquement des fichiers dont l’utilisateur est autorisé à disposer.
+## Utilisation
+- Annuaire des députés : recherche, groupes, pays, commissions, fonctions, portraits et fiches.
+- Plans interactifs de Bruxelles et Strasbourg : recherche par siège, couleurs politiques, zoom et plein écran.
+- Quiz de reconnaissance : photo/nom, nom/photo et nouveaux députés ; suivi local des erreurs.
+- Commission européenne, institutions et organes de l'Union, Secrétariat général.
+- Assistant cavaliers : saisie et import Excel, aperçu, PDF et impression. La variante personnelle conserve ses fonctions supplémentaires de reconnaissance et de bibliothèque locale.
+- Contacts utiles : import local PDF/JSON et favoris. N'importer que les documents autorisés.
+- Installation PWA depuis le menu du navigateur ; télécharger les ressources nécessaires avant un usage hors connexion.
 
 ## Architecture
 
-| Fichier | Rôle |
+| Ressource | Fonction |
 | --- | --- |
-| `index.html` | Structure de l’interface |
-| `styles.css` | Styles et adaptation aux écrans |
-| `directory.js`, `interface.js` | Annuaire, filtres, navigation et institutions |
-| `hemicycle.js` | Plans interactifs |
-| `quiz.js` | Quiz et progression |
-| `offline.js` | Téléchargement et mises à jour PWA |
-| `smart-search.js` | Suggestions de recherche |
-| `features.js` | Partage et historique des changements |
-| `creation-cavaliers.html`, `creation-cavaliers-227.js`, `cavaliers-assistant-229.js`, `cavaliers-core.js` | Assistant cavaliers |
-| `commission-europeenne.html`, `institutions-agences.html` | Rubriques complémentaires |
-| `members.json`, `committees.json`, `coordinators.json` | Données parlementaires |
-| `hemicycle-seats.json` | Correspondances député–siège |
-| `hemicycle-*-coordinates.json` | Géométrie des plans |
-| `changes.json` | Historique éditorial |
-| `sw.js`, `manifest.webmanifest` | Cache hors ligne et installation PWA |
-| `photos/`, `thumbs/`, `photo-assets.json` | Portraits et index des ressources |
+| index.html, styles.css | Interface principale |
+| directory.js, interface.js, smart-search.js, features.js | Annuaire, navigation, recherche, historique |
+| hemicycle.js | Plans interactifs |
+| quiz.js | Entraînement |
+| creation-cavaliers.html, cavaliers-core.js, creation-cavaliers-227.js, cavaliers-assistant-232.js | Assistant public |
+| creation-cavaliers-preview.html, cavaliers-core-preview.js, creation-cavaliers-editor-preview.js, cavaliers-assistant-preview.js | Variante personnelle |
+| contacts-personnels.html | Contacts importés localement |
+| outils.html, outils.js | Outils et réunions conjointes |
+| js/version-display.js, offline.js, sw.js | Version active, installation et cache |
+| members.json, committees.json, coordinators.json | Données parlementaires |
+| hemicycle-seats.json, hemicycle-*-coordinates.json | Sièges et géométrie |
+| commission-members.json, changes.json | Commission et historique éditorial |
+| photos/, thumbs/, photo-assets.json | Portraits |
 
-## Sources et fiabilité
-
+## Sources et fraîcheur
 - [Liste officielle des députés](https://www.europarl.europa.eu/meps/en/full-list/xml).
-- [Données ouvertes du Parlement européen](https://data.europarl.europa.eu/api/v2/meps/show-current).
-- [Commissions parlementaires](https://www.europarl.europa.eu/committees/fr/home).
-- [Plans officiels des hémicycles](https://www.europarl.europa.eu/plenary/fr/hemicycle.html) : références utilisées pour les plans intégrés, Strasbourg 23 novembre 2026 et Bruxelles 11 novembre 2026.
-- [Entrées et départs](https://www.europarl.europa.eu/meps/en/incoming-outgoing/incoming).
-- Fonctions et coordinateurs : sources et dates figurant dans les données lorsque disponibles.
+- [Données ouvertes](https://data.europarl.europa.eu/api/v2/meps/show-current).
+- [Commissions](https://www.europarl.europa.eu/committees/fr/home).
+- [Hémicycles](https://www.europarl.europa.eu/plenary/fr/hemicycle.html).
+- Les dates de contrôle figurent dans les enregistrements lorsqu'elles sont disponibles. Le dernier changement éditorial ne constitue pas une vérification exhaustive.
+- Strasbourg : affectations du document daté du 23/11/2026 pour la session à venir ; géométrie du 19/10/2026. Bruxelles : document du 11/11/2026.
+- Trois anciennes nominations de coordinateurs retirées en v355 ; successeurs non confirmés. La couverture des coordinateurs n'est pas exhaustive.
 
-Les portraits proviennent principalement des ressources officielles. Les places, mandats et fonctions évoluent ; vérifier les sources officielles en cas de doute. La couverture des coordinateurs et la précision de toutes les coordonnées ne sont pas garanties exhaustives.
+[Mesures Lighthouse et limites](PERFORMANCE.md) · [Confidentialité et sécurité](SECURITY.md)
 
-## Maintenance et publication
+## Confidentialité et sécurité
+Le dépôt et le site sont publics. Les onglets cachés ne constituent pas une authentification. Ne pas publier de contacts internes ou de bibliothèques privées ; les importer localement uniquement si autorisé. Les données passées peuvent rester dans l'historique Git. Les dépendances documentaires externes sont épinglées par version ; leur intégrité et disponibilité doivent être contrôlées. L'adresse de contact publiée et les conditions de réutilisation des portraits restent à examiner.
 
-1. Mettre à jour les données à partir des sources officielles, conserver les dates et références, contrôler les identifiants et les doublons.
-2. Vérifier les filtres, le quiz, les deux plans et les liens vers les fiches.
-3. Contrôler la syntaxe JavaScript et préserver l'ordre de cascade CSS. Tester en particulier les interfaces mobile, portrait et paysage.
-4. Incrémenter la version du cache dans `sw.js`, les URL des modules et la liste CODE du service worker (l’adresse d’enregistrement de sw.js reste stable).
-5. Publier via GitHub Pages : branche `main`, racine du dépôt.
+## Préparer le fonctionnement hors connexion
+- Ouvrir l’application en ligne et attendre l’installation du service worker. Les fichiers principaux sont mis en cache à l’installation ; les rubriques secondaires sont téléchargées au mieux.
+- Depuis l’accueil, utiliser **Télécharger les ressources hors ligne** pour enregistrer les portraits, les voix officielles et les bibliothèques documentaires. Le téléchargement complet peut utiliser beaucoup de stockage et de données mobiles.
+- Une première connexion reste nécessaire. Les PDF de cavaliers officiels non consultés et certains médias externes ne sont pas garantis hors ligne.
+- Les favoris, contacts importés et bibliothèques privées sont conservés localement par le navigateur ; ne pas vider les données du site pour mettre l’application à jour.
+- Après une mise à jour, tester l’accueil, une recherche, les deux hémicycles, un quiz et la création d’un cavalier en mode avion.
+- Les contrôles hors ligne automatisés sont structurels ; un test réel sur appareils et navigateurs reste nécessaire.
 
-L'installation PWA est proposée par les navigateurs compatibles. Précharger les ressources avant une utilisation hors ligne ; certaines ressources officielles peuvent ne pas être disponibles. La rotation automatique dépend des restrictions du navigateur. Les préférences de lecture et certaines informations de navigation sont conservées localement sur l'appareil.
+## Développement et publication
+1. Travailler sur une branche dédiée ; référence stable : stable-v355.
+2. Vérifier les changements de données contre les sources officielles ; ne pas publier automatiquement des corrections non relues.
+3. Exécuter `node tests/data-integrity.test.cjs`, `node tests/cavaliers-core.test.cjs` et `node --check` sur les scripts.
+4. Contrôler les tests Playwright (Chromium et WebKit), les audits Lighthouse et le mode hors ligne avant fusion.
+5. Incrémenter VERSION dans sw.js ; vérifier les références de ressources modifiées et la liste de précache. Le pied de page interroge le service worker actif.
+6. Ne fusionner vers main qu'après validation.
 
-## État de maintenance
+La veille officielle `Official MEP roster watch` compare automatiquement les identifiants de députés et ouvre une proposition de vérification en cas d'écart. Sa planification périodique n'est active qu'après fusion du workflow dans la branche principale ; aucune modification de `members.json` n'est automatique. Les compositions des commissions, sièges et coordinateurs nécessitent une vérification séparée.
 
-Version 219 : séparation conservatrice des scripts classiques et du CSS, correction du score du quiz, cache durable des médias téléchargés et URLs de ressources versionnées. Les tests navigateur restent nécessaires avant de considérer la refonte validée.
+Les fichiers de styles communs sont regroupés sous `css/shared-*.css` ; leur ordre de chargement est conservé. Les anciens scripts inutilisés ont été retirés sur la branche, mais ils restent accessibles dans la sauvegarde `stable-v355` et dans l'historique Git.
 
-## Version 220 (branche de validation)
+La branche consolidation-v2 est expérimentale. Les performances, l'accessibilité, l'impression physique et la compatibilité sur appareils réels doivent encore être validées. Les nouveaux cavaliers privilégient un PDF texte vectoriel avec repli matriciel pour les glyphes incompatibles ; la variante personnelle réutilise les PDF officiels et privés originaux.
 
-Recherche combinée par pays, groupe et commission/fonction ; cinq consultations récentes conservées sur l'appareil ; révision adaptative tenant compte du délai depuis la dernière réponse et du temps de réponse ; filtres facultatifs de pays, commission et fonction sur les plans. Aucun quiz de localisation ajouté. Les filtres de commission portent sur les titulaires.
-
-Version 221 : filtre du plan limité au pays, intégré à la ligne de recherche ; les couleurs et filtres politiques existants restent disponibles.
-
-## Assistant cavaliers
-
-Accessible depuis le menu principal sur ordinateur et mobile : [ouvrir l’assistant](https://aerlin23.github.io/Parlement-europeen_10th-term/creation-cavaliers.html).
-
-Les fichiers importés sont traités dans le navigateur. Le lecteur Excel est chargé depuis un CDN et requiert une connexion lors du chargement. Vérifier les noms et les exclusions avant impression : le filtrage ne constitue pas une validation d’identité. Imprimer en A4, recto uniquement, à 100 %, puis plier les feuilles. Sur ordinateur et mobile, partager le PDF avec la messagerie et coller l’adresse `mobileprint@europarl.europa.eu` ; la copie automatique et le partage dépendent du navigateur. Consulter le [guide officiel Mobile Print](https://mfd.europarl.europa.eu/pdf/mobile-printing-qsg_en.pdf). Ne transmettre que les documents autorisés par les règles internes applicables.
-
-Version PWA 236 : accès public à l’assistant. Les réunions conjointes restent en mode expérimental.
-
-### Maintenance Assistant cavaliers (227)
-
-Import centralisé dans `cavaliers-core.js`, reconnaissance des en-têtes français/anglais et des colonnes réordonnées, dédoublonnage par prénom et nom, annulation de la dernière suppression. Tests de régression : `node tests/cavaliers-core.test.cjs`. Le PDF partagé reste matriciel (JPEG intégré), et les tests navigateur et impression physique restent nécessaires. Les anciennes ressources versionnées sont conservées pour les clients qui utilisent encore des pages mises en cache.
-
-Version PWA 244 : restauration de l’en-tête institutionnel d’origine, avec les logos et couleurs des groupes politiques. Les onglets Vademecum, S’entraîner et Cavaliers restent réunis dans une navigation à trois boutons.
-
-Version PWA 245 : l’Assistant cavaliers reprend le grand en-tête bleu et le logo institutionnel de l’annuaire, sans modifier les en-têtes des groupes politiques. Le bandeau secondaire est supprimé.
-
-Réunions conjointes (251, expérimental) : tri par groupes dans l’ordre du Vademecum, puis présidence, vice-présidences dans l’ordre renseigné et autres titulaires par nom. Les listes et trombinoscopes imprimables suivent le même ordre.
-
-Version PWA 252 : harmonisation visuelle de Réunions conjointes avec l’Assistant cavaliers (bandeau institutionnel, navigation et panneaux), sans changement du tri ni du mode expérimental.
-
-Version PWA 339 : actualisation des 720 affectations de Strasbourg selon le plan du 23 novembre 2026 (247 différences, dont deux sièges précédemment non renseignés). Bruxelles et la géométrie des plans sont conservés.
-
-
-## Maintenance v354 — 20 novembre 2026
-
-- Contrôles automatiques : `node tests/data-integrity.test.cjs`, `node tests/cavaliers-core.test.cjs` et syntaxe JavaScript. Workflow GitHub Actions intégré ; consulter les résultats avant de considérer une version validée.
-- SheetJS CE 0.20.3 remplace 0.18.5 dans les deux assistants (CVE-2023-30533 et CVE-2024-22363).
-- Les bibliothèques documentaires versionnées peuvent être conservées après un premier chargement réussi sous le service worker actif. Tester hors ligne sur appareil ; les PDF originaux distants ne sont pas tous préchargés.
-- Annuaire institutionnel simplifié, SEAE représenté par la haute représentante, recherche par nom/fonction/institution/pays/acronyme.
-- Version affichée synchronisée avec le service worker ; dates des plans hémicycle visibles séparément. Strasbourg : affectations du 23/11/2026, géométrie du 19/10/2026 ; Bruxelles : 11/11/2026.
-- Mode nuit, partage de page, recherche de cavaliers existants (version personnelle), formulaire compact.
-- Trois affectations de coordinateurs à confirmer : Gabriel Mato/PECH, Alma Ezcurra Almansa/PETI, Damian Boeselager/CONT. Ne pas déduire un remplaçant sans source.
-- Confidentialité : le dépôt et GitHub Pages sont publics. Un onglet masqué ou un indicateur local ne constitue pas un contrôle d'accès. Ne jamais publier de données internes non autorisées ; utiliser un stockage local ou un hébergement authentifié. Les archives privées importées ne doivent pas être ajoutées au dépôt.
+[Guide officiel Mobile Print](https://mfd.europarl.europa.eu/pdf/mobile-printing-qsg_en.pdf)

@@ -29,7 +29,32 @@ async function renderPage(svg){
  return {w:canvas.width,h:canvas.height,bytes:new Uint8Array(await blob.arrayBuffer())};
 }
 let timer,lastSignature='';
-function schedule(){const signature=JSON.stringify([...previews.querySelectorAll('svg')].map(s=>[s.parentElement.dataset.surname,s.outerHTML]));if(signature===lastSignature&&pdfFile)return;lastSignature=signature;const gen=++generation;pdfFile=null;$('pdfName').textContent='';shareButton.disabled=true;$('downloadMobilePdf').disabled=true;clearTimeout(timer);const svgs=[...previews.querySelectorAll('svg')];if(!svgs.length){status.textContent=previews.dataset.excluded==='0'||!previews.dataset.excluded?'Importez la liste avant de préparer le PDF.':'Aucun cavalier valide : corrigez les lignes encadrées en orange.';return}$('retryPdf').hidden=true;status.textContent='Préparation du PDF…';timer=setTimeout(async()=>{try{const pages=[];for(const s of svgs){if(gen!==generation)return;pages.push(await renderPage(s))}if(gen!==generation)return;const surname=(svgs[0].parentElement.dataset.surname||'').replace(/[\\/:*?"<>|]/g,'-').trim()||'Participants';const filename=pages.length===1?'Cavalier - '+surname+'.pdf':'Cavaliers - '+surname+' et autres ('+pages.length+').pdf';pdfFile=pdfFromJpegs(pages,filename);$('pdfName').textContent=filename;shareButton.disabled=false;$('downloadMobilePdf').disabled=false;status.textContent=Number(previews.dataset.excluded)?previews.dataset.excluded+' ligne(s) à corriger, non imprimée(s).':''}catch(e){if(gen===generation){lastSignature='';status.textContent='Impossible de préparer le PDF. Réessayez ou utilisez l’impression classique sur ordinateur.'; $('retryPdf').hidden=false}}},200)}
+function schedule(){const signature=JSON.stringify([...previews.querySelectorAll('svg')].map(s=>[s.parentElement.dataset.surname,s.outerHTML]));if(signature===lastSignature&&pdfFile)return;lastSignature=signature;const gen=++generation;pdfFile=null;$('pdfName').textContent='';shareButton.disabled=true;$('downloadMobilePdf').disabled=true;clearTimeout(timer);const svgs=[...previews.querySelectorAll('svg')];if(!svgs.length){status.textContent=previews.dataset.excluded==='0'||!previews.dataset.excluded?'Importez la liste avant de préparer le PDF.':'Aucun cavalier valide : corrigez les lignes encadrées en orange.';return}$('retryPdf').hidden=true;status.textContent='Préparation du PDF…';timer=setTimeout(async()=>{try{const surname=(svgs[0].parentElement.dataset.surname||'').replace(/[\\/:*?"<>|]/g,'-').trim()||'Participants';
+ const filename=svgs.length===1?'Cavalier - '+surname+'.pdf':'Cavaliers - '+surname+' et autres ('+svgs.length+').pdf';
+ if(window.PDFLib&&window.VFCavalierVectorPDF){
+  try{
+   const doc=await PDFLib.PDFDocument.create();
+   let rasterCount=0;
+   for(const svg of svgs){
+    if(gen!==generation)return;
+    const mode=await window.VFCavalierVectorPDF.append(doc,svg,renderPage,PDFLib);
+    if(mode==='raster')rasterCount++;
+   }
+   if(gen!==generation)return;
+   pdfFile=new File([await doc.save()],filename,{type:'application/pdf'});
+   if(rasterCount)status.textContent=rasterCount+' page(s) avec caractères spéciaux conservée(s) en image.';
+  }catch(error){
+   console.warn('PDF vectoriel indisponible, reprise en JPEG',error);
+   const pages=[];for(const svg of svgs){if(gen!==generation)return;pages.push(await renderPage(svg))}
+   if(gen!==generation)return;
+   pdfFile=pdfFromJpegs(pages,filename);
+  }
+ }else{
+  const pages=[];for(const svg of svgs){if(gen!==generation)return;pages.push(await renderPage(svg))}
+  if(gen!==generation)return;
+  pdfFile=pdfFromJpegs(pages,filename);
+ }
+ $('pdfName').textContent=filename;shareButton.disabled=false;$('downloadMobilePdf').disabled=false;status.textContent=Number(previews.dataset.excluded)?previews.dataset.excluded+' ligne(s) à corriger, non imprimée(s).':''}catch(e){if(gen===generation){lastSignature='';console.error('Génération de PDF impossible',e);status.textContent='Impossible de préparer le PDF : '+(e?.message||'erreur inconnue')+'. Réessayez ou utilisez l’impression classique.'; $('retryPdf').hidden=false}}},200)}
 document.addEventListener('vf-cavaliers-ready',schedule);$('retryPdf').onclick=()=>{lastSignature='';schedule()};schedule();
 $('downloadMobilePdf').onclick=()=>{if(!pdfFile)return;const a=document.createElement('a');a.href=URL.createObjectURL(pdfFile);a.download=pdfFile.name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),30000)};
 shareButton.onclick=async()=>{if(!pdfFile)return;try{if(navigator.canShare&&navigator.canShare({files:[pdfFile]})){try{if(navigator.clipboard?.writeText){navigator.clipboard.writeText(email).catch(()=>{});}}catch(e){} await navigator.share({files:[pdfFile],title:pdfFile.name});status.textContent='Dans votre messagerie, utilisez '+email+' comme destinataire.'}else{$('downloadMobilePdf').click();status.textContent='Joignez le PDF téléchargé au message. Destinataire : '+email;const link=document.createElement('a');link.href='mailto:'+email+'?subject='+encodeURIComponent(pdfFile.name);link.textContent='Ouvrir un e-mail Mobile Print';status.append(document.createTextNode(' · '),link)}}catch(e){if(e.name!=='AbortError')status.textContent='Partage impossible : téléchargez le PDF et joignez-le au mail.'}};

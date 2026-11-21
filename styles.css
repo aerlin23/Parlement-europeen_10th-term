@@ -788,3 +788,6 @@ html.vf-tools-mobile-preview .vf-tools-tab{display:inline-flex}
 .card .info:has(.vf-card-actions){display:flex;flex-direction:column;flex:1;min-width:0;padding-bottom:9px}
 .card .info .vf-card-actions{position:static;display:flex;justify-content:flex-end;align-self:stretch;margin-top:auto;padding-top:6px;flex-shrink:0}
 .card .info .vf-card-actions .vf-share-icon{position:static}
+
+/* Réserve de l'espace pendant le chargement pour limiter les déplacements du pied de page. */
+html:not(.vf-members-ready) #grid:empty{min-height:65vh}

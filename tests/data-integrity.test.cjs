@@ -38,6 +38,6 @@ for(const p of ['index.html','creation-cavaliers.html','creation-cavaliers-previ
   assert.ok(fs.existsSync(path.join(root,url.split('?')[0])),'Missing script '+url);
   assert.ok(sw.includes("'"+url+"'"),'Script absent from offline cache '+url);
  }
- assert.ok(html.includes('GET_VERSION'),'Missing version synchronization '+p);
+ assert.ok(html.includes('./js/version-display.js'),'Missing version synchronization '+p);
 }
 console.log('PASS: '+members.length+' MEPs, '+commission.length+' commissioners, seats, committees, coordinators and PWA references.');
