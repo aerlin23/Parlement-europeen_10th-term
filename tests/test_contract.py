@@ -61,7 +61,7 @@ class DirectoryContract(unittest.TestCase):
         self.assertIn('value="photo-name"', HTML)
         self.assertIn("optionsFor(m,members,4)", HTML)
         self.assertIn("choices.length!==4", HTML)
-        self.assertIn("session.mode==='name-photo'", HTML)
+        self.assertIn("session.questionMode==='name-photo'", HTML)
         self.assertIn("enableNamePronunciation(m)", HTML)
         self.assertIn("spacedDeck(eligible)", HTML)
         self.assertIn("QUIZ_PROGRESS_KEY", HTML)
