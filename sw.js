@@ -1,5 +1,5 @@
 /* Vademecum PE : ressources critiques hors-ligne et mises à jour consenties. */
-const VERSION='pe-pwa-v368';
+const VERSION='pe-pwa-v369';
 const MEDIA='pe-offline-official-media-v1';
 const scopePath=new URL(self.registration.scope).pathname;
 const previewName=scopePath.match(/\/(preview-v\d+)\/$/)?.[1];
