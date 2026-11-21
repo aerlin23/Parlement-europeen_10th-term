@@ -1,0 +1,12 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {numericId,rosterEntries,compare}=require('../scripts/check-official-roster.cjs');
+assert.equal(numericId('https://data.europarl.europa.eu/person/256810'),'256810');
+assert.equal(numericId('person/2341'),'2341');
+assert.equal(numericId('not-a-person'),null);
+const records=rosterEntries({data:[{'@id':'person/256810',label:'AALTOLA'}, {id:'person/1912',name:'EXEMPLE'}]});
+assert.equal(records.length,2);
+const diff=compare([{id:'256810',name:'AALTOLA'}],records);
+assert.equal(diff.added[0].id,'1912');
+assert.equal(diff.removed.length,0);
+console.log('PASS: official roster extraction and guarded diff');
