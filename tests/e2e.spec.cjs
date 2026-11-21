@@ -2,13 +2,13 @@ const {test,expect}=require('@playwright/test');
 test('accueil et recherche : données parlementaires',async({page})=>{
  await page.goto('/index.html');
  await expect(page.locator('#search')).toBeVisible();
- await expect.poll(()=>page.locator('#grid').children().count()).toBeGreaterThan(0);
+ await expect.poll(()=>page.locator('#grid > *').count()).toBeGreaterThan(0);
  await page.locator('#search').fill('AALTOLA');
  await expect(page.locator('#grid')).toContainText(/AALTOLA/i);
 });
 test('quiz de reconnaissance : une session démarre',async({page})=>{
  await page.goto('/index.html');
- await expect.poll(()=>page.locator('#grid').children().count()).toBeGreaterThan(0);
+ await expect.poll(()=>page.locator('#grid > *').count()).toBeGreaterThan(0);
  await page.locator('#trainingTab').click();
  await expect(page.locator('#startStudy')).toBeEnabled();
  await page.locator('#startStudy').click();
@@ -17,7 +17,7 @@ test('quiz de reconnaissance : une session démarre',async({page})=>{
 });
 test('hémicycles : ouverture et bascule Bruxelles / Strasbourg',async({page})=>{
  await page.goto('/index.html');
- await expect.poll(()=>page.locator('#grid').children().count()).toBeGreaterThan(0);
+ await expect.poll(()=>page.locator('#grid > *').count()).toBeGreaterThan(0);
  await page.locator('#openHemicycle').click();
  const dialog=page.locator('.seat-map-dialog');
  await expect(dialog).toBeVisible();
@@ -41,12 +41,12 @@ test('contacts : import local non transmis au serveur',async({page})=>{
 });
 test('PWA : accueil et annuaire accessibles hors ligne après installation',async({page,context})=>{
  await page.goto('/index.html');
- await expect.poll(()=>page.locator('#grid').children().count()).toBeGreaterThan(0);
+ await expect.poll(()=>page.locator('#grid > *').count()).toBeGreaterThan(0);
  await page.evaluate(async()=>{const registration=await navigator.serviceWorker.ready;if(!registration.active)throw Error('Service worker absent');});
  await expect.poll(async()=>page.evaluate(async()=>{const keys=await caches.keys();return keys.some(k=>/pe-pwa-v\d+-core/.test(k))})).toBe(true);
  await context.setOffline(true);
  await page.reload({waitUntil:'domcontentloaded'});
  await expect(page.locator('#search')).toBeVisible();
- await expect.poll(()=>page.locator('#grid').children().count()).toBeGreaterThan(0);
+ await expect.poll(()=>page.locator('#grid > *').count()).toBeGreaterThan(0);
  await context.setOffline(false);
 });
