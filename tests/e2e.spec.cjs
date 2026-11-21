@@ -113,7 +113,7 @@ test('mode nuit : contraste des fiches de députés et retour au mode clair',asy
 });
 
 const isolationCases = {
-  official: { path: '/', version: '377', contrast: './css/directory-night-contrast.css?v=374' },
+  official: { path: '/', version: '378', contrast: './css/directory-night-contrast.css?v=374' },
   older: { path: '/preview-v362/', version: '362', contrast: null },
   tester: { path: '/preview-v364/', version: '364', contrast: './css/directory-night-contrast.css?v=364' }
 };
@@ -332,4 +332,18 @@ test('thème officiel : iPhone/WebKit et Android peuvent choisir mode jour ou nu
   await page.reload();
   await expect(page.locator('html')).not.toHaveClass(/vf-night/);
   await expect(toggle).toHaveAttribute('aria-label','Mode nuit');
+});
+
+
+test('logo du Parlement : retour interne au Vademecum sans site externe',async({page})=>{
+ await page.goto('/index.html');
+ const logo=page.locator('header .ep-logo');
+ await expect(logo).toHaveAttribute('href','./index.html');
+ await expect(logo).not.toHaveAttribute('target','_blank');
+ await page.locator('#group').selectOption('S&D');
+ await expect(logo).toHaveAttribute('href','./index.html');
+ await logo.click();
+ await expect(page).toHaveURL(/\/index\.html$/);
+ await expect(logo).toHaveAttribute('href','./index.html');
+ await expect(page.locator('#group')).toHaveValue('');
 });
