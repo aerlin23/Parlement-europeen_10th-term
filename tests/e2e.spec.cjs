@@ -74,8 +74,16 @@ test('assistant cavaliers : génération et téléchargement PDF',async({page})=
   if(status?.includes('Impossible de préparer'))throw Error('PDF error: '+status);
   return disabled;
  },{timeout:15000}).toBe(false);
- const downloadPromise=page.waitForEvent('download');
- await page.locator('#downloadMobilePdf').click();
- const download=await downloadPromise;
- expect(download.suggestedFilename()).toMatch(/\.pdf$/i);
+ // Le bouton du panneau Mobile Print est masqué avant l'ouverture de l'aperçu.
+ // Vérifier le PDF réellement créé, indépendamment de cette présentation.
+ const pdf=await page.evaluate(async()=>{
+  const file=window.vfCavalierPdf?.();
+  if(!file)return null;
+  const head=String.fromCharCode(...new Uint8Array(await file.slice(0,5).arrayBuffer()));
+  return {name:file.name,size:file.size,type:file.type,head};
+ });
+ expect(pdf?.name).toMatch(/\.pdf$/i);
+ expect(pdf?.type).toBe('application/pdf');
+ expect(pdf?.head).toBe('%PDF-');
+ expect(pdf?.size).toBeGreaterThan(200);
 });
