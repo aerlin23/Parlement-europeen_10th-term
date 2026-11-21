@@ -1,5 +1,14 @@
 # Historique des versions
 
+## v363 — contraste mode nuit et fiabilité CI
+
+- Annuaire : pays, groupes, sièges Bruxelles/Strasbourg et commissions plus lisibles en mode nuit, sans modifier les couleurs du mode clair.
+- Bouton flottant réduit, contraste renforcé et indicateur de focus plus visible.
+- Tests de contraste WCAG AA et tests navigateur en mode nuit sur Chromium et WebKit.
+- GitHub Actions : syntaxe JavaScript vérifiée dans les dossiers de scripts, tests d'intégrité et de politique CI, annulation des exécutions redondantes.
+- Lighthouse conserve une exécution manuelle ; la surveillance officielle reste programmée en semaine.
+- Les contrôles CI ne bloquent pas une fusion sans règle de protection de branche configurée sur GitHub.
+
 ## v361 — noms composés
 
 - Prénoms composés conservant leur trait d'union dans les initiales des cavaliers : Jean-Pierre devient J.-P. (public et personnel).
