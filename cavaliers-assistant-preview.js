@@ -144,7 +144,7 @@ async function assembleOriginals(svgs,filename,gen){
  if(resolution.candidates)throw Error('Confirmez le député possible : '+label+' dans les aperçus.');
  if(resolution.private){const e=resolution.private,k='local:'+e.id;if(!cache.has(k))cache.set(k,await lib.PDFDocument.load(await privateZip.file(e.file).async('uint8array')));const src=cache.get(k);for(const page of await output.copyPages(src,src.getPageIndices()))output.addPage(page);originals++}
  else if(id){if(!cache.has(id)){const response=await fetch('./cavaliers/'+encodeURIComponent(id)+'.pdf');if(!response.ok)throw Error('PDF original indisponible : '+label);cache.set(id,await lib.PDFDocument.load(await response.arrayBuffer()))}const src=cache.get(id);for(const page of await output.copyPages(src,src.getPageIndices()))output.addPage(page);originals++}
- else {const p=await renderPage(s),image=await output.embedJpg(p.bytes),page=output.addPage([595.276,841.89]);page.drawImage(image,{x:0,y:0,width:595.276,height:841.89})}
+ else {if(window.VFCavalierVectorPDF)await window.VFCavalierVectorPDF.append(output,s,renderPage,lib);else {const p=await renderPage(s),image=await output.embedJpg(p.bytes),page=output.addPage([595.276,841.89]);page.drawImage(image,{x:0,y:0,width:595.276,height:841.89})}}
  }
  return {file:new File([await output.save()],filename,{type:'application/pdf'}),originals};
 }
