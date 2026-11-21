@@ -17,6 +17,10 @@ function splitFull(value){
  let cut=parts.findIndex((w,i)=>i>0&&upper(w));
  if(cut>0&&parts.slice(cut).every(upper)&&!upper(parts[0]))return [parts.slice(0,cut).join(' '),parts.slice(cut).join(' ')];
  if(parts.length===2)return [parts[0],parts[1]];
+ // Suggest common multipart surname prefixes; final result still requires review.
+ const particle=/^(?:van|von|de|du|des|del|della|der|den|di|da|dos|das|la|le)$/iu;
+ const surnameStart=parts.findIndex((w,i)=>i>0&&particle.test(w));
+ if(surnameStart>0)return [parts.slice(0,surnameStart).join(' '),parts.slice(surnameStart).join(' ')];
  return [parts.shift()||'',parts.join(' ')];
 }
 function parse(line){
