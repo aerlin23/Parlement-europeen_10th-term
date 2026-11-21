@@ -1,7 +1,7 @@
 'use strict';
 /* Veille officielle non destructive : ne met jamais members.json à jour sans revue. */
 const fs=require('node:fs');
-const URL_OFFICIELLE='https://data.europarl.europa.eu/api/v2/meps/show-current';
+const URL_OFFICIELLE='https://data.europarl.europa.eu/api/v2/meps/show-current?format=application%2Fld%2Bjson';
 function numericId(raw){
  const s=typeof raw==='object'&&raw?(raw['@id']||raw.id||raw.identifier||''):String(raw??'');
  const match=String(s).match(/(?:^|[/#:])(?:person[/#:])?(\d{3,8})$/i);
@@ -28,6 +28,7 @@ async function fetchOfficial(){
  const response=await fetch(URL_OFFICIELLE,{headers:{Accept:'application/ld+json, application/json;q=0.9','User-Agent':'Vademecum-PE-Data-Check/1.0'},signal:AbortSignal.timeout(30000)});
  if(!response.ok)throw Error('HTTP '+response.status);
  const text=await response.text();if(text.length>65000000)throw Error('Official API response too large');
+ if(text.trimStart().startsWith('<'))throw Error('Official API returned XML instead of JSON-LD; no change applied');
  const payload=JSON.parse(text);
  const entries=rosterEntries(payload);
  if(entries.length<600||entries.length>750)throw Error('Unexpected official schema or count: '+entries.length+'; data keys: '+Object.keys(payload.data||{}).slice(0,8).join(',')+'; no changes proposed');
