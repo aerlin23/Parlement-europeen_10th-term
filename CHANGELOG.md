@@ -1,5 +1,14 @@
 # Historique des versions
 
+## v357 — mode hors ligne (branche de consolidation)
+
+- Installation PWA plus robuste : fichiers essentiels obligatoires, autres ressources non bloquantes.
+- Mise en cache durable des bibliothèques Excel/PDF/ZIP, y compris le lecteur PDF des contacts, après utilisation ou téléchargement explicite.
+- Le bouton de téléchargement hors ligne prépare aussi ces bibliothèques et signale leurs éventuels échecs.
+- Une activation externe du service worker ne recharge plus automatiquement la page pendant le travail de l'utilisateur.
+- Nouveau test de régression structurel du cache hors ligne dans GitHub Actions.
+- Les PDF de cavaliers distants non téléchargés et les limites de stockage du navigateur restent des restrictions.
+
 ## v356 — consolidation expérimentale
 
 - Version affichée centralisée, métadonnées mobiles harmonisées et cache amélioré.
