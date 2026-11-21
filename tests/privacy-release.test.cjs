@@ -5,7 +5,14 @@ assert.ok(contacts.includes("let groups={}"),'Contacts must start empty and be i
 assert.ok(contacts.includes("localStorage.getItem(key)"),'Contacts must load from local storage');
 assert.ok(contacts.includes("localStorage.setItem(key"),'Contacts must be saved locally');
 const files=execFileSync('git',['ls-files','-z'],{cwd:root,encoding:'utf8'}).split('\0').filter(Boolean);
-const prohibited=files.filter(p=>/(?:^|[/\\])(?:bibliotheque-cavaliers-privee|contacts-prives|private-contacts|secrets?\.[^.]+)\.(?:zip|json|pdf|xlsx?)$/i.test(p)||/(?:^|[/\\])\.env(?:\.|$)/i.test(p));
+// Audit every tracked path, including public preview folders and versioned ZIP/PDF names.
+const confidentialName=/(?:^|[\/\\._-])(?:privee?s?|private|confidentiel(?:le)?s?|secrets?|interne?s?)(?=$|[\/\\._-])/i;
+const privateContactName=/(?:contacts?[-_](?:prives?|personnels?|internes?))(?=$|[\/\\._-])/i;
+const publishedDocument=/\.(?:zip|json|pdf|xlsx?|csv)$/i;
+const prohibited=files.filter(p=>
+  /(?:^|[\/\\])\.env(?:\.|$)/i.test(p) ||
+  (publishedDocument.test(p) && (confidentialName.test(p) || privateContactName.test(p)))
+);
 assert.deepEqual(prohibited,[],'Private file names committed to public repository');
 for(const p of ['index.html','creation-cavaliers.html','creation-cavaliers-preview.html','contacts-personnels.html','institutions-agences.html','commission-europeenne.html','outils.html']){
  const html=fs.readFileSync(path.join(root,p),'utf8');
