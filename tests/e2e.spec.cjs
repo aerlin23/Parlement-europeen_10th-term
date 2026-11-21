@@ -113,7 +113,7 @@ test('mode nuit : contraste des fiches de députés et retour au mode clair',asy
 });
 
 const isolationCases = {
-  official: { path: '/', version: '375', contrast: './css/directory-night-contrast.css?v=374' },
+  official: { path: '/', version: '376', contrast: './css/directory-night-contrast.css?v=374' },
   older: { path: '/preview-v362/', version: '362', contrast: null },
   tester: { path: '/preview-v364/', version: '364', contrast: './css/directory-night-contrast.css?v=364' }
 };
@@ -284,4 +284,29 @@ test('contacts : engrenage épuré et thème flottant distinct',async({page})=>{
  await page.locator('#vfNightToggle').click();
  await expect(page.locator('html')).not.toHaveClass(/vf-night/);
  await expect(gear).toHaveAttribute('aria-expanded','false');
+});
+
+
+test('cavalier Mobile Print : fenêtre claire en mode jour et nuit préservée',async({page})=>{
+ await page.goto('/index.html');
+ await page.evaluate(()=>{localStorage.setItem('vf-night-theme','light');document.documentElement.classList.remove('vf-night')});
+ await page.evaluate(()=>{
+  const d=document.createElement('dialog');d.className='vf-cavalier-dialog';d.innerHTML='<div class="vf-cavalier-bar"><strong>Cavalier — TEST</strong><button>×</button></div><div><button class="vf-mobile-print-send">Imprimer via Mobile Print</button><a href="#">Voir le cavalier (PDF)</a><small>Choisissez votre messagerie</small></div>';
+  document.body.append(d);d.showModal();
+ });
+ const styles=()=>page.locator('dialog.vf-cavalier-dialog').evaluate(d=>{
+   const bg=getComputedStyle(d),title=getComputedStyle(d.querySelector('strong')),send=getComputedStyle(d.querySelector('.vf-mobile-print-send')),a=getComputedStyle(d.querySelector('a'));
+   return {background:bg.backgroundColor,scheme:bg.colorScheme,title:title.color,sendBackground:send.backgroundColor,sendText:send.color,link:a.color};
+ });
+ const light=await styles();
+ expect(light.background).toBe('rgb(255, 255, 255)');
+ expect(light.scheme).toBe('light');
+ expect(light.title).toBe('rgb(34, 55, 70)');
+ expect(light.sendBackground).toBe('rgb(37, 75, 120)');
+ expect(light.sendText).toBe('rgb(255, 255, 255)');
+ expect(light.link).toBe('rgb(37, 75, 120)');
+ await page.evaluate(()=>document.documentElement.classList.add('vf-night'));
+ const dark=await styles();
+ expect(dark.background).toBe('rgb(255, 255, 255)');
+ await page.locator('dialog.vf-cavalier-dialog').evaluate(d=>d.close());
 });
