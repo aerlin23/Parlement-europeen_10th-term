@@ -1,5 +1,19 @@
 # Historique des versions
 
+## v359 — consolidation expérimentale
+
+- Nouveaux cavaliers en PDF texte vectoriel quand les glyphes sont compatibles ; retour JPEG si nécessaire, PDF officiels préservés.
+- Ajout de tests unitaires pour le placement PDF et la veille des députés.
+- Veille quotidienne en semaine de la liste officielle : signalement pour revue humaine, sans publication automatique.
+- Workflow Playwright Chromium/WebKit mobile et Lighthouse mobile/desktop ajouté (résultats d'exécution à vérifier).
+- Politique de confidentialité et contrôles des fichiers sensibles, meta referrer et CSP minimale.
+- 14 scripts historiques non utilisés retirés ; sauvegarde stable-v355 inchangée.
+
+## v358 — CSS mutualisé
+
+- Extraction de sept blocs CSS communs des pages de l'application, sans modifier leur ordre de cascade.
+- Préchargement de ces feuilles dans le service worker.
+
 ## v357 — mode hors ligne (branche de consolidation)
 
 - Installation PWA plus robuste : fichiers essentiels obligatoires, autres ressources non bloquantes.
