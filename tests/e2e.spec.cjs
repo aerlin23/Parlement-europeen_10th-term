@@ -113,7 +113,7 @@ test('mode nuit : contraste des fiches de députés et retour au mode clair',asy
 });
 
 const isolationCases = {
-  official: { path: '/', version: '363', contrast: './css/directory-night-contrast.css?v=363' },
+  official: { path: '/', version: '364', contrast: './css/directory-night-contrast.css?v=364' },
   older: { path: '/preview-v362/', version: '362', contrast: null },
   tester: { path: '/preview-v364/', version: '364', contrast: './css/directory-night-contrast.css?v=364' }
 };
@@ -197,4 +197,53 @@ test('Civilité et nom : PDF local, homonymes et original parlementaire',async({
  await generate('M. Inconnaissable');
  await expect(page.locator('#readyCount')).toHaveText('0');
  await expect(page.locator('#print')).toBeDisabled();
+});
+
+test('testeur cavaliers : nom ambigu visible en rouge, non imprimable avant confirmation',async({page})=>{
+ await page.goto('/creation-cavaliers-preview.html');
+ await page.locator('#paste').fill('Jean robert van damme');
+ await page.locator('#import').click();
+ const card=page.locator('#entries .compact-entry.vf-pending');
+ await expect(card).toHaveCount(1);
+ await expect(card.locator('.pending-preview')).toContainText('À VÉRIFIER');
+ await expect(card.locator('.pending-preview svg')).toBeVisible();
+ await expect(card).toHaveCSS('border-top-color','rgb(180, 35, 50)');
+ await expect(page.locator('#readyCount')).toHaveText('0');
+ await expect(page.locator('#fixCount')).toHaveText('1');
+ await expect(page.locator('#rejectedCount')).toHaveText('0');
+ await expect(page.locator('#print')).toBeDisabled();
+ await card.getByRole('button',{name:'Modifier'}).click();
+ const fields=card.locator('.entry-fields input');
+ await expect(fields.nth(0)).toHaveValue('Jean robert');
+ await expect(fields.nth(1)).toHaveValue('van damme');
+ await card.getByRole('button',{name:'Confirmer le cavalier'}).click();
+ await expect(page.locator('#entries .vf-pending')).toHaveCount(0);
+ await expect(page.locator('#readyCount')).toHaveText('1');
+ await expect(page.locator('#print')).toBeEnabled();
+ await expect(page.locator('#entries .preview svg')).toBeVisible();
+});
+
+test('Mobile Print : une fenêtre claire le jour et bleu nuit la nuit',async({page})=>{
+ await page.goto('/index.html');
+ await expect.poll(()=>page.locator('#grid > .card').count()).toBeGreaterThan(0);
+ await page.evaluate(()=>{
+  const d=document.createElement('dialog');d.id='vfMobilePrintDialog';
+  d.className='vf-cavalier-dialog vf-mobile-print-dialog';
+  d.innerHTML='<div class="vf-cavalier-bar"><strong>Cavalier — Mika AALTOLA</strong><button>×</button></div><div><button class="vf-mobile-print-send" style="background:#254b78;color:white">Imprimer via Mobile Print</button><a class="vf-mobile-print-open">Voir le cavalier (PDF)</a><a class="vf-mobile-print-download">Télécharger le cavalier (PDF)</a><button class="vf-mobile-print-copy">Copier l’adresse Mobile Print</button><small class="vf-mobile-print-info">Préparation du PDF</small><small class="vf-mobile-print-notes">Mail professionnel <a>Guide officiel</a></small></div>';
+  document.body.append(d);d.showModal();
+ });
+ const dlg=page.locator('#vfMobilePrintDialog');
+ await page.evaluate(()=>document.documentElement.classList.remove('vf-night'));
+ await expect(dlg).toHaveCSS('background-color','rgb(255, 255, 255)');
+ await expect(dlg).toHaveCSS('color','rgb(34, 55, 70)');
+ await expect(dlg.locator('.vf-mobile-print-send')).toHaveCSS('background-color','rgb(37, 75, 120)');
+ await expect(dlg.locator('.vf-mobile-print-open')).toHaveCSS('color','rgb(37, 75, 120)');
+ await page.evaluate(()=>document.documentElement.classList.add('vf-night'));
+ await expect(dlg).toHaveCSS('background-color','rgb(36, 53, 74)');
+ await expect(dlg).toHaveCSS('color','rgb(245, 248, 255)');
+ await expect(dlg.locator('.vf-mobile-print-send')).toHaveCSS('background-color','rgb(53, 111, 174)');
+ await expect(dlg.locator('.vf-mobile-print-open')).toHaveCSS('color','rgb(229, 241, 255)');
+ await page.evaluate(()=>document.documentElement.classList.remove('vf-night'));
+ await expect(dlg).toHaveCSS('background-color','rgb(255, 255, 255)');
+ await expect(dlg.locator('.vf-mobile-print-open')).toHaveCSS('color','rgb(37, 75, 120)');
 });

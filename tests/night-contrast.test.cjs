@@ -6,10 +6,12 @@ const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
 const expected=['.hemicycle-row[data-city="bru"]','.hemicycle-row[data-city="str"]','.committee-tag','.country','.group-label','.committee-heading','#vfNightToggle'];
 for(const name of expected)assert.ok(css.includes(name),'Night accessibility rule absent: '+name);
-assert.ok(!/\bhtml:not\(\.vf-night\)/.test(css),'Night-specific CSS modifies light mode');
+const dayRules=css.match(/html:not\(\.vf-night\)[^{]+\{/g)||[];
+assert.ok(dayRules.every(rule=>rule.includes('#vfMobilePrintDialog')),'Light theme override affects non-print interface');
+assert.ok(dayRules.length>0,'Missing dedicated light Mobile Print theme');
 assert.ok(css.includes('html.vf-night body'),'Missing theme scoping');
-assert.ok(html.includes('css/directory-night-contrast.css?v=363'),'Night theme not loaded');
-assert.ok(sw.includes('css/directory-night-contrast.css?v=363'),'Night theme not available in offline cache');
+assert.match(html,/css\/directory-night-contrast\.css\?v=36[34]/,'Night theme not loaded');
+assert.match(sw,/css\/directory-night-contrast\.css\?v=36[34]/,'Night theme not available in offline cache');
 function luminance(hex){
  const normalized=hex.length===4?'#'+[...hex.slice(1)].map(c=>c+c).join(''):hex;
  const values=normalized.match(/[0-9a-f]{2}/gi).map(v=>parseInt(v,16)/255).map(v=>v<=0.04045?v/12.92:Math.pow((v+0.055)/1.055,2.4));

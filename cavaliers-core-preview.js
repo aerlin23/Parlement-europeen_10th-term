@@ -7,12 +7,36 @@ function cleanName(s){return strip(s).replace(/[\/\\]+/gu,' ').replace(/(^|\s)[\
 const name=/^\p{L}[\p{L}\p{M}’'.\p{Pd}]*(?:\s+\p{L}[\p{L}\p{M}’'.\p{Pd}]*)*$/u;
 function initials(s){return cleanName(s).split(/\s+/u).filter(Boolean).map(w=>w.split(/\p{Pd}+/u).map(x=>{const c=x.match(/\p{L}/u)?.[0];return c?c.toLocaleUpperCase('fr')+'.':''}).filter(Boolean).join('-')).filter(Boolean).join(' ')}
 function display(r){if(!r[0]&&r[1])return strip(r[1]).toLocaleUpperCase('fr');return [initials(r[0]),cleanName(r[1]).toLocaleUpperCase('fr')].filter(Boolean).join(' ')}
-function parse(line){const cells=line.split(line.includes('\t')?'\t':'|');if(cells.length>1)return [cleanName(cells[0]),cleanName(cells[1]),...cells.slice(2,5).map(strip)].concat(['','','']).slice(0,5);const words=cleanName(line).split(' ');return [words.shift()||'',words.join(' '),'','','']}
-function analyze(text){const accepted=[],rejected=[],seen=new Set();for(const raw of String(text).split(/\r?\n/u)){if(!raw.trim())continue;const cells=raw.split(raw.includes('\t')?'\t':'|');const n=norm(strip(raw)),r=parse(raw);let reason='',recover=false;const par=/^\s*[(（].*[)）]\s*$/u.test(raw);const candidate=r;
+const TITLES=/^(?:(?:dr|docteur|prof|professeur|mme|madame|m|monsieur|mr|mrs|ms|hon|honorable)\.?\s+)+/iu;
+function splitFull(value){
+ const src=cleanName(value),comma=src.indexOf(',');
+ if(comma>=0)return [src.slice(comma+1).trim(),src.slice(0,comma).trim()];
+ const parts=src.split(/\s+/u).filter(Boolean);
+ const upper=w=>/\p{Lu}/u.test(w)&&w===w.toLocaleUpperCase('fr')&&w.length>1;
+ if(parts.length===2&&upper(parts[0])&&!upper(parts[1]))return [parts[1],parts[0]];
+ let cut=parts.findIndex((w,i)=>i>0&&upper(w));
+ if(cut>0&&parts.slice(cut).every(upper)&&!upper(parts[0]))return [parts.slice(0,cut).join(' '),parts.slice(cut).join(' ')];
+ if(parts.length===2)return [parts[0],parts[1]];
+ // Suggest common multipart surname prefixes; final result still requires review.
+ const particle=/^(?:van|von|de|du|des|del|della|der|den|di|da|dos|das|la|le)$/iu;
+ const surnameStart=parts.findIndex((w,i)=>i>0&&particle.test(w));
+ if(surnameStart>0)return [parts.slice(0,surnameStart).join(' '),parts.slice(surnameStart).join(' ')];
+ return [parts.shift()||'',parts.join(' ')];
+}
+function parse(line){
+ const cells=line.split(line.includes('\t')?'\t':'|');
+ if(cells.length>1)return [cleanName(cells[0]),cleanName(cells[1]),...cells.slice(2,5).map(strip)].concat(['','','']).slice(0,5);
+ const raw=strip(line),m=raw.match(TITLES),title=m?m[0].trim():'';
+ const withoutTitle=title?raw.slice(m[0].length):raw;
+ const [first,last]=splitFull(withoutTitle);
+ return [first,last,title,'',''];
+}
+function analyze(text){const accepted=[],rejected=[],seen=new Set();for(const raw of String(text).split(/\r?\n/u)){if(!raw.trim())continue;const cells=raw.split(raw.includes('\t')?'\t':'|');const n=norm(strip(raw)),r=parse(raw);const delimited=raw.includes('|')||raw.includes('\t');const unseparatedWords=strip(raw).split(/\s+/u).filter(Boolean).length;let reason='',recover=false;const par=/^\s*[(（].*[)）]\s*$/u.test(raw);const candidate=r;
 if(header(cells)||/^(prenom|first name)\s+(nom|surname|last name)/u.test(n)){reason='En-tête'}
 else if(/^(?:pause|dejeuner|lunch|agenda|participants?|delegation|total|a confirmer|tbc|absent|excuse|coffee break|meeting|reunion|fin de reunion)(?:\s|$)/u.test(n)||/\d{1,2}[:h]\d{2}/u.test(strip(raw))||!/[\p{L}]/u.test(raw)){reason='Commentaire / horaire'}
 else if(par||!strip(raw)){reason='Commentaire entre parenthèses';recover=false}
 else if(/\b(?:a confirmer|tbc|tentative|absent|excuse)\b/u.test(n)){reason='À vérifier';recover=true}
+else if(!delimited&&unseparatedWords>2){reason='À vérifier : découpage du nom';recover=true}
 else if(cells.length>5||!name.test(r[0])||!name.test(r[1])){reason='À vérifier';recover=true}
 else {const key=[...r.slice(0,2)].map(v=>v.normalize('NFC').toLocaleLowerCase('fr')).join('\0');if(seen.has(key)){reason='Doublon';recover=true}else seen.add(key)}
 if(reason)rejected.push({raw,reason,recover,row:candidate});else accepted.push(r)}return {accepted,rejected}}
@@ -42,17 +66,6 @@ function memberIndex(members){
  }
  return index;
 }
-function splitFull(value){
- const s=cleanName(value);const comma=s.indexOf(',');
- if(comma>=0)return [s.slice(comma+1).trim(),s.slice(0,comma).trim()];
- const parts=s.split(/\s+/),upper=w=>/\p{Lu}/u.test(w)&&w===w.toLocaleUpperCase('fr')&&w.length>1;
- let i=parts.findIndex((w,i)=>i>0&&upper(w));
- if(i>0&&parts.slice(i).every(upper)&&!upper(parts[0]))return [parts.slice(0,i).join(' '),parts.slice(i).join(' ')];
- i=parts.findIndex(w=>!upper(w));
- if(i>0)return [parts.slice(i).join(' '),parts.slice(0,i).join(' ')];
- return [parts.shift()||'',parts.join(' ')];
-}
-
 function orderSchema(cells){
  const h=cells.map(norm),qty=h.findIndex(x=>/^(qt|qte|quantite|quantity|qty)$/.test(x));
  if(qty<0)return null;
