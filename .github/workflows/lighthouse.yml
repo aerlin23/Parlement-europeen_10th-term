@@ -1,6 +1,9 @@
 name: Lighthouse performance and accessibility
 on:
   workflow_dispatch:
+concurrency:
+  group: lighthouse-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
