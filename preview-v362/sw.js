@@ -2,7 +2,7 @@
 const VERSION='pe-pwa-v362';
 const MEDIA='pe-offline-official-media-v1';
 const IS_STAGING=self.registration.scope.includes('/preview-v362/');
-const CACHE_VERSION=IS_STAGING?'pe-preview-v362':VERSION;
+const CACHE_VERSION=IS_STAGING?'pe-preview-v362-printfix':VERSION;
 const CORE=CACHE_VERSION+'-core',PHOTOS=CACHE_VERSION+'-portraits';
 const DOCUMENT_LIBRARIES='vf-document-libraries-v2';
 const LIBRARY_URLS=new Set([
@@ -34,7 +34,7 @@ self.addEventListener('message',event=>{
 self.addEventListener('activate',event=>{
  event.waitUntil((async()=>{
   const keys=await caches.keys();
-  await Promise.all(keys.filter(k=>k.startsWith(IS_STAGING?'pe-preview-':'pe-pwa-')&&k!==CORE&&k!==PHOTOS).map(k=>caches.delete(k)));
+  await Promise.all(keys.filter(k=>k.startsWith(IS_STAGING?'pe-preview-v362-':'pe-pwa-')&&k!==CORE&&k!==PHOTOS).map(k=>caches.delete(k)));
   await self.clients.claim();
  })());
 });
