@@ -94,6 +94,22 @@ function possibleMEPs(entries,value){
  const surname=officialKey(words.slice(1).join(' '));
  return Object.entries(entries).filter(([id,m])=>{const parts=m.name.trim().split(/\s+/);const cut=parts.findIndex((w,i)=>i>0&&w===w.toLocaleUpperCase('fr')&&/\p{Lu}/u.test(w));if(cut<=0)return false;const family=parts.slice(cut);if(officialKey(family.join(' '))===surname)return true;return family.length>1&&family.some((_,i)=>i<family.length-1&&officialKey(family.slice(0,i+1).join(' '))===surname)&&officialKey(parts[0][0])===officialKey(words[0][0])});
 }
+function possibleMEPTranspositions(entries,label){
+ const words=String(label||'').trim().split(/\s+/u);
+ if(words.length<2||!/^[\p{L}]\.$/u.test(words[0]))return [];
+ const initial=officialKey(words[0][0]),surname=officialKey(words.slice(1).join(' '));
+ if(surname.length<5)return [];
+ const isSwap=(a,b)=>{
+  if(a.length!==b.length||a===b)return false;
+  let i=0;while(i<a.length&&a[i]===b[i])i++;
+  return i<a.length-1&&a[i]===b[i+1]&&a[i+1]===b[i]&&a.slice(i+2)===b.slice(i+2);
+ };
+ return Object.entries(entries).filter(([,member])=>{
+  const parts=member.name.trim().split(/\s+/u);
+  const cut=parts.findIndex((w,i)=>i>0&&w===w.toLocaleUpperCase('fr')&&/\p{Lu}/u.test(w));
+  return cut>0&&officialKey(parts[0][0])===initial&&isSwap(surname,officialKey(parts.slice(cut).join(' ')));
+ });
+}
 function resolveMEP(entries,names,label){
  const exact=officialMatch(names,label);if(exact)return {id:exact};
  const k=officialKey(label);if(decisions.has(k))return {id:decisions.get(k)};
@@ -101,7 +117,7 @@ function resolveMEP(entries,names,label){
  if(hits.length===1)return {id:hits[0][0]};
  if(hits.length>1)return {candidates:hits};
  const ambiguous=names.get(k)||[];if(ambiguous.length>1)return {candidates:ambiguous.map(id=>[id,entries[id]])};
- const candidates=possibleMEPs(entries,label);return candidates.length?{candidates}:{id:null};
+ const candidates=possibleMEPs(entries,label);if(candidates.length)return {candidates};const transpositions=possibleMEPTranspositions(entries,label);return transpositions.length?{candidates:transpositions}:{id:null};
 }
 const thumbnailCache=new Map();let thumbnailQueue=Promise.resolve();
 function originalThumbnail(result){
