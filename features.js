@@ -43,20 +43,20 @@ async function printCavalier(m){
  bar.append(title,print,open,close);
  if(mobile){
   const email='mobileprint@europarl.europa.eu', filename='Cavalier - '+m.name.replace(/[\\/:*?"<>|]/g,'-')+'.pdf';
-  dialog.style.cssText='height:auto;max-height:85dvh;width:min(440px,92vw);padding:16px;overflow:auto;color:#223746';
+  dialog.classList.add('vf-mobile-print-dialog');dialog.id='vfMobilePrintDialog';dialog.style.cssText='height:auto;max-height:85dvh;width:min(440px,92vw);padding:16px;overflow:auto;color:#223746';
   bar.style.cssText='display:flex;align-items:flex-start;gap:10px;margin-bottom:14px';
   title.textContent='Cavalier — '+m.name;title.style.cssText='font-size:16px;line-height:1.35;overflow-wrap:anywhere';
   close.textContent='×';close.setAttribute('aria-label','Fermer');close.style.cssText='font-size:22px;min-width:38px;padding:4px 10px';
   bar.replaceChildren(title,close);
   const panel=document.createElement('div');panel.style.cssText='display:grid;gap:9px;font-size:13px';
-  const send=document.createElement('button');send.type='button';send.disabled=true;send.style.cssText='display:flex;align-items:center;justify-content:center;gap:8px;background:#254b78;color:white;border:0;padding:12px;border-radius:7px;font-weight:600';
+  const send=document.createElement('button');send.className='vf-mobile-print-send';send.type='button';send.disabled=true;send.style.cssText='display:flex;align-items:center;justify-content:center;gap:8px;background:#254b78;color:white;border:0;padding:12px;border-radius:7px;font-weight:600';
   send.innerHTML='<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 9V3h12v6M6 18H3V9h18v9h-3M6 14h12v8H6zM17 12h1"/></svg>Imprimer via Mobile Print';
-  const download=document.createElement('a');download.textContent='Télécharger le cavalier (PDF)';download.download=filename;download.href=url.href;download.style.cssText='text-align:center;padding:9px;border:1px solid #cbdce5;border-radius:7px;text-decoration:none;color:#254b78';
-  const openPdf=document.createElement('a');openPdf.href=url.href;openPdf.target='_blank';openPdf.rel='noopener';openPdf.textContent='Voir le cavalier (PDF)';openPdf.style.cssText='text-align:center;padding:7px;color:#254b78';
-  const info=document.createElement('small');info.textContent='Préparation du PDF…';info.style.cssText='line-height:1.4;overflow-wrap:anywhere';
-  const copy=document.createElement('button');copy.type='button';copy.textContent='Copier l’adresse Mobile Print';copy.style.cssText='padding:7px;font-size:12px';
+  const download=document.createElement('a');download.className='vf-mobile-print-download';download.textContent='Télécharger le cavalier (PDF)';download.download=filename;download.href=url.href;download.style.cssText='text-align:center;padding:9px;border:1px solid #cbdce5;border-radius:7px;text-decoration:none;color:#254b78';
+  const openPdf=document.createElement('a');openPdf.className='vf-mobile-print-open';openPdf.href=url.href;openPdf.target='_blank';openPdf.rel='noopener';openPdf.textContent='Voir le cavalier (PDF)';openPdf.style.cssText='text-align:center;padding:7px;color:#254b78';
+  const info=document.createElement('small');info.className='vf-mobile-print-info';info.textContent='Préparation du PDF…';info.style.cssText='line-height:1.4;overflow-wrap:anywhere';
+  const copy=document.createElement('button');copy.className='vf-mobile-print-copy';copy.type='button';copy.textContent='Copier l’adresse Mobile Print';copy.style.cssText='padding:7px;font-size:12px';
   const guide=document.createElement('a');guide.href='https://mfd.europarl.europa.eu/pdf/mobile-printing-qsg_en.pdf';guide.target='_blank';guide.rel='noopener';guide.textContent='Guide officiel';
-  const notes=document.createElement('small');notes.style.cssText='line-height:1.4;color:#607585';notes.textContent='Mail professionnel : badge puis Secure print. Mail personnel : code reçu par mail puis Job Code. ';
+  const notes=document.createElement('small');notes.className='vf-mobile-print-notes';notes.style.cssText='line-height:1.4;color:#607585';notes.textContent='Mail professionnel : badge puis Secure print. Mail personnel : code reçu par mail puis Job Code. ';
   let file,objectUrl;
   fetch(url.href).then(async r=>{if(!r.ok)throw Error('PDF');const b=await r.blob();if(!(await b.slice(0,5).text()).startsWith('%PDF-'))throw Error('PDF');if(!dialog.isConnected)return;file=new File([b],filename,{type:'application/pdf'});objectUrl=URL.createObjectURL(file);download.href=objectUrl;send.disabled=false;info.textContent='Choisissez votre messagerie et collez l’adresse Mobile Print dans le destinataire.'}).catch(()=>{info.textContent='PDF indisponible pour le partage. Essayez de télécharger le cavalier.'});
   copy.onclick=async()=>{try{await navigator.clipboard.writeText(email);copy.textContent='Adresse copiée'}catch{window.prompt('Copier l’adresse :',email)}};

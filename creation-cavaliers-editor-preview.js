@@ -1,5 +1,5 @@
 (()=>{'use strict';
-const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg',labels=['Prénom','Nom de famille','Titre','Organisation','Fonction'],collator=new Intl.Collator('fr',{sensitivity:'base'});let rows=[];
+const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg',labels=['Prénom','Nom de famille','Titre','Organisation','Fonction'],collator=new Intl.Collator('fr',{sensitivity:'base'});let rows=[],pending=new Set();
 const core=window.CavalierCore,clean=s=>core.strip(s),cleanName=core.cleanName,full=core.display;
 const ctx=document.createElement('canvas').getContext('2d');
 function width(s,n){ctx.font='700 '+n+'px Arial, sans-serif';return ctx.measureText(s).width}
@@ -55,9 +55,35 @@ function model(r){
  return {texts,positions,sizes,count,warning,nameLines:name.lines.length}
 }
 function svg(r){const m=model(r),s=document.createElementNS(NS,'svg');s.setAttribute('viewBox','0 0 595.276 841.89');s.setAttribute('role','img');s.setAttribute('aria-label',full(r));s.dataset.firstName=cleanName(r[0]);s.dataset.lastName=cleanName(r[1]);for(let side=0;side<2;side++){const g=document.createElementNS(NS,'g');if(side)g.setAttribute('transform','translate(595.276 841.89) rotate(180)');m.texts.forEach((str,i)=>{const t=document.createElementNS(NS,'text');t.setAttribute('x','297.638');t.setAttribute('y',m.positions[i]);t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','central');t.setAttribute('font-family','Arial, sans-serif');t.setAttribute('font-weight','700');t.setAttribute('font-size',m.sizes[i]);t.setAttribute('fill','#000');t.textContent=str;g.append(t)});s.append(g)}return s}
-function refresh(){const list=$('entries');let valid=0,invalid=0;rows.forEach((r,i)=>{const m=model(r),ok=!!cleanName(r[1])&&(r[0]?core.analyze(r.join('|')).accepted.length===1:true)&&!m.warning;const entry=$('entries').children[i];if(entry){entry.querySelector('.preview')?.remove();entry.style.background='';entry.style.border=ok?'':'2px solid #b86b32';entry.title=ok?'':'À corriger : nom manquant ou texte trop long';}if(!ok){invalid++;return}valid++;const box=document.createElement('div');box.className='preview';const p=document.createElement('p');p.textContent=full(r);box.dataset.surname=cleanName(r[1]).toLocaleUpperCase('fr');box.append(svg(r),p);entry.prepend(box)});$('print').disabled=!valid;$('topPrint').disabled=!valid;$('status').textContent=valid+' cavalier(s) prêt(s)'+(invalid?' — '+invalid+' ligne(s) à corriger, exclue(s) de l’impression. Voir les champs encadrés en orange.':'');$('readyCount').textContent=valid;$('fixCount').textContent=invalid;$('importSummary').hidden=!rows.length&&!Number($('rejectedCount').textContent);$('status').textContent='';$('entries').dataset.excluded=String(invalid);document.dispatchEvent(new Event('vf-cavaliers-ready'))}
+function refresh(){let valid=0,invalid=0;
+ rows.forEach((r,i)=>{
+  const m=model(r),needsReview=pending.has(r),ok=!!cleanName(r[1])&&(r[0]?core.analyze(r.join('|')).accepted.length===1:true)&&!m.warning;
+  const entry=$('entries').children[i];if(!entry)return;
+  entry.querySelector(':scope > .preview, :scope > .pending-preview')?.remove();
+  entry.classList.toggle('vf-pending',needsReview);
+  entry.style.background=needsReview?'#fff0f0':'';
+  entry.style.border=needsReview?'2px solid #b42332':ok?'':'2px solid #b86b32';
+  entry.title=needsReview?'Vérifiez le prénom et le nom puis confirmez avant impression':ok?'':'À corriger : nom manquant ou texte trop long';
+  if(!ok&&!needsReview){invalid++;return}
+  if(needsReview||ok){
+   const box=document.createElement('div');box.className=needsReview?'pending-preview':'preview';
+   const image=svg(r);
+   if(needsReview)for(const text of image.querySelectorAll('text'))text.setAttribute('fill','#ab1f2d');
+   const p=document.createElement('p');p.textContent=full(r);
+   box.dataset.surname=cleanName(r[1]).toLocaleUpperCase('fr');
+   box.append(image,p);
+   if(needsReview){const badge=document.createElement('strong');badge.className='pending-label';badge.textContent='À VÉRIFIER — confirmer le prénom et le nom';box.prepend(badge);invalid++}else valid++;
+   entry.prepend(box);
+  }
+ });
+ $('print').disabled=!valid;$('topPrint').disabled=!valid;
+ $('readyCount').textContent=valid;$('fixCount').textContent=invalid;
+ $('importSummary').hidden=!rows.length&&!Number($('rejectedCount').textContent);
+ $('entries').dataset.excluded=String(invalid);
+ document.dispatchEvent(new Event('vf-cavaliers-ready'));
+}
 let expanded=-1,lastRemoved=null;
-$('undoRemove').onclick=()=>{if(!lastRemoved)return;rows.splice(Math.min(lastRemoved.index,rows.length),0,lastRemoved.row);lastRemoved=null;expanded=-1;editor()};
+$('undoRemove').onclick=()=>{if(!lastRemoved)return;rows.splice(Math.min(lastRemoved.index,rows.length),0,lastRemoved.row);if(lastRemoved.pending)pending.add(lastRemoved.row);lastRemoved=null;expanded=-1;editor()};
 function editor(){
  const div=$('entries');div.replaceChildren();
  rows.forEach((r,i)=>{
@@ -68,17 +94,17 @@ function editor(){
   function updateIdentity(){title.textContent=[cleanName(r[0]),cleanName(r[1]).toLocaleUpperCase('fr')].filter(Boolean).join(' ')||'Nouveau participant';details.textContent=r.slice(2).map(clean).filter(Boolean).join(' · ');details.hidden=!details.textContent}
   updateIdentity();identity.append(title,details);
   const toggle=document.createElement('button');toggle.type='button';toggle.className='entry-icon';toggle.title=expanded===i?'Replier':'Modifier';toggle.setAttribute('aria-label',toggle.title);toggle.setAttribute('aria-expanded',String(expanded===i));toggle.innerHTML=expanded===i?'<svg viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></svg>':'<svg viewBox="0 0 24 24"><path d="m14 5 5 5M4 20l5-1L20 8l-5-5L4 14z"/></svg>';toggle.onclick=()=>{expanded=expanded===i?-1:i;editor()};
-  const remove=document.createElement('button');remove.type='button';remove.className='entry-icon';remove.title='Supprimer';remove.setAttribute('aria-label','Supprimer '+title.textContent);remove.innerHTML='<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v5M14 11v5"/></svg>';remove.onclick=()=>{lastRemoved={row:rows[i].slice(),index:i};rows.splice(i,1);expanded=-1;editor()};
+  const remove=document.createElement('button');remove.type='button';remove.className='entry-icon';remove.title='Supprimer';remove.setAttribute('aria-label','Supprimer '+title.textContent);remove.innerHTML='<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v5M14 11v5"/></svg>';remove.onclick=()=>{lastRemoved={row:rows[i].slice(),index:i,pending:pending.has(r)};pending.delete(r);rows.splice(i,1);expanded=-1;editor()};
   head.append(identity,toggle,remove);e.append(head);
   const fields=document.createElement('div');fields.className='entry-fields';fields.hidden=expanded!==i;
   ['Prénom','Nom de famille','Titre, fonction ou organisation'].forEach((label,n)=>{const l=document.createElement('label');l.textContent=label;const input=document.createElement(n===2?'textarea':'input');if(n===2){input.rows=1;input.style.cssText='width:100%;box-sizing:border-box;font:inherit;padding:8px;border:1px solid #b9cbd8;border-radius:6px;min-height:36px!important;height:36px;max-height:180px;resize:vertical;line-height:1.25';input.addEventListener('input',()=>{input.style.height='36px';input.style.height=Math.min(180,Math.max(36,input.scrollHeight+2))+'px'});requestAnimationFrame(()=>{if(input.value&&input.scrollHeight>36)input.style.height=Math.min(180,input.scrollHeight+2)+'px'});input.placeholder='Facultatif';input.value=r.slice(2).filter(Boolean).join('\n')}else input.value=r[n]||'';input.addEventListener('input',()=>{if(n===2){const v=input.value.split(/\n/);r[2]=v[0]||'';r[3]=v[1]||'';r[4]=v.slice(2).join(' ')||''}else r[n]=input.value;updateIdentity();refresh()});l.append(input);fields.append(l)});
-  const done=document.createElement('button');done.type='button';done.textContent='Confirmer le cavalier';done.style.cssText='background:#003399;color:#fff;border:1px solid #003399;font-weight:600;padding:9px 6px;white-space:normal;line-height:1.2';done.onclick=()=>{expanded=-1;editor()};fields.append(done);e.append(fields);div.append(e)
+  const done=document.createElement('button');done.type='button';done.textContent='Confirmer le cavalier';done.style.cssText='background:#003399;color:#fff;border:1px solid #003399;font-weight:600;padding:9px 6px;white-space:normal;line-height:1.2';done.onclick=()=>{if(pending.has(r)){const m=model(r);if(!cleanName(r[0])||!cleanName(r[1])||m.warning||core.analyze(r.join('|')).accepted.length!==1){$('status').textContent='Corrigez le prénom et le nom avant de confirmer.';return}pending.delete(r)}expanded=-1;editor()};fields.append(done);e.append(fields);div.append(e)
  });
  $('editor').hidden=!rows.length&&!lastRemoved;$('undoRemove').hidden=!lastRemoved;refresh()
 }
-window.vfSetCavalierRows=items=>{expanded=-1;rows=items.map(r=>r.slice());lastRemoved=null;editor()};
+window.vfSetCavalierRows=(items,pendingIndices=[])=>{expanded=-1;rows=items.map(r=>r.slice());pending=new Set(pendingIndices.map(i=>rows[i]).filter(Boolean));lastRemoved=null;editor()};
 window.vfRecoverCavalier=r=>{rows.push(r.slice());expanded=rows.length-1;editor();$('entries').lastElementChild?.scrollIntoView({block:'nearest'})};
 $('addCompact').onclick=()=>$('add').click();$('add').onclick=()=>{rows.push(['','','','','']);expanded=rows.length-1;editor();$('entries').lastElementChild?.querySelector('input').focus()};$('clear').addEventListener('click',e=>{if((rows.length||$('paste').value.trim())&&!confirm('Effacer toute la liste et les cavaliers préparés ?')){e.preventDefault();e.stopImmediatePropagation()}},true);
-$('clear').onclick=()=>{rows=[];lastRemoved=null;expanded=-1;$('paste').value='';editor()};$('sort').onclick=()=>{expanded=-1;rows.sort((a,b)=>collator.compare(clean(a[1]),clean(b[1]))||collator.compare(clean(a[0]),clean(b[0])));editor()};
+$('clear').onclick=()=>{rows=[];pending.clear();lastRemoved=null;expanded=-1;$('paste').value='';editor()};$('sort').onclick=()=>{expanded=-1;rows.sort((a,b)=>collator.compare(clean(a[1]),clean(b[1]))||collator.compare(clean(a[0]),clean(b[0])));editor()};
 $('print').onclick=()=>{if(!$('print').disabled)window.vfOpenPreview?.()};$('topPrint').onclick=()=> $('print').click();$('topAdd').onclick=()=> $('add').click();$('topSort').onclick=()=> $('sort').click();
 })();

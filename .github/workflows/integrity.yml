@@ -20,6 +20,7 @@ jobs:
           node-version: '22'
       - run: node tests/data-integrity.test.cjs
       - run: node tests/cavaliers-core.test.cjs
+      - run: node tests/cavaliers-ambiguous.test.cjs
       - run: node tests/offline-policy.test.cjs
       - run: node tests/vector-pdf.test.cjs
       - run: node tests/official-roster.test.cjs
