@@ -25,3 +25,17 @@ for(const [fg,bg,desc] of [
  ['#fff','#244364','Night mode toggle']
 ])assert.ok(contrast(fg,bg)>=4.5,desc+' contrast below WCAG AA');
 console.log('PASS: CSS is night-scoped, precached and palette passes WCAG AA text contrast');
+
+// Régression de thème sur la page Contacts utiles.
+const contacts=fs.readFileSync(path.join(root,'contacts-personnels.html'),'utf8');
+assert.ok(contacts.includes('<html lang="fr">'),'Contacts starts in light mode');
+assert.ok(!contacts.includes('<html lang="fr" class="vf-night">'),'Contacts forces dark theme');
+assert.ok(contacts.includes("key='vf-night-theme'"),'Shared theme storage missing');
+assert.ok(contacts.includes("classList.toggle('vf-night',dark)"),'Toggle missing');
+assert.ok(contacts.includes("b.id='vfNightToggle'"),'Floating theme button missing');
+assert.ok(!contacts.includes('prefers-color-scheme: dark'),'Auto dark theme must not be used');
+assert.ok(contacts.includes('Choisir un fichier'),'File selection label missing');
+assert.ok(!contacts.includes('appareil partagé'),'Shared device wording must be absent');
+assert.ok(contacts.includes('<details id="setup" open>'),'Collapsible import missing');
+assert.ok(contacts.includes("padding-bottom:100px"),'Bottom button clearance missing');
+assert.ok(contacts.includes('css/shared-theme-toggle.css'),'Shared theme CSS missing');
