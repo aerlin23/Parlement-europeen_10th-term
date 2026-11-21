@@ -1,5 +1,16 @@
 # Historique des versions
 
+## v361 — noms composés
+
+- Prénoms composés conservant leur trait d'union dans les initiales des cavaliers : Jean-Pierre devient J.-P. (public et personnel).
+- Tests unitaires adaptés et références de cache actualisées.
+
+## v360 — stabilité graphique
+
+- Réservation d'espace avant chargement des députés pour réduire les décalages de mise en page.
+- Préchargement du logo de l'en-tête.
+- Lighthouse sur serveur local : mobile 57/100, bureau 78/100, accessibilité 97/100, CLS mobile 0,172 (contre 0,446 auparavant). LCP mobile encore trop lent (8,4 s) ; voir PERFORMANCE.md.
+
 ## v359 — consolidation expérimentale
 
 - Nouveaux cavaliers en PDF texte vectoriel quand les glyphes sont compatibles ; retour JPEG si nécessaire, PDF officiels préservés.
