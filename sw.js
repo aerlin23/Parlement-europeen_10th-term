@@ -2,7 +2,7 @@
 const VERSION='pe-pwa-v364';
 const MEDIA='pe-offline-official-media-v1';
 const IS_STAGING=self.registration.scope.includes('/preview-v364/');
-const CACHE_VERSION=IS_STAGING?'pe-preview-v364-blueprint':VERSION;
+const CACHE_VERSION=IS_STAGING?'pe-preview-v364-two-themes':VERSION;
 const CORE=CACHE_VERSION+'-core',PHOTOS=CACHE_VERSION+'-portraits';
 const DOCUMENT_LIBRARIES='vf-document-libraries-v2';
 const LIBRARY_URLS=new Set([
