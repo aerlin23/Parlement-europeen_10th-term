@@ -198,3 +198,21 @@ test('Civilité et nom : PDF local, homonymes et original parlementaire',async({
  await expect(page.locator('#readyCount')).toHaveText('0');
  await expect(page.locator('#print')).toBeDisabled();
 });
+
+test('Prénoms complets et noms proches : confirmer avant de réutiliser le PDF',async({page})=>{
+ await page.goto('/preview-v364/creation-cavaliers-preview.html');
+ await page.locator('#paste').fill('Roberta|Metsola\nRobert|Metsola\nRoberta|Mestola\nMika|Aaltolla\nMika|Aaltola');
+ await page.locator('#import').click();
+ const cards=page.locator('#entries .compact-entry');
+ await expect(cards.nth(0).locator('a')).toHaveAttribute('href',/cavaliers\/\d+\.pdf$/);
+ await expect(page.locator('#fixCount')).toHaveText('3');
+ await expect(page.locator('#print')).toBeDisabled();
+ for(const i of [1,2,3])await expect(cards.nth(i)).toContainText('Vérifier l’identité');
+ await expect(cards.nth(4)).toContainText('PDF original du député');
+ await cards.nth(1).getByRole('button',{name:'Garder la saisie et créer le cavalier'}).click();
+ await expect(cards.nth(1)).toContainText('Cavalier généré');
+ await cards.nth(2).getByRole('button',{name:'Confirmer : Roberta METSOLA',exact:true}).click();
+ await expect(cards.nth(2)).toContainText('PDF original du député');
+ await expect(cards.nth(0)).toContainText('PDF original du député');
+ await expect(cards.nth(3)).toContainText('Vérifier l’identité');
+});

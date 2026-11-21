@@ -179,25 +179,38 @@ function originalThumbnail(result){
 }
 async function showOfficialCavaliers(){
  const token=++officialToken,entries=await getOfficialIndex(),names=buildOfficialNames(entries);if(token!==officialToken)return;
- const cards=[...$('entries').querySelectorAll('.compact-entry')],tiles=[...previews.querySelectorAll('.preview')];
+ let identityReviews=0;
+ const tiles=[...previews.querySelectorAll('.preview')];
  for(const tile of tiles){const s=tile.querySelector('svg');if(!s)continue;const label=s.getAttribute('aria-label'),result=resolveSource(entries,names,s);
- const card=tile.closest('.compact-entry');card.style.borderColor=(result.id||result.private)?'#4a9669':(result.candidates||result.privateCandidates)?'#c58a32':'#b9cbd8';card.style.background=(result.id||result.private)?'#edf7ef':(result.candidates||result.privateCandidates)?'#fff6e5':'';
+ const card=tile.closest('.compact-entry');card.style.borderColor=(result.id||result.private)?'#4a9669':(result.choices||result.candidates||result.privateCandidates)?'#c58a32':'#b9cbd8';card.style.background=(result.id||result.private)?'#edf7ef':(result.choices||result.candidates||result.privateCandidates)?'#fff6e5':'';
  tile.querySelector('.original-thumbnail')?.remove();tile.querySelector('.thumbnail-status')?.remove();s.removeAttribute('hidden');s.style.removeProperty('display');
  if(result.id||result.private){s.setAttribute('hidden','');s.style.setProperty('display','none','important');const placeholder=element('p','Chargement du PDF original…');placeholder.className='thumbnail-status';tile.prepend(placeholder);
  originalThumbnail(result).then(src=>{if(token!==officialToken||!tile.isConnected)return;const img=element('img');img.className='original-thumbnail';img.alt='Aperçu du PDF original : '+label;img.src=src;placeholder.replaceWith(img);if(viewer.open){const i=viewPages.indexOf(s);if(i>=0)refreshViewerPage(i)}}).catch(()=>{if(token!==officialToken||!tile.isConnected)return;placeholder.textContent='Aperçu indisponible · consultez le PDF original';if(viewer.open){const i=viewPages.indexOf(s);if(i>=0)refreshViewerPage(i)}});}
  tile.querySelector('.official-cavalier-link')?.remove();
- const note=element('div',result.missingOriginal?'Bibliothèque modifiée · générez à nouveau la liste':result.id?'Cavalier existant · PDF original du député':result.private?'Cavalier existant · bibliothèque privée':result.privateCandidates?'Plusieurs PDF privés · à confirmer':result.candidates?'Député possible · à confirmer':'Cavalier généré');note.className='official-cavalier-link';note.style.cssText='font-size:12px;font-weight:600;color:'+((result.id||result.private)?'#24623a':(result.candidates||result.privateCandidates)?'#925900':'#526575');tile.append(note);
+ const note=element('div',result.missingOriginal?'Bibliothèque modifiée · générez à nouveau la liste':result.id?'Cavalier existant · PDF original du député':result.private?'Cavalier existant · bibliothèque privée':result.choices?'Vérifier l’identité : '+result.full:result.privateCandidates?'Plusieurs PDF privés · à confirmer':result.candidates?'Député possible · à confirmer':'Cavalier généré');note.className='official-cavalier-link';note.style.cssText='font-size:12px;font-weight:600;color:'+((result.id||result.private)?'#24623a':(result.choices||result.candidates||result.privateCandidates)?'#925900':'#526575');tile.append(note);
+ if(result.choices){
+  identityReviews++;
+  const choose=(text,selected)=>{const button=element('button',text);button.type='button';
+   button.onclick=()=>{decisions.set(result.key,selected);lastSignature='';showOfficialCavaliers();schedule()};note.append(button)};
+  for(const option of result.choices)choose('Confirmer : '+option.label+(option.result.private?' (bibliothèque)':''),option.result);
+  choose('Garder la saisie et créer le cavalier',{});
+ }
  if(result.candidates){for(const [id,m] of result.candidates){const b=element('button','Confirmer : '+m.name);b.type='button';b.style.cssText='display:block;margin:4px 0;font-size:12px';b.onclick=()=>{decisions.set(officialKey(label),id);lastSignature='';showOfficialCavaliers();schedule()};note.append(b)}const no=element('button','Non, créer un cavalier');no.type='button';no.onclick=()=>{decisions.set(officialKey(label),null);lastSignature='';showOfficialCavaliers();schedule()};note.append(no)}
  if(result.privateCandidates){for(const e of result.privateCandidates){const b=element('button',e.title);b.type='button';b.onclick=()=>{decisions.set(result.pk,e.id);lastSignature='';showOfficialCavaliers();schedule()};note.append(b)}const no=element('button','Créer un cavalier');no.type='button';no.onclick=()=>{decisions.set(result.pk,null);lastSignature='';showOfficialCavaliers();schedule()};note.append(no)}
  if(result.private){const b=element('button','Voir le PDF original');b.type='button';b.onclick=async()=>{const url=URL.createObjectURL(new Blob([await privateZip.file(result.private.file).async('uint8array')],{type:'application/pdf'}));window.open(url,'_blank');setTimeout(()=>URL.revokeObjectURL(url),120000)};note.append(b)}
  if(result.id){const link=element('a','Voir le PDF original');link.href='./cavaliers/'+encodeURIComponent(result.id)+'.pdf';link.target='_blank';link.rel='noopener';note.append(document.createElement('br'),link)}
  }
+ const ready=tiles.length-identityReviews;
+ $('readyCount').textContent=String(ready);
+ $('fixCount').textContent=String(Number(previews.dataset.excluded||0)+identityReviews);
+ $('print').disabled=$('topPrint').disabled=!ready||identityReviews>0;
 }
 async function assembleOriginals(svgs,filename,gen){
  const entries=await getOfficialIndex();if(!Object.keys(entries).length)throw Error('Index des cavaliers indisponible');
  const names=buildOfficialNames(entries),lib=window.PDFLib;if(!lib)throw Error('Moteur PDF indisponible');
  const output=await lib.PDFDocument.create(),cache=new Map();let originals=0;
  for(const s of svgs){if(gen!==generation)return null;const label=s.getAttribute('aria-label'),resolution=resolveSource(entries,names,s),id=resolution.id;
+ if(resolution.choices)throw Error('Confirmez l’identité : '+resolution.full);
  if(resolution.missingOriginal)throw Error('Bibliothèque modifiée : générez à nouveau la liste.');
  if(resolution.privateCandidates)throw Error('Confirmez le PDF de la bibliothèque : '+label);
  if(resolution.candidates)throw Error('Confirmez le député possible : '+label+' dans les aperçus.');
@@ -276,6 +289,57 @@ libraryInput.onchange=async()=>{
 };
 libraryDelete.onclick=async()=>{if(!confirm('Retirer la bibliothèque privée de cet appareil ?'))return;try{await libraryStore(null);privateEntries=[];privateZip=null;privateRevision++;decisions.clear();lastSignature='';libraryStatus.textContent='Aucune bibliothèque locale chargée';showOfficialCavaliers();schedule()}catch(e){libraryStatus.textContent=e.message}};
 let libraryReady=libraryStore().then(async blob=>{if(blob){await activateLibrary(blob);libraryStatus.textContent=privateEntries.length+' PDF originaux disponibles sur cet appareil.'}}).catch(e=>{libraryStatus.textContent='Bibliothèque locale indisponible : '+e.message});
+// Une initiale convient au papier. Pour choisir un original, conserver le prénom saisi.
+function nearSurname(a,b){
+ if(a===b)return true;
+ if(Math.min(a.length,b.length)<4||Math.abs(a.length-b.length)>1)return false;
+ let i=0;while(i<a.length&&a[i]===b[i])i++;
+ if(a.length!==b.length){
+  const [short,long]=a.length<b.length?[a,b]:[b,a];
+  return short.slice(i)===long.slice(i+1);
+ }
+ return a.slice(i+1)===b.slice(i+1)||
+  (a[i]===b[i+1]&&a[i+1]===b[i]&&a.slice(i+2)===b.slice(i+2));
+}
+let personIndex=null;
+function personSources(entries){
+ if(personIndex?.entries===entries&&personIndex.revision===privateRevision)return personIndex;
+ const records=[];
+ function add(label,result,aliases){
+  const variants=aliases.map(alias=>{
+   const [first,last]=core.splitFull(alias);
+   return {full:unorderedNameKey(alias),initial:officialKey(first)[0],surname:officialKey(last)};
+  });
+  records.push({label,result,variants});
+ }
+ for(const [id,m] of Object.entries(entries))add(m.name,{id},[m.name]);
+ for(const e of privateEntries)add(e.title,{private:e},[e.title,...e.aliases]);
+ personIndex={entries,revision:privateRevision,records,matches:new Map()};
+ return personIndex;
+}
+function resolveFullPerson(entries,svg){
+ const {firstName:first,lastName:last}=svg.dataset;
+ const index=personSources(entries),full=first+' '+last,key='person:'+JSON.stringify([officialKey(first),officialKey(last)]);
+ if(decisions.has(key))return decisions.get(key);
+ if(index.matches.has(key))return index.matches.get(key);
+ const identity=unorderedNameKey(full),initial=officialKey(first)[0],surname=officialKey(last);
+ const exact=index.records.filter(record=>record.variants.some(v=>v.full===identity));
+ // Préserver la préférence existante pour l'original parlementaire d'une identité exacte.
+ const official=exact.filter(record=>record.result.id);
+ const direct=official.length?official:exact;
+ let choices=direct.length?direct:index.records.filter(record=>record.variants.some(v=>v.initial===initial&&nearSurname(v.surname,surname)));
+ if(!choices.length){
+  const group=knownPrivateGroups.find(g=>g.has(privateKey(full)));
+  const known=group?privateEntries.filter(e=>[e.title,...e.aliases].some(a=>group.has(privateKey(a)))):[];
+  if(known.length===1)return {private:known[0]};
+  const possible=possibleMEPs(entries,svg.getAttribute('aria-label'));
+  choices=[...possible.map(([id,m])=>({label:m.name,result:{id}})),
+   ...privateSurnameCandidates(svg).map(e=>({label:e.title,result:{private:e}}))];
+ }
+ const result=direct.length===1?direct[0].result:choices.length?{choices,key,full}:{};
+ index.matches.set(key,result);
+ return result;
+}
 function resolveSource(entries,names,svg){
  if(svg.dataset.privateId){
   const entry=privateEntries.find(e=>e.id===svg.dataset.privateId);
@@ -283,6 +347,8 @@ function resolveSource(entries,names,svg){
   return {missingOriginal:true};
  }
  if(svg.dataset.officialId)return entries[svg.dataset.officialId]?{id:svg.dataset.officialId}:{missingOriginal:true};
+ const {firstName:first,lastName:last}=svg.dataset;
+ if(first&&last&&/\p{L}{2}/u.test(first))return resolveFullPerson(entries,svg);
  const label=svg.getAttribute('aria-label'),m=resolveMEP(entries,names,label);if(m.id||m.candidates)return m;const pk='private:'+officialKey([...privateLabel(svg),svg.dataset.firstName,svg.dataset.lastName].join('|'));if(decisions.has(pk)){const id=decisions.get(pk);return {private:id?privateEntries.find(e=>e.id===id):null}}const hits=privateFor(svg);if(hits.length===1)return {private:hits[0]};if(hits.length>1)return {privateCandidates:hits,pk};const fallback=privateSurnameCandidates(svg);return fallback.length?{privateCandidates:fallback,pk}:m}
 
 document.addEventListener('vf-cavaliers-ready',()=>{for(const a of document.querySelectorAll('.official-cavalier-link'))a.remove();showOfficialCavaliers()});
