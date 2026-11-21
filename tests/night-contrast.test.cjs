@@ -8,8 +8,8 @@ const expected=['.hemicycle-row[data-city="bru"]','.hemicycle-row[data-city="str
 for(const name of expected)assert.ok(css.includes(name),'Night accessibility rule absent: '+name);
 assert.ok(!/\bhtml:not\(\.vf-night\)/.test(css),'Night-specific CSS modifies light mode');
 assert.ok(css.includes('html.vf-night body'),'Missing theme scoping');
-assert.ok(html.includes('css/directory-night-contrast.css?v=363'),'Night theme not loaded');
-assert.ok(sw.includes('css/directory-night-contrast.css?v=363'),'Night theme not available in offline cache');
+assert.ok(html.includes('css/directory-night-contrast.css?v=374'),'Night theme not loaded');
+assert.ok(sw.includes('css/directory-night-contrast.css?v=374'),'Night theme not available in offline cache');
 function luminance(hex){
  const normalized=hex.length===4?'#'+[...hex.slice(1)].map(c=>c+c).join(''):hex;
  const values=normalized.match(/[0-9a-f]{2}/gi).map(v=>parseInt(v,16)/255).map(v=>v<=0.04045?v/12.92:Math.pow((v+0.055)/1.055,2.4));
@@ -53,3 +53,8 @@ console.log('PASS: Contacts theme structure and dark palette WCAG AA checks');
 assert.ok(contacts.includes("$('settingsPanel').prepend($('setup'))"),'Loaded contacts import should be accessible only via settings');
 assert.ok(contacts.includes("grid-template-columns:78px minmax(0,1fr)"),'Aligned BRU/STR columns missing');
 assert.ok(sw.includes("const VERSION='pe-pwa-v373'"),'Contacts UI update should refresh offline cache');
+
+// Contrôles statiques : l'identité des groupes et les commissions ne changent qu'en mode nuit.
+for(const group of ['PPE','S%26D','PfE','ECR','Renew','Verts%2FALE','The%20Left','ESN','NI'])assert.ok(css.includes('group='+group),'Night group color missing: '+group);
+for(const selector of ['.committee-leadership .leader-row','.committee-leadership .leader-entry a','.committee-leadership .leader-note'])assert.ok(css.includes(selector),'Night committee panel contrast missing: '+selector);
+assert.ok(css.includes('html.vf-night body main .directories > a.group-nav-item'),'Night group rule not theme scoped');
