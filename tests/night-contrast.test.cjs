@@ -48,3 +48,8 @@ for(const [foreground,background,label] of [
  ['#a0b3c7','#1c2b40','Contacts muted labels']
 ])assert.ok(contrast(foreground,background)>=4.5,label+' contrast below WCAG AA');
 console.log('PASS: Contacts theme structure and dark palette WCAG AA checks');
+
+// L'import doit rester visible sans annuaire et migrer sous l'engrenage dès le chargement.
+assert.ok(contacts.includes("$('settingsPanel').prepend($('setup'))"),'Loaded contacts import should be accessible only via settings');
+assert.ok(contacts.includes("grid-template-columns:78px minmax(0,1fr)"),'Aligned BRU/STR columns missing');
+assert.ok(sw.includes("const VERSION='pe-pwa-v373'"),'Contacts UI update should refresh offline cache');
