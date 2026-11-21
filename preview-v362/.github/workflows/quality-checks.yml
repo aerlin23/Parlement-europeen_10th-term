@@ -1,0 +1,64 @@
+name: Vademecum PE — tests manuels
+# Lancement manuel uniquement : aucun courriel à chaque modification.
+on:
+  push:
+    branches: [stabilisation-v219, evolution-v220]
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: Navigateur à tester
+        type: choice
+        required: true
+        default: chromium
+        options:
+          - chromium
+          - webkit
+permissions:
+  contents: read
+jobs:
+  tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Contrôler les données et le code JavaScript
+        run: node scripts/audit.cjs
+      - name: Contrôler les identifiants et les places des deux hémicycles
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          members=json.loads(Path('members.json').read_text(encoding='utf-8'))
+          data=json.loads(Path('hemicycle-seats.json').read_text(encoding='utf-8'))
+          seats=data['seats']
+          ids=[str(m['id']) for m in members]
+          assert len(ids)==len(set(ids)), 'Identifiants de députés dupliqués'
+          assert len(members)>=680, 'Liste des députés anormalement courte'
+          assert set(seats).issubset(set(ids)), 'Siège attribué à un identifiant absent'
+          for chamber in ('str','bru'):
+              assigned=[seat[chamber] for seat in seats.values() if chamber in seat]
+              assert all(isinstance(n,int) and 1<=n<=999 for n in assigned), f'Numéro de siège invalide ({chamber})'
+              assert len(assigned)==len(set(assigned)), f'Doublon de place dans {chamber}'
+              assert len(assigned)>=680, f'Couverture anormalement basse pour {chamber}'
+              print(chamber, len(assigned), 'sièges distincts vérifiés')
+          PY
+      - name: Vérifier les fichiers, données et règles métier
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Installer Playwright et le navigateur choisi
+        run: |
+          python -m pip install --quiet playwright
+          python -m playwright install --with-deps ${{ matrix.browser }}
+      - name: Tester annuaire et quiz dans un navigateur mobile
+        env:
+          TEST_BROWSER: ${{ matrix.browser }}
+        run: python tests/browser_smoke.py

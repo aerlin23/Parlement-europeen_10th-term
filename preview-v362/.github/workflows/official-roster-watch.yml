@@ -1,0 +1,42 @@
+name: Official MEP roster watch
+on:
+  schedule:
+    - cron: '25 6 * * 1-5'
+  workflow_dispatch:
+  pull_request:
+permissions:
+  contents: read
+  issues: write
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compare roster (read-only)
+        run: node scripts/check-official-roster.cjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: official-roster-review
+          path: reports-local/meps-review.json
+      - name: Open or update issue for human verification
+        if: success() && github.event_name != 'pull_request'
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs');
+            const r=JSON.parse(fs.readFileSync('reports-local/meps-review.json'));
+            if(r.status!=='changes')return;
+            const title='[Vademecum] Écart avec la liste officielle des députés';
+            const body='Vérification automatique du '+r.checkedAt+' (revue humaine obligatoire).\\n\\n' +
+              '**Entrants** : '+r.diff.added.map(x=>x.name||x.id).join(', ')+'\\n\\n' +
+              '**Sortants** : '+r.diff.removed.map(x=>x.name||x.id).join(', ')+'\\n\\n' +
+              'Source : '+r.source+'\\n\\nNe pas modifier les fiches, fonctions, sièges ou groupes sans vérification indépendante.';
+            const {data:issues}=await github.rest.issues.listForRepo({owner:context.repo.owner,repo:context.repo.repo,state:'open',per_page:100});
+            const existing=issues.find(x=>x.title===title&&!x.pull_request);
+            if(existing)await github.rest.issues.update({owner:context.repo.owner,repo:context.repo.repo,issue_number:existing.number,body});
+            else await github.rest.issues.create({owner:context.repo.owner,repo:context.repo.repo,title,body,labels:[]});

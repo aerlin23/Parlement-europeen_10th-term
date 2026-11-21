@@ -1,0 +1,29 @@
+name: Surveillance du Trombinoscope PE
+on:
+  schedule:
+    - cron: "25 7 * * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+jobs:
+  public-health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Vérifier la version publique
+        id: health
+        run: python scripts/health_check.py
+      - name: Ouvrir une alerte unique en cas de panne
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE="Alerte : indisponibilité du Trombinoscope PE"
+          EXISTING=$(gh issue list --state open --search "$TITLE in:title" --json number --jq '.[0].number // ""')
+          if [ -z "$EXISTING" ]; then
+            gh issue create --title "$TITLE" --body "Le contrôle automatique du site public a échoué. Vérifier les journaux du workflow : https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          else
+            echo "Une alerte existe déjà : #$EXISTING"
+          fi

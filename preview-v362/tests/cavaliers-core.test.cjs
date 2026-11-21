@@ -1,0 +1,5 @@
+const assert=require('node:assert/strict');const core=require('../cavaliers-core.js');
+for(const [input,expected] of [["Jean-Pierre DUPONT","J.-P. DUPONT"],["anna kowalska","A. KOWALSKA"],["María José | García López","M. J. GARCÍA LÓPEZ"],["Peter / Hans | Schmidt","P. H. SCHMIDT"],["-Łukasz | Żółkiewski","Ł. ŻÓŁKIEWSKI"],["Søren Nørgaard","S. NØRGAARD"],["Patrick O'Connor","P. O'CONNOR"]]){const x=core.analyze(input);assert.equal(x.accepted.length,1);assert.equal(core.display(x.accepted[0]),expected)}
+const invalid=core.analyze('Prénom\tNom de famille\tTitre\nPause déjeuner\n(Anna Kowalska)\n14:30 - 15:00\nÀ confirmer\nJean Dupont\nJean | Dupont');assert.equal(invalid.accepted.length,1);assert.equal(invalid.rejected.length,6);
+const mapped=core.analyze(core.excelRows([['Organisation','Surname','First name','Position'],['EP','García López','María José','Director']]));assert.deepEqual(mapped.accepted[0],['María José','García López','','EP','Director']);assert.equal(core.initials('Jean-Pierre'),'J.-P.');
+console.log('Compound first-name initials checked');

@@ -1,0 +1,32 @@
+name: Générer les icônes PWA
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "icon.svg"
+      - ".github/workflows/pwa-official-icons.yml"
+permissions:
+  contents: write
+jobs:
+  icons:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Installer le moteur SVG
+        run: python -m pip install --quiet cairosvg
+      - name: Produire les icônes à partir du dessin validé
+        run: |
+          python - <<'PY'
+          import cairosvg
+          for side in (192,512):
+              cairosvg.svg2png(url="icon.svg",write_to=f"icon-{side}.png",output_width=side,output_height=side)
+          PY
+      - name: Enregistrer les icônes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add icon-192.png icon-512.png
+          if ! git diff --cached --quiet; then
+            git commit -m "Mettre à jour les icônes de la PWA"
+            git push
+          fi

@@ -1,0 +1,53 @@
+name: Lighthouse performance and accessibility
+on:
+  push:
+    branches: [consolidation-v2]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save lighthouse@12.8.2
+      - name: Start local website
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/vademecum-http.log 2>&1 &
+          sleep 3
+          curl -fsS http://127.0.0.1:4173/index.html > /dev/null
+      - name: Mobile
+        run: |
+          mkdir -p lighthouse-results
+          npx lighthouse http://127.0.0.1:4173/index.html --chrome-flags="--headless --no-sandbox" --output html --output json --output-path lighthouse-results/mobile
+      - name: Desktop
+        run: |
+          npx lighthouse http://127.0.0.1:4173/index.html --preset desktop --chrome-flags="--headless --no-sandbox" --output html --output json --output-path lighthouse-results/desktop
+      - name: Summarize scores
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          for(const f of fs.readdirSync('lighthouse-results').filter(x=>x.endsWith('.json'))){
+            const a=JSON.parse(fs.readFileSync('lighthouse-results/'+f,'utf8'));
+            const scores=Object.fromEntries(Object.entries(a.categories||{}).map(([k,v])=>[k,Math.round((v.score||0)*100)]));
+            const lcpElement=a.audits?.['largest-contentful-paint-element']?.details?.items?.[0]?.node?.snippet||a.audits?.['lcp-discovery-insight']?.details?.items?.[0]?.node?.snippet||'';
+            if(lcpElement)console.log('  LCP element: '+String(lcpElement).slice(0,300));
+            const row=f+': '+JSON.stringify(scores);
+            console.log(row);
+            for(const key of ['first-contentful-paint','largest-contentful-paint','total-blocking-time','cumulative-layout-shift','speed-index','total-byte-weight','unused-css-rules','unused-javascript']){
+              const audit=a.audits?.[key];if(audit)console.log('  '+key+': '+audit.displayValue+(audit.numericValue?' ('+Math.round(audit.numericValue)+')':''));
+            }
+            if(process.env.GITHUB_STEP_SUMMARY)fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,row+'\n');
+          }
+          NODE
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-results
+          path: lighthouse-results/
+          if-no-files-found: ignore
