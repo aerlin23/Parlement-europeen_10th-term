@@ -37,6 +37,9 @@ jobs:
             const scores=Object.fromEntries(Object.entries(a.categories||{}).map(([k,v])=>[k,Math.round((v.score||0)*100)]));
             const row=f+': '+JSON.stringify(scores);
             console.log(row);
+            for(const key of ['first-contentful-paint','largest-contentful-paint','total-blocking-time','cumulative-layout-shift','speed-index','total-byte-weight','unused-css-rules','unused-javascript']){
+              const audit=a.audits?.[key];if(audit)console.log('  '+key+': '+audit.displayValue+(audit.numericValue?' ('+Math.round(audit.numericValue)+')':''));
+            }
             if(process.env.GITHUB_STEP_SUMMARY)fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,row+'\n');
           }
           NODE
