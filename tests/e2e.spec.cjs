@@ -113,7 +113,7 @@ test('mode nuit : contraste des fiches de députés et retour au mode clair',asy
 });
 
 const isolationCases = {
-  official: { path: '/', version: '374', contrast: './css/directory-night-contrast.css?v=374' },
+  official: { path: '/', version: '375', contrast: './css/directory-night-contrast.css?v=374' },
   older: { path: '/preview-v362/', version: '362', contrast: null },
   tester: { path: '/preview-v364/', version: '364', contrast: './css/directory-night-contrast.css?v=364' }
 };
@@ -259,4 +259,29 @@ test('contacts : BRU/STR alignés et import dans les paramètres',async({page})=
  const bounds=await rows.evaluateAll(list=>list.map(el=>{const title=el.querySelector('.phone-kind').getBoundingClientRect(),phone=el.querySelector('a').getBoundingClientRect();return {labelX:title.x,phoneX:phone.x}}));
  expect(Math.abs(bounds[0].labelX-bounds[1].labelX)).toBeLessThan(2);
  expect(Math.abs(bounds[0].phoneX-bounds[1].phoneX)).toBeLessThan(2);
+});
+
+
+test('contacts : engrenage épuré et thème flottant distinct',async({page})=>{
+ await page.setViewportSize({width:390,height:844});
+ await page.goto('/contacts-personnels.html');
+ const gear=page.getByRole('button',{name:'Paramètres de l’annuaire'});
+ const theme=page.locator('#vfNightToggle');
+ await expect(gear).toBeVisible();
+ await expect(gear.locator('svg.contact-settings-cog')).toBeVisible();
+ await expect(theme).toBeVisible();
+ const positions=await page.evaluate(()=>{
+  const gear=document.getElementById('settingsToggle').getBoundingClientRect();
+  const theme=document.getElementById('vfNightToggle').getBoundingClientRect();
+  return {gearY:gear.y,themeY:theme.y,overlap:gear.left<theme.right&&gear.right>theme.left&&gear.top<theme.bottom&&gear.bottom>theme.top};
+ });
+ expect(positions.overlap).toBe(false);
+ expect(positions.gearY).toBeLessThan(positions.themeY);
+ await theme.click();
+ await expect(page.locator('html')).toHaveClass(/vf-night/);
+ await page.reload();
+ await expect(page.locator('html')).toHaveClass(/vf-night/);
+ await page.locator('#vfNightToggle').click();
+ await expect(page.locator('html')).not.toHaveClass(/vf-night/);
+ await expect(gear).toHaveAttribute('aria-expanded','false');
 });
