@@ -4,7 +4,7 @@ const MEDIA='pe-offline-official-media-v1';
 const scopePath=new URL(self.registration.scope).pathname;
 const previewName=scopePath.match(/\/(preview-v\d+)\/$/)?.[1];
 const cachePrefix=previewName?'pe-'+previewName+'-':'pe-pwa-';
-const CACHE_VERSION=previewName?cachePrefix+'two-themes-isolated-cavaliers1':VERSION;
+const CACHE_VERSION=previewName?cachePrefix+'two-themes-isolated-cavaliers2':VERSION;
 const CORE=CACHE_VERSION+'-core',PHOTOS=CACHE_VERSION+'-portraits';
 const DOCUMENT_LIBRARIES='vf-document-libraries-v2';
 const LIBRARY_URLS=new Set([
