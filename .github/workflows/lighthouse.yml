@@ -1,8 +1,5 @@
 name: Lighthouse performance and accessibility
 on:
-  push:
-    branches: [consolidation-v2]
-  pull_request:
   workflow_dispatch:
 permissions:
   contents: read
