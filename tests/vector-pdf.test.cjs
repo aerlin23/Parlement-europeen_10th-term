@@ -1,0 +1,24 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {placement,append}=require('../js/cavalier-vector-pdf.js');
+const W=595.276,H=841.89;
+const a=placement('TEST',100,40,630,false);
+const b=placement('TEST',100,40,630,true);
+assert.ok(Math.abs(a.x-(W-100)/2)<.01);
+assert.ok(Math.abs(a.y-(H-630-14))<.01);
+assert.ok(Math.abs(b.x-(W+100)/2)<.01);
+assert.ok(Math.abs(b.y-644)<.01);
+const calls=[];
+const fakePage={drawText:(s,o)=>calls.push({s,o}),drawImage:(i,o)=>calls.push({i,o})};
+const doc={embedFont:async()=>({encodeText:s=>{if(s.includes('Ω'))throw Error('Unsupported')},widthOfTextAtSize:()=>100}),addPage:()=>fakePage,embedJpg:async()=>({})};
+const pdf={StandardFonts:{HelveticaBold:'bold'},degrees:n=>n,rgb:()=>({})};
+const text=(value,y)=>({textContent:value,getAttribute:n=>n==='font-size'?'40':n==='y'?String(y):null});
+const group=(value,rotated)=>({getAttribute:n=>n==='transform'&&rotated?'translate(595.276 841.89) rotate(180)':null,querySelectorAll:()=>[text(value,630)]});
+const svg=(value)=>({querySelectorAll:()=>[group(value,false),group(value,true)]});
+(async()=>{
+ assert.equal(await append(doc,svg('TEST'),null,pdf),'vector');
+ assert.equal(calls.filter(x=>x.s==='TEST').length,2);
+ assert.equal(await append(doc,svg('Ω'),async()=>({bytes:new Uint8Array([255,216,255,217])}),pdf),'raster');
+ assert.equal(calls.filter(x=>x.i).length,1);
+ console.log('PASS: vector placement, rotation and unsupported-character fallback');
+})().catch(err=>{console.error(err);process.exitCode=1});
