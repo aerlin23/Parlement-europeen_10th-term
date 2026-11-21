@@ -1,5 +1,37 @@
 # Historique des versions
 
+## v372 — photos des autres institutions et proposition Contacts utiles
+- Cache hors ligne des portraits externes d’autres institutions et ajout au téléchargement des médias (b5f1f84ab).
+- Sur cette branche non fusionnée : harmonisation du thème et de l’import de Contacts utiles.
+- Recherche locale tolérant accents, ordre des mots, une faute de frappe sur les noms longs et saisies de numéros, sans envoi des contacts au réseau.
+
+## v371 — filtres de l'hémicycle
+- Champs de recherche et Pays ramenés à 38 px sur mobile (dd9cb3a9c).
+
+## v370 — alignement des filtres
+- Alignement de la recherche et du pays via une grille mobile (12ee23e34).
+
+## v369 — filtre Pays
+- Élargissement du filtre Pays sur mobile (fb36ad7d7).
+
+## v368 — nom de député avec lettres inversées
+- Suggestion d'un PDF original en cas de transposition de lettres (ee7c5d8cc).
+
+## v367 — correspondances de cavaliers privés
+- Proposition confirmable pour un nom privé avec une lettre différente (a19f892fa).
+
+## v366 — navigation de la PWA
+- Retour « Tous les députés » rendu relatif (12f25a982).
+
+## v365 — version officielle et cavaliers
+- Mise à jour du service worker et de ses références de cache (2b361e9a8).
+- Initiales des prénoms composés séparées par des espaces (d1c7c4be0).
+- Correction d'un test du quiz et de deux exemples de cavaliers (1e1058598).
+
+## v364 — aperçu des cavaliers
+- Dans l'aperçu v364, amélioration du rapprochement vers un PDF par nom et civilité (b38ff484b).
+
+
 ## v363 — contraste mode nuit et fiabilité CI
 
 - Annuaire : pays, groupes, sièges Bruxelles/Strasbourg et commissions plus lisibles en mode nuit, sans modifier les couleurs du mode clair.

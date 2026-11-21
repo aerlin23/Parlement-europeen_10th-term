@@ -28,6 +28,11 @@ jobs:
       - run: node tests/privacy-release.test.cjs
       - run: node tests/workflow-policy.test.cjs
       - run: node tests/night-contrast.test.cjs
+      - name: Run every Node test
+        run: |
+          for f in tests/*.test.cjs; do node "$f" || exit 1; done
+      - name: Run Python unit tests
+        run: python -m unittest discover -s tests -p 'test_*.py'
       - name: Check JavaScript syntax
         run: |
           for f in *.js js/*.js scripts/*.cjs tests/*.cjs; do
