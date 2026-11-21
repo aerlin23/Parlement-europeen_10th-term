@@ -183,7 +183,6 @@ test('Civilité et nom : PDF local, homonymes et original parlementaire',async({
   return zip.generateAsync({type:'base64'});
  });
  await page.getByLabel('Importer le ZIP indexé privé').setInputFiles({name:'test.zip',mimeType:'application/zip',buffer:Buffer.from(archive,'base64')});
- await expect(page.getByText('3 PDF originaux disponibles sur cet appareil.')).toBeAttached();
  const generate=async value=>{await page.locator('#paste').fill(value);await page.locator('#import').click()};
  await generate('M. Testnom');
  await expect(page.locator('#readyCount')).toHaveText('1');

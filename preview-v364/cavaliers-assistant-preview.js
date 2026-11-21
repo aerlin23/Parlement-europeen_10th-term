@@ -259,9 +259,23 @@ function localDB(){return new Promise((resolve,reject)=>{const req=indexedDB.ope
 async function libraryStore(value){const db=await localDB();try{return await new Promise((resolve,reject)=>{const tx=db.transaction('library',value===undefined?'readonly':'readwrite'),store=tx.objectStore('library'),req=value===undefined?store.get('zip'):value===null?store.delete('zip'):store.put(value,'zip');tx.oncomplete=()=>resolve(req.result);tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error)})}finally{db.close()}}
 async function activateLibrary(blob){if(!window.JSZip)throw Error('Lecteur ZIP indisponible');const z=await JSZip.loadAsync(blob),manifest=z.file('manifest.json');if(!manifest)throw Error('Utilisez le ZIP indexé préparé pour le Vademecum');const data=JSON.parse(await manifest.async('string'));if(data.version!==1||!Array.isArray(data.entries)||data.entries.length>2000||!data.entries.every(e=>/^\d+$/.test(e.id)&&e.file==='pdf/'+e.id+'.pdf'&&Array.isArray(e.aliases)&&e.aliases.every(a=>typeof a==='string')&&z.file(e.file)))throw Error('Index privé invalide');privateZip=z;privateEntries=data.entries;privateRevision++;decisions.clear();lastSignature='';showOfficialCavaliers();schedule()}
 const libraryBox=element('details');libraryBox.style.cssText='border:1px solid #cbdce5;border-radius:8px;padding:10px;margin:8px 0';libraryBox.append(element('summary','Bibliothèque privée de cavaliers'));const libraryStatus=element('p','Aucune bibliothèque locale chargée');const libraryInput=element('input');libraryInput.type='file';libraryInput.accept='.zip';libraryInput.setAttribute('aria-label','Importer le ZIP indexé privé');const libraryDelete=element('button','Retirer la bibliothèque locale');libraryDelete.type='button';libraryBox.append(libraryStatus,libraryInput,libraryDelete);$('dropZone').before(libraryBox);
-libraryInput.onchange=async()=>{const file=libraryInput.files[0];if(!file)return;try{if(file.size>100*1024*1024)throw Error('Archive trop volumineuse');await activateLibrary(file);await libraryStore(file);libraryStatus.textContent=privateEntries.length+' PDF originaux disponibles sur cet appareil.'}catch(e){libraryStatus.textContent=e.message}finally{libraryInput.value=''}};
+libraryInput.onchange=async()=>{
+ const file=libraryInput.files[0];if(!file)return;
+ const loading=libraryReady.then(async()=>{
+  if(file.size>100*1024*1024)throw Error('Archive trop volumineuse');
+  await activateLibrary(file);
+  libraryStatus.textContent=privateEntries.length+' PDF originaux chargés.';
+ });
+ libraryReady=loading.catch(()=>{});
+ try{
+  await loading;
+  await libraryStore(file);
+  libraryStatus.textContent=privateEntries.length+' PDF originaux disponibles sur cet appareil.';
+ }catch(e){libraryStatus.textContent=e.message}
+ finally{libraryInput.value=''}
+};
 libraryDelete.onclick=async()=>{if(!confirm('Retirer la bibliothèque privée de cet appareil ?'))return;try{await libraryStore(null);privateEntries=[];privateZip=null;privateRevision++;decisions.clear();lastSignature='';libraryStatus.textContent='Aucune bibliothèque locale chargée';showOfficialCavaliers();schedule()}catch(e){libraryStatus.textContent=e.message}};
-const libraryReady=libraryStore().then(async blob=>{if(blob){await activateLibrary(blob);libraryStatus.textContent=privateEntries.length+' PDF originaux disponibles sur cet appareil.'}}).catch(e=>{libraryStatus.textContent='Bibliothèque locale indisponible : '+e.message});
+let libraryReady=libraryStore().then(async blob=>{if(blob){await activateLibrary(blob);libraryStatus.textContent=privateEntries.length+' PDF originaux disponibles sur cet appareil.'}}).catch(e=>{libraryStatus.textContent='Bibliothèque locale indisponible : '+e.message});
 function resolveSource(entries,names,svg){
  if(svg.dataset.privateId){
   const entry=privateEntries.find(e=>e.id===svg.dataset.privateId);
