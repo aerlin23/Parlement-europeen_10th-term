@@ -29,7 +29,7 @@ async function downloadOfficialOfflineMedia(){
   const response=await fetch('./institutions-agences.html',{cache:'no-store'});
   if(!response.ok)throw Error('HTTP '+response.status);
   const html=await response.text();
-  const portraits=[...html.matchAll(/"photo":"(https?:\\/\\/[^"]+)"/g)].map(match=>match[1]);
+  const portraits=[...html.matchAll(new RegExp('"photo":"(https?://[^"]+)"','g'))].map(match=>match[1]);
   urls.push(...portraits);
  }catch(error){console.warn('Portraits des autres institutions indisponibles au téléchargement',error)}
 
