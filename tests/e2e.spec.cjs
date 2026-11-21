@@ -198,3 +198,41 @@ test('Civilité et nom : PDF local, homonymes et original parlementaire',async({
  await expect(page.locator('#readyCount')).toHaveText('0');
  await expect(page.locator('#print')).toBeDisabled();
 });
+
+
+test('contacts : thème manuel, zones tactiles et mise en page mobile',async({page})=>{
+ await page.setViewportSize({width:390,height:844});
+ await page.goto('/contacts-personnels.html');
+ const theme=page.locator('#vfNightToggle');
+ await expect(theme).toBeVisible();
+ await expect(page.locator('html')).not.toHaveClass(/vf-night/);
+ await expect(page.locator('#setup')).toHaveAttribute('open','');
+ await expect(page.getByText('Choisir un fichier')).toBeVisible();
+ await page.screenshot({path:'test-results/contacts-390-light-'+test.info().project.name+'.png',fullPage:true});
+ await theme.click();
+ await expect(page.locator('html')).toHaveClass(/vf-night/);
+ await page.screenshot({path:'test-results/contacts-390-dark-'+test.info().project.name+'.png',fullPage:true});
+ await page.reload();
+ await expect(page.locator('html')).toHaveClass(/vf-night/);
+ await page.locator('#vfNightToggle').click();
+ await expect(page.locator('html')).not.toHaveClass(/vf-night/);
+ const payload=JSON.stringify({Unité:[['Contact exemple','1234','']],Services:[['Service exemple','5678','']]});
+ await page.locator('#file').setInputFiles({name:'contacts.json',mimeType:'application/json',buffer:Buffer.from(payload)});
+ await page.getByRole('button',{name:/Remplacer les catégories par les données JSON/i}).click();
+ await expect(page.locator('#setup')).not.toHaveAttribute('open','');
+ for(const width of [360,390,1280]){
+  await page.setViewportSize({width,height:844});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1)).toBe(true);
+ }
+ await page.setViewportSize({width:390,height:844});
+ const last=page.locator('#results article').last();
+ await last.scrollIntoViewIfNeeded();
+ const hit=await page.evaluate(()=>{
+  const last=document.querySelector('#results article:last-of-type');
+  const toggle=document.getElementById('vfNightToggle');
+  if(!last||!toggle)return false;
+  const a=last.getBoundingClientRect(),b=toggle.getBoundingClientRect();
+  return a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top;
+ });
+ expect(hit).toBe(false);
+});
