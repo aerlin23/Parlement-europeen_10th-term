@@ -1,5 +1,11 @@
 # Historique des versions
 
+## v375 — roue des paramètres et thème des contacts
+
+- Remplacement de l’engrenage des paramètres des Contacts utiles par une roue dentée au trait fin, accessible et dans le même emplacement.
+- Conservation du bouton clair/sombre flottant en bas à droite et de la préférence `vf-night-theme` existante ; aucun déplacement du contrôle.
+- Mise à jour du précache de la page Contacts.
+
 ## v374 — onglets des groupes et encarts des commissions en mode nuit
 
 - Onglets des groupes politiques distingués par leurs couleurs, avec sélection explicite en mode nuit.
