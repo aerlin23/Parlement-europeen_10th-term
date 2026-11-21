@@ -1,5 +1,11 @@
 # Historique des versions
 
+## v374 — onglets des groupes et encarts des commissions en mode nuit
+
+- Onglets des groupes politiques distingués par leurs couleurs, avec sélection explicite en mode nuit.
+- Encarts des présidences et coordinateurs des commissions assombris ; titres, noms et liens rendus lisibles.
+- Aucun changement du mode clair ni des données des députés.
+
 ## v373 — Contacts utiles : alignement et paramètres
 
 - Lignes des bureaux BRU et STR alignées sur deux colonnes stables dans les fiches développées sur mobile.
