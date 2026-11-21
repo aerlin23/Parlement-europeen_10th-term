@@ -11,7 +11,8 @@ assert.ok(css.includes('html.vf-night body'),'Missing theme scoping');
 assert.ok(html.includes('css/directory-night-contrast.css?v=363'),'Night theme not loaded');
 assert.ok(sw.includes('css/directory-night-contrast.css?v=363'),'Night theme not available in offline cache');
 function luminance(hex){
- const values=hex.match(/[0-9a-f]{2}/gi).map(v=>parseInt(v,16)/255).map(v=>v<=0.04045?v/12.92:Math.pow((v+0.055)/1.055,2.4));
+ const normalized=hex.length===4?'#'+[...hex.slice(1)].map(c=>c+c).join(''):hex;
+ const values=normalized.match(/[0-9a-f]{2}/gi).map(v=>parseInt(v,16)/255).map(v=>v<=0.04045?v/12.92:Math.pow((v+0.055)/1.055,2.4));
  return values[0]*0.2126+values[1]*0.7152+values[2]*0.0722;
 }
 function contrast(a,b){const l=[luminance(a),luminance(b)].sort((x,y)=>y-x);return (l[0]+0.05)/(l[1]+0.05)}
