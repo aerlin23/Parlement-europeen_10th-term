@@ -113,7 +113,7 @@ test('mode nuit : contraste des fiches de députés et retour au mode clair',asy
 });
 
 const isolationCases = {
-  official: { path: '/', version: '372', contrast: './css/directory-night-contrast.css?v=363' },
+  official: { path: '/', version: '373', contrast: './css/directory-night-contrast.css?v=363' },
   older: { path: '/preview-v362/', version: '362', contrast: null },
   tester: { path: '/preview-v364/', version: '364', contrast: './css/directory-night-contrast.css?v=364' }
 };
@@ -235,4 +235,28 @@ test('contacts : thème manuel, zones tactiles et mise en page mobile',async({pa
   return a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top;
  });
  expect(hit).toBe(false);
+});
+
+
+test('contacts : BRU/STR alignés et import dans les paramètres',async({page})=>{
+ await page.setViewportSize({width:390,height:844});
+ await page.goto('/contacts-personnels.html');
+ await expect(page.locator('#setup')).toBeVisible();
+ const payload=JSON.stringify({Unité:[['Secrétariat de l’unité','41023','74650'],['Autre personne','41234','76543']]});
+ await page.locator('#file').setInputFiles({name:'contacts.json',mimeType:'application/json',buffer:Buffer.from(payload)});
+ await page.getByRole('button',{name:/Remplacer les catégories par les données JSON/i}).click();
+ await expect(page.locator('#directory')).toBeVisible();
+ await expect(page.locator('#setup')).toBeHidden();
+ await page.locator('#settingsToggle').click();
+ await expect(page.locator('#setup')).toBeVisible();
+ await expect(page.locator('#setup')).not.toHaveAttribute('open','');
+ await page.locator('#setup summary').click();
+ await expect(page.locator('#file')).toBeVisible();
+ await page.locator('#settingsToggle').click();
+ await page.locator('#results .contact-expand-toggle').first().click();
+ const rows=page.locator('#results .person-row.contact-open .phone-entry:has(.phone-kind)');
+ await expect(rows).toHaveCount(2);
+ const bounds=await rows.evaluateAll(list=>list.map(el=>{const title=el.querySelector('.phone-kind').getBoundingClientRect(),phone=el.querySelector('a').getBoundingClientRect();return {labelX:title.x,phoneX:phone.x}}));
+ expect(Math.abs(bounds[0].labelX-bounds[1].labelX)).toBeLessThan(2);
+ expect(Math.abs(bounds[0].phoneX-bounds[1].phoneX)).toBeLessThan(2);
 });
