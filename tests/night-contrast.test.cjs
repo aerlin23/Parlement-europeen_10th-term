@@ -52,9 +52,13 @@ console.log('PASS: Contacts theme structure and dark palette WCAG AA checks');
 // L'import doit rester visible sans annuaire et migrer sous l'engrenage dès le chargement.
 assert.ok(contacts.includes("$('settingsPanel').prepend($('setup'))"),'Loaded contacts import should be accessible only via settings');
 assert.ok(contacts.includes("grid-template-columns:78px minmax(0,1fr)"),'Aligned BRU/STR columns missing');
-assert.ok(sw.includes("const VERSION='pe-pwa-v374'"),'Contacts UI update should refresh offline cache');
+assert.ok(sw.includes("const VERSION='pe-pwa-v375'"),'Contacts UI update should refresh offline cache');
 
 // Contrôles statiques : l'identité des groupes et les commissions ne changent qu'en mode nuit.
 for(const group of ['PPE','S%26D','PfE','ECR','Renew','Verts%2FALE','The%20Left','ESN','NI'])assert.ok(css.includes('group='+group),'Night group color missing: '+group);
 for(const selector of ['.committee-leadership .leader-row','.committee-leadership .leader-entry a','.committee-leadership .leader-note'])assert.ok(css.includes(selector),'Night committee panel contrast missing: '+selector);
 assert.ok(css.includes('html.vf-night body main .directories > a.group-nav-item'),'Night group rule not theme scoped');
+
+assert.ok(contacts.includes('class="contact-settings-cog"'),'Contacts slim cog icon missing');
+assert.ok(contacts.includes('aria-label="Paramètres de l’annuaire"'),'Contacts settings accessible name missing');
+assert.ok(contacts.includes("b.id='vfNightToggle'"),'Contacts floating theme toggle removed');
