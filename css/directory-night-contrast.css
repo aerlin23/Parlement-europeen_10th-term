@@ -81,3 +81,56 @@ html.vf-night body #vfNightToggle:focus-visible {
   outline: 2px solid #ffcc00;
   outline-offset: 3px;
 }
+
+
+/* Mode nuit : panneau d'impression Mobile Print uniquement.
+   Aucune règle sans .vf-night : le mode clair garde exactement son rendu. */
+html.vf-night body dialog.vf-cavalier-dialog.vf-mobile-print-dialog {
+  box-sizing: border-box;
+  height: auto !important;
+  max-height: 85dvh !important;
+  background: #24354a !important;
+  color: #f5f8ff !important;
+  border: 1px solid #728aa6 !important;
+}
+html.vf-night body .vf-mobile-print-dialog .vf-cavalier-bar strong {
+  color: #f5f8ff !important;
+}
+html.vf-night body .vf-mobile-print-dialog .vf-cavalier-bar button {
+  background: #f5f8ff !important;
+  color: #253c53 !important;
+  border: 1px solid #a3b5c8 !important;
+}
+html.vf-night body .vf-mobile-print-dialog .vf-mobile-print-send {
+  background: #356fae !important;
+  color: #fff !important;
+  border: 1px solid #8fbee8 !important;
+}
+html.vf-night body .vf-mobile-print-dialog .vf-mobile-print-send:disabled {
+  opacity: .62;
+}
+html.vf-night body .vf-mobile-print-dialog :is(.vf-mobile-print-open,.vf-mobile-print-download) {
+  color: #e5f1ff !important;
+  background: #304861 !important;
+  border: 1px solid #7294b8 !important;
+  border-radius: 7px;
+  text-decoration: underline;
+}
+html.vf-night body .vf-mobile-print-dialog .vf-mobile-print-copy {
+  background: #f4f8fe !important;
+  color: #193952 !important;
+  border: 1px solid #b2c9e0 !important;
+  font-weight: 700;
+}
+html.vf-night body .vf-mobile-print-dialog :is(.vf-mobile-print-info,.vf-mobile-print-notes) {
+  color: #d6e4f5 !important;
+}
+html.vf-night body .vf-mobile-print-dialog .vf-mobile-print-notes a {
+  color: #d8c2ff !important;
+  background: transparent !important;
+  text-decoration: underline;
+}
+html.vf-night body .vf-mobile-print-dialog :is(a,button):focus-visible {
+  outline: 2px solid #ffcc00 !important;
+  outline-offset: 2px;
+}
