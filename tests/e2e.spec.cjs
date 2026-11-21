@@ -68,7 +68,12 @@ test('assistant cavaliers : génération et téléchargement PDF',async({page})=
  await page.locator('#paste').fill('Jean-Pierre|Dupont');
  await page.locator('#import').click();
  await expect(page.locator('.preview svg').first()).toBeVisible();
- await expect(page.locator('#downloadMobilePdf')).toBeEnabled({timeout:45000});
+ await expect.poll(async()=>{
+  const disabled=await page.locator('#downloadMobilePdf').isDisabled();
+  const status=await page.locator('#mobilePdfStatus').textContent();
+  if(status?.includes('Impossible de préparer'))throw Error('PDF error: '+status);
+  return disabled;
+ },{timeout:15000}).toBe(false);
  const downloadPromise=page.waitForEvent('download');
  await page.locator('#downloadMobilePdf').click();
  const download=await downloadPromise;
