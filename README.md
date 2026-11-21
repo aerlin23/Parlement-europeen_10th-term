@@ -55,10 +55,14 @@ Le dépôt et le site sont publics. Les onglets cachés ne constituent pas une a
 1. Travailler sur une branche dédiée ; référence stable : stable-v355.
 2. Vérifier les changements de données contre les sources officielles ; ne pas publier automatiquement des corrections non relues.
 3. Exécuter `node tests/data-integrity.test.cjs`, `node tests/cavaliers-core.test.cjs` et `node --check` sur les scripts.
-4. Contrôler les tests navigateur et le mode hors ligne avant fusion.
+4. Contrôler les tests Playwright (Chromium et WebKit), les audits Lighthouse et le mode hors ligne avant fusion.
 5. Incrémenter VERSION dans sw.js ; vérifier les références de ressources modifiées et la liste de précache. Le pied de page interroge le service worker actif.
 6. Ne fusionner vers main qu'après validation.
 
-La branche consolidation-v2 est expérimentale. Les performances, l'accessibilité, l'impression physique et la compatibilité sur appareils réels doivent encore être validées. Le PDF généré peut être matriciel ; la variante personnelle réutilise les PDF originaux disponibles.
+La veille officielle `Official MEP roster watch` compare automatiquement les identifiants de députés et ouvre une proposition de vérification en cas d'écart. Sa planification périodique n'est active qu'après fusion du workflow dans la branche principale ; aucune modification de `members.json` n'est automatique. Les compositions des commissions, sièges et coordinateurs nécessitent une vérification séparée.
+
+Les fichiers de styles communs sont regroupés sous `css/shared-*.css` ; leur ordre de chargement est conservé. Les anciens scripts inutilisés ont été retirés sur la branche, mais ils restent accessibles dans la sauvegarde `stable-v355` et dans l'historique Git.
+
+La branche consolidation-v2 est expérimentale. Les performances, l'accessibilité, l'impression physique et la compatibilité sur appareils réels doivent encore être validées. Les nouveaux cavaliers privilégient un PDF texte vectoriel avec repli matriciel pour les glyphes incompatibles ; la variante personnelle réutilise les PDF officiels et privés originaux.
 
 [Guide officiel Mobile Print](https://mfd.europarl.europa.eu/pdf/mobile-printing-qsg_en.pdf)
