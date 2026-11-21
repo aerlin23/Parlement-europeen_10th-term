@@ -28,6 +28,18 @@ jobs:
       - name: Desktop
         run: |
           npx lighthouse http://127.0.0.1:4173/index.html --preset desktop --chrome-flags="--headless --no-sandbox" --output html --output json --output-path lighthouse-results/desktop
+      - name: Summarize scores
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          for(const f of fs.readdirSync('lighthouse-results').filter(x=>x.endsWith('.json'))){
+            const a=JSON.parse(fs.readFileSync('lighthouse-results/'+f,'utf8'));
+            const scores=Object.fromEntries(Object.entries(a.categories||{}).map(([k,v])=>[k,Math.round((v.score||0)*100)]));
+            const row=f+': '+JSON.stringify(scores);
+            console.log(row);
+            if(process.env.GITHUB_STEP_SUMMARY)fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,row+'\n');
+          }
+          NODE
       - uses: actions/upload-artifact@v4
         if: always()
         with:
