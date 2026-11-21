@@ -43,7 +43,7 @@ test('PWA : accueil et annuaire accessibles hors ligne après installation',asyn
  await page.goto('/index.html');
  await expect.poll(()=>page.locator('#grid').children().count()).toBeGreaterThan(0);
  await page.evaluate(async()=>{const registration=await navigator.serviceWorker.ready;if(!registration.active)throw Error('Service worker absent');});
- await expect.poll(async()=>page.evaluate(async()=>{const keys=await caches.keys();return keys.some(k=>/pe-pwa-v\\d+-core/.test(k))})).toBe(true);
+ await expect.poll(async()=>page.evaluate(async()=>{const keys=await caches.keys();return keys.some(k=>/pe-pwa-v\d+-core/.test(k))})).toBe(true);
  await context.setOffline(true);
  await page.reload({waitUntil:'domcontentloaded'});
  await expect(page.locator('#search')).toBeVisible();
