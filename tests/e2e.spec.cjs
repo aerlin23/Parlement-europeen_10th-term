@@ -113,7 +113,7 @@ test('mode nuit : contraste des fiches de députés et retour au mode clair',asy
 });
 
 const isolationCases = {
-  official: { path: '/', version: '363', contrast: './css/directory-night-contrast.css?v=363' },
+  official: { path: '/', version: '372', contrast: './css/directory-night-contrast.css?v=363' },
   older: { path: '/preview-v362/', version: '362', contrast: null },
   tester: { path: '/preview-v364/', version: '364', contrast: './css/directory-night-contrast.css?v=364' }
 };
