@@ -13,7 +13,7 @@ for(const source of ['cavaliers-assistant-preview.js','preview-v364/cavaliers-as
  const start=code.indexOf('function possibleMEPTranspositions(entries,label){');
  const end=code.indexOf('function resolveMEP(entries,names,label){',start);
  assert.ok(start>=0&&end>start,'Missing candidate helper: '+source);
- const context={officialKey:s=>String(s||'').normalize('NFD').replace(/\\p{M}/gu,'').toLowerCase().replace(/[^\\p{L}\\p{N}]/gu,'')};
+ const context={officialKey:s=>String(s||'').normalize('NFD').toLowerCase().replace(/[^a-z0-9]/g,'')};
  vm.createContext(context);
  vm.runInContext(code.slice(start,end),context,{filename:source});
  const candidates=(name)=>Array.from(context.possibleMEPTranspositions(fixture,name),([id])=>id);
