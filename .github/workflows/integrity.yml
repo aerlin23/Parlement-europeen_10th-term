@@ -16,6 +16,8 @@ jobs:
       - run: node tests/data-integrity.test.cjs
       - run: node tests/cavaliers-core.test.cjs
       - run: node tests/offline-policy.test.cjs
+      - run: node tests/vector-pdf.test.cjs
+      - run: node tests/official-roster.test.cjs
       - name: Check JavaScript syntax
         run: |
           for f in *.js; do node --check "$f" || exit 1; done
