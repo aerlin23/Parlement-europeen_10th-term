@@ -111,3 +111,61 @@ test('mode nuit : contraste des fiches de députés et retour au mode clair',asy
  await page.evaluate(()=>document.documentElement.classList.remove('vf-night'));
  await expect(page.locator('#directory .card .country').first()).toHaveCSS('color',lightColor);
 });
+
+const isolationCases = {
+  official: { path: '/', version: '363', contrast: './css/directory-night-contrast.css?v=363' },
+  older: { path: '/preview-v362/', version: '362', contrast: null },
+  tester: { path: '/preview-v364/', version: '364', contrast: './css/directory-night-contrast.css?v=364' }
+};
+
+for (const order of [['official', 'older', 'tester'], ['tester', 'older', 'official']]) {
+  test('Coexistence PWA : ' + order.join(' → '), async ({ page, context, browserName, request }) => {
+    test.setTimeout(180000);
+    const cacheNames = new Map();
+    for (const name of order) {
+      const { path, version, contrast } = isolationCases[name];
+      const route = path + 'index.html';
+      const expected = await request.get(route);
+      expect(expected.ok()).toBe(true);
+      const response = await page.goto(route, { waitUntil: 'domcontentloaded' });
+      // Comparer le document effectivement servi, avant tout rechargement.
+      expect(await response.text()).toBe(await expected.text());
+      expect(await page.evaluate(() => document.querySelector('link[href*="directory-night-contrast"]')?.getAttribute('href') ?? null)).toBe(contrast);
+      await page.waitForFunction(path => navigator.serviceWorker.controller?.scriptURL === new URL(path + 'sw.js', location.origin).href, path);
+      const cacheName = await page.evaluate(async ({ path, version }) => {
+        const prefix = path === '/' ? 'pe-pwa-v' + version + '-' : 'pe-preview-v' + version + '-';
+        return (await caches.keys()).find(key => key.startsWith(prefix) && key.endsWith('-core'));
+      }, { path, version });
+      expect(cacheName).toBeTruthy();
+      cacheNames.set(path, cacheName);
+    }
+
+    await page.goto('/home.html?person=256810#fiche', { waitUntil: 'domcontentloaded' });
+    await expect(page).toHaveURL(/\/index\.html\?person=256810#fiche$/);
+    await page.goto('/preview-v364/home.html', { waitUntil: 'domcontentloaded' });
+    await expect(page.getByText(/VERSION DE TEST v364 — reconnaissance/)).toBeVisible();
+    await expect(page.getByText(/VERSION DE TEST v362/)).toHaveCount(0);
+    await context.setOffline(true);
+    try {
+      for (const [path, name] of cacheNames) {
+        const saved = await page.evaluate(async ({ path, name }) => {
+          if (!(await caches.has(name))) return false;
+          const cache = await caches.open(name);
+          return (await cache.match(path + 'index.html'))?.ok && (await cache.match(path + 'members.json'))?.ok;
+        }, { path, name });
+        expect(saved).toBe(true);
+        // Le rechargement hors ligne de WebKit plante sur le runner Playwright.
+        if (browserName === 'chromium') {
+          await page.goto(path + 'index.html', { waitUntil: 'domcontentloaded' });
+          await expect(page.locator('#grid .card').first()).toBeVisible();
+        }
+      }
+      if (browserName === 'chromium') {
+        await page.goto('/preview-v364/home.html', { waitUntil: 'domcontentloaded' });
+        await expect(page.getByText(/VERSION DE TEST v364 — reconnaissance/)).toBeVisible();
+      }
+    } finally {
+      await context.setOffline(false);
+    }
+  });
+}
