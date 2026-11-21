@@ -1,4 +1,4 @@
-name: Publish isolated Vademecum tester v364
+name: Publish isolated Vademecum tester v364 (red pending cavaliers)
 on:
   push:
     branches: [main]
