@@ -228,7 +228,7 @@ test('contacts : thème manuel, zones tactiles et mise en page mobile',async({pa
  const last=page.locator('#results article').last();
  await last.scrollIntoViewIfNeeded();
  const hit=await page.evaluate(()=>{
-  const last=document.querySelector('#results article:last-of-type');
+  const last=[...document.querySelectorAll('#results article')].at(-1);
   const toggle=document.getElementById('vfNightToggle');
   if(!last||!toggle)return false;
   const a=last.getBoundingClientRect(),b=toggle.getBoundingClientRect();
