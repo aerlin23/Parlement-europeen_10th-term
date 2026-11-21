@@ -1,5 +1,5 @@
 /* Vademecum PE : ressources critiques hors-ligne et mises à jour consenties. */
-const VERSION='pe-pwa-v361';
+const VERSION='pe-pwa-v362';
 const MEDIA='pe-offline-official-media-v1';
 const CORE=VERSION+'-core',PHOTOS=VERSION+'-portraits';
 const DOCUMENT_LIBRARIES='vf-document-libraries-v2';
