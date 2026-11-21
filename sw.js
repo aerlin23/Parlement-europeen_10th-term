@@ -1,8 +1,10 @@
 /* Vademecum PE : ressources critiques hors-ligne et mises à jour consenties. */
 const VERSION='pe-pwa-v364';
 const MEDIA='pe-offline-official-media-v1';
-const IS_STAGING=self.registration.scope.includes('/preview-v364/');
-const CACHE_VERSION=IS_STAGING?'pe-preview-v364-two-themes':VERSION;
+const scopePath=new URL(self.registration.scope).pathname;
+const previewName=scopePath.match(/\/(preview-v\d+)\/$/)?.[1];
+const cachePrefix=previewName?'pe-'+previewName+'-':'pe-pwa-';
+const CACHE_VERSION=previewName?cachePrefix+'two-themes-isolated':VERSION;
 const CORE=CACHE_VERSION+'-core',PHOTOS=CACHE_VERSION+'-portraits';
 const DOCUMENT_LIBRARIES='vf-document-libraries-v2';
 const LIBRARY_URLS=new Set([
@@ -16,7 +18,7 @@ const LIBRARY_URLS=new Set([
 ]);
 const CODE=['./css/directory-night-contrast.css?v=364','./js/cavalier-vector-pdf.js','./css/shared-cavaliers-base.css','./css/shared-layout.css','./css/shared-dark-controls.css','./css/shared-header.css','./css/shared-theme-toggle.css','./css/shared-night-theme.css','./css/shared-night-update.css','./js/version-display.js','./creation-cavaliers-editor-preview.js?v=364','./creation-cavaliers-preview.html','./cavaliers-core-preview.js?v=364','./cavaliers-assistant-preview.js?v=364','./css/navigation-final.css?v=325','./styles.css?v=360','./directory.js?v=225','./hemicycle.js?v=352','./interface.js?v=324','./quiz.js?v=360','./offline.js?v=336','./smart-search.js?v=225','./features.js?v=364'];
 const OFFLINE=['./cavaliers/index.json','./outils.html','./outils.html?v=252','./outils.js?v=251','./creation-cavaliers.html','./contacts-personnels.html','./creation-cavaliers.html?v=305','./cavaliers-core.js?v=364','./creation-cavaliers-227.js','./cavaliers-assistant-232.js','./','./index.html','./smart-search.js','./features.js','./secretariat-general.html','./commission-europeenne.html','./institutions-agences.html','./assets/presidences-conseil-ue-2026-2030.svg','./presidences-cinema.html','./assets/presidences-conseil-ue-cinema.avif','./commission-members.json','./members.json','./coordinators.json','./changes.json','./hemicycle-seats.json','./hemicycle-str-coordinates.json','./hemicycle-bru-coordinates.json','./committees.json','./photo-assets.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png','./assets/greens-logo.svg','./assets/sg-juan-carlos-jimenez-marin.webp','./assets/sg-markus-winkler.webp','./assets/sg-alessandro-chiocchetti-user.webp','./assets/sg-markus-winkler-official.webp'];
-const ESSENTIAL=['./index.html','./members.json','./committees.json','./coordinators.json','./changes.json',...CODE];
+const ESSENTIAL=['./index.html','./home.html','./members.json','./committees.json','./coordinators.json','./changes.json',...CODE];
 // Pages principales préchargées en priorité ; ressources secondaires non bloquantes.
 const SECONDARY=['./creation-cavaliers.html','./contacts-personnels.html','./commission-europeenne.html','./institutions-agences.html','./outils.html','./secretariat-general.html','./hemicycle-seats.json','./hemicycle-str-coordinates.json','./hemicycle-bru-coordinates.json','./commission-members.json','./photo-assets.json','./cavaliers-core.js?v=361','./creation-cavaliers-227.js','./cavaliers-assistant-232.js','./outils.js?v=251'];
 self.addEventListener('install',event=>{
@@ -34,7 +36,7 @@ self.addEventListener('message',event=>{
 self.addEventListener('activate',event=>{
  event.waitUntil((async()=>{
   const keys=await caches.keys();
-  await Promise.all(keys.filter(k=>k.startsWith(IS_STAGING?'pe-preview-':'pe-pwa-')&&k!==CORE&&k!==PHOTOS).map(k=>caches.delete(k)));
+  await Promise.all(keys.filter(k=>k.startsWith(cachePrefix)&&k!==CORE&&k!==PHOTOS).map(k=>caches.delete(k)));
   await self.clients.claim();
  })());
 });
@@ -102,14 +104,16 @@ self.addEventListener('fetch',event=>{
   })());
   return;
  }
- if(url.origin!==self.location.origin)return;
+ if(url.origin!==self.location.origin||!url.pathname.startsWith(scopePath))return;
+ // Laisser le navigateur charger un aperçu avant son premier enregistrement PWA.
+ if(/^preview-v\d+(?:\/|$)/.test(url.pathname.slice(scopePath.length)))return;
  // Les PDF de cavaliers sont servis à la demande, sans cache hors ligne systématique.
  if(/\/cavaliers\/\d+\.pdf$/.test(url.pathname))return;
  if(/\/cavaliers\/index\.json$/.test(url.pathname)){event.respondWith(fromNetworkOrCache(request,false));return;}
  if(/\/(?:creation-cavaliers(?:-\d+)?\.js|cavaliers-assistant(?:-\d+)?\.js)$/.test(url.pathname)){event.respondWith(fromNetworkOrCache(request,false));return;}
  const isDocument=request.mode==='navigate';
  const isData=/\/(members|commission-members|committees|coordinators|photo-assets|hemicycle-seats|hemicycle-str-coordinates|hemicycle-bru-coordinates|changes)\.json$/.test(url.pathname);
- if(isDocument&&(/\/$/.test(url.pathname)||/\/index\.html$/.test(url.pathname))){
+ if(isDocument&&(url.pathname===scopePath||url.pathname===scopePath+'index.html')){
   event.respondWith((async()=>{const cache=await caches.open(CORE);return await cache.match('./index.html')||fetch(request)})());return;
  }
  if(isDocument||isData){event.respondWith(fromNetworkOrCache(request,isDocument));return}
