@@ -65,7 +65,7 @@ test('PWA : accueil et annuaire accessibles hors ligne après installation',asyn
 
 test('assistant cavaliers : génération et téléchargement PDF',async({page})=>{
  await page.goto('/creation-cavaliers.html');
- await page.locator('#paste').fill('Jean-Pierre|Dupont');
+ await page.locator('#paste').fill('Xénia|Horsliste-Testunique');
  await page.locator('#import').click();
  await expect(page.locator('.preview svg').first()).toBeVisible();
  await expect.poll(async()=>{
