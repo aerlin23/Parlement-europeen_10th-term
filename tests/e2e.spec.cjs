@@ -250,7 +250,7 @@ test('contacts : BRU/STR alignés et import dans les paramètres',async({page})=
  await page.locator('#settingsToggle').click();
  await expect(page.locator('#setup')).toBeVisible();
  await expect(page.locator('#setup')).not.toHaveAttribute('open','');
- await page.locator('#setup summary').click();
+ await page.locator('#setup > summary').click();
  await expect(page.locator('#file')).toBeVisible();
  await page.locator('#settingsToggle').click();
  await page.locator('#results .contact-expand-toggle').first().click();
