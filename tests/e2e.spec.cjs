@@ -111,3 +111,27 @@ test('mode nuit : contraste des fiches de députés et retour au mode clair',asy
  await page.evaluate(()=>document.documentElement.classList.remove('vf-night'));
  await expect(page.locator('#directory .card .country').first()).toHaveCSS('color',lightColor);
 });
+
+test('testeur cavaliers : nom ambigu visible en rouge, non imprimable avant confirmation',async({page})=>{
+ await page.goto('/creation-cavaliers-preview.html');
+ await page.locator('#paste').fill('Jean robert van damme');
+ await page.locator('#import').click();
+ const card=page.locator('#entries .compact-entry.vf-pending');
+ await expect(card).toHaveCount(1);
+ await expect(card.locator('.pending-preview')).toContainText('À VÉRIFIER');
+ await expect(card.locator('.pending-preview svg')).toBeVisible();
+ await expect(card).toHaveCSS('border-top-color','rgb(180, 35, 50)');
+ await expect(page.locator('#readyCount')).toHaveText('0');
+ await expect(page.locator('#fixCount')).toHaveText('1');
+ await expect(page.locator('#rejectedCount')).toHaveText('0');
+ await expect(page.locator('#print')).toBeDisabled();
+ await card.getByRole('button',{name:'Modifier'}).click();
+ const fields=card.locator('.entry-fields input');
+ await expect(fields.nth(0)).toHaveValue('Jean robert');
+ await expect(fields.nth(1)).toHaveValue('van damme');
+ await card.getByRole('button',{name:'Confirmer le cavalier'}).click();
+ await expect(page.locator('#entries .vf-pending')).toHaveCount(0);
+ await expect(page.locator('#readyCount')).toHaveText('1');
+ await expect(page.locator('#print')).toBeEnabled();
+ await expect(page.locator('#entries .preview svg')).toBeVisible();
+});
