@@ -25,6 +25,7 @@ jobs:
       - run: node tests/official-roster.test.cjs
       - run: node tests/privacy-release.test.cjs
       - run: node tests/workflow-policy.test.cjs
+      - run: node tests/night-contrast.test.cjs
       - name: Check JavaScript syntax
         run: |
           for f in *.js js/*.js scripts/*.cjs tests/*.cjs; do
