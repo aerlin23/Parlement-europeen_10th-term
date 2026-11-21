@@ -39,3 +39,12 @@ assert.ok(!contacts.includes('appareil partagé'),'Shared device wording must be
 assert.ok(contacts.includes('<details id="setup" open>'),'Collapsible import missing');
 assert.ok(contacts.includes("padding-bottom:100px"),'Bottom button clearance missing');
 assert.ok(contacts.includes('css/shared-theme-toggle.css'),'Shared theme CSS missing');
+
+for(const [foreground,background,label] of [
+ ['#e5edf8','#111c2c','Contacts body'],
+ ['#e5edf8','#1c2b40','Contacts cards'],
+ ['#acd0f7','#1c2b40','Contacts links'],
+ ['#ffffff','#25446b','Contacts file picker'],
+ ['#a0b3c7','#1c2b40','Contacts muted labels']
+])assert.ok(contrast(foreground,background)>=4.5,label+' contrast below WCAG AA');
+console.log('PASS: Contacts theme structure and dark palette WCAG AA checks');
