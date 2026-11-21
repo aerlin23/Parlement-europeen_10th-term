@@ -1,7 +1,8 @@
 # Historique des versions
 
-## v372 — page Contacts utiles (proposition)
-- Harmonisation du thème et de l'import de Contacts utiles sur une branche distincte, sans fusion.
+## v372 — photos des autres institutions et proposition Contacts utiles
+- Cache hors ligne des portraits externes d’autres institutions et ajout au téléchargement des médias (b5f1f84ab).
+- Sur cette branche non fusionnée : harmonisation du thème et de l’import de Contacts utiles.
 
 ## v371 — filtres de l'hémicycle
 - Champs de recherche et Pays ramenés à 38 px sur mobile (dd9cb3a9c).
