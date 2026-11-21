@@ -85,7 +85,7 @@ html.vf-night body #vfNightToggle:focus-visible {
 
 /* Mode nuit : panneau d'impression Mobile Print uniquement.
    Aucune règle sans .vf-night : le mode clair garde exactement son rendu. */
-html.vf-night body dialog.vf-cavalier-dialog.vf-mobile-print-dialog {
+html.vf-night body dialog#vfMobilePrintDialog.vf-cavalier-dialog.vf-mobile-print-dialog {
   box-sizing: border-box;
   height: auto !important;
   max-height: 85dvh !important;
