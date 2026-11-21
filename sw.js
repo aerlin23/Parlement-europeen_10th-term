@@ -1,11 +1,13 @@
 /* Vademecum PE : ressources critiques hors-ligne et mises à jour consenties. */
-const VERSION='pe-pwa-v371';
+const VERSION='pe-pwa-v372';
 const MEDIA='pe-offline-official-media-v1';
 const scopePath=new URL(self.registration.scope).pathname;
 const previewName=scopePath.match(/\/(preview-v\d+)\/$/)?.[1];
 const cachePrefix=previewName?'pe-'+previewName+'-':'pe-pwa-';
 const CACHE_VERSION=previewName?cachePrefix+'v363':VERSION;
 const CORE=CACHE_VERSION+'-core',PHOTOS=CACHE_VERSION+'-portraits';
+// Portraits d'autres institutions : conserver les réponses distantes, y compris opaques.
+const INSTITUTION_PHOTO_HOSTS=new Set(['www.consilium.europa.eu','irish-presidency.consilium.europa.eu','commons.wikimedia.org','www.europarl.europa.eu','pbs.twimg.com','www.eeas.europa.eu','cor.europa.eu','www.eib.org','www.ombudsman.europa.eu']);
 const DOCUMENT_LIBRARIES='vf-document-libraries-v2';
 const LIBRARY_URLS=new Set([
  'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js',
@@ -16,7 +18,7 @@ const LIBRARY_URLS=new Set([
  'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.mjs',
  'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.mjs'
 ]);
-const CODE=['./css/directory-night-contrast.css?v=363','./js/cavalier-vector-pdf.js','./css/shared-cavaliers-base.css','./css/shared-layout.css','./css/shared-dark-controls.css','./css/shared-header.css','./css/shared-theme-toggle.css','./css/shared-night-theme.css','./css/shared-night-update.css','./js/version-display.js','./creation-cavaliers-editor-preview.js?v=345','./creation-cavaliers-preview.html','./cavaliers-core-preview.js?v=365','./cavaliers-assistant-preview.js?v=368','./css/navigation-final.css?v=325','./styles.css?v=371','./directory.js?v=225','./hemicycle.js?v=352','./interface.js?v=324','./quiz.js?v=360','./offline.js?v=336','./smart-search.js?v=225','./features.js?v=234'];
+const CODE=['./css/directory-night-contrast.css?v=363','./js/cavalier-vector-pdf.js','./css/shared-cavaliers-base.css','./css/shared-layout.css','./css/shared-dark-controls.css','./css/shared-header.css','./css/shared-theme-toggle.css','./css/shared-night-theme.css','./css/shared-night-update.css','./js/version-display.js','./creation-cavaliers-editor-preview.js?v=345','./creation-cavaliers-preview.html','./cavaliers-core-preview.js?v=365','./cavaliers-assistant-preview.js?v=368','./css/navigation-final.css?v=325','./styles.css?v=371','./directory.js?v=225','./hemicycle.js?v=352','./interface.js?v=324','./quiz.js?v=360','./offline.js?v=372','./smart-search.js?v=225','./features.js?v=234'];
 const OFFLINE=['./cavaliers/index.json','./outils.html','./outils.html?v=252','./outils.js?v=251','./creation-cavaliers.html','./contacts-personnels.html','./creation-cavaliers.html?v=305','./cavaliers-core.js?v=365','./creation-cavaliers-227.js','./cavaliers-assistant-232.js','./','./index.html','./smart-search.js','./features.js','./secretariat-general.html','./commission-europeenne.html','./institutions-agences.html','./assets/presidences-conseil-ue-2026-2030.svg','./presidences-cinema.html','./assets/presidences-conseil-ue-cinema.avif','./commission-members.json','./members.json','./coordinators.json','./changes.json','./hemicycle-seats.json','./hemicycle-str-coordinates.json','./hemicycle-bru-coordinates.json','./committees.json','./photo-assets.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./assets/parlement-logo.png','./assets/greens-logo.svg','./assets/sg-juan-carlos-jimenez-marin.webp','./assets/sg-markus-winkler.webp','./assets/sg-alessandro-chiocchetti-user.webp','./assets/sg-markus-winkler-official.webp'];
 const ESSENTIAL=['./index.html','./home.html','./members.json','./committees.json','./coordinators.json','./changes.json',...CODE];
 // Pages principales préchargées en priorité ; ressources secondaires non bloquantes.
@@ -85,6 +87,21 @@ self.addEventListener('fetch',event=>{
    try{
     const response=await fetch(request);
     if(response.ok||response.type==='opaque')await cache.put(url.href,response.clone());
+    return response;
+   }catch{return Response.error()}
+  })());
+  return;
+ }
+ // Les portraits des autres institutions viennent de plusieurs sites externes.
+ // Leur cache durable permet de les revoir en mode avion après consultation ou téléchargement.
+ if(request.destination==='image'&&INSTITUTION_PHOTO_HOSTS.has(url.hostname)){
+  event.respondWith((async()=>{
+   const cache=await caches.open(MEDIA);
+   const stored=await cache.match(request,{ignoreVary:true});
+   if(stored)return stored;
+   try{
+    const response=await fetch(request);
+    if(response.ok||response.type==='opaque')await cache.put(request,response.clone());
     return response;
    }catch{return Response.error()}
   })());
