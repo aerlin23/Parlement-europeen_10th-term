@@ -315,8 +315,9 @@ test('cavalier Mobile Print : fenêtre claire en mode jour et nuit préservée',
 
 test('thème officiel : iPhone/WebKit et Android peuvent choisir mode jour ou nuit',async({page})=>{
   // Sans ancienne préférence : le bouton doit être présent même sur un nouvel iPhone.
-  await page.addInitScript(()=>{try{localStorage.removeItem('vf-night-theme');localStorage.removeItem('vf-tools-preview-2026');localStorage.removeItem('vf-tools-mobile-preview-2026')}catch(e){}});
   await page.goto('/index.html');
+  await page.evaluate(()=>{localStorage.removeItem('vf-night-theme');localStorage.removeItem('vf-tools-preview-2026');localStorage.removeItem('vf-tools-mobile-preview-2026')});
+  await page.reload();
   const toggle=page.locator('#vfNightToggle');
   await expect(toggle).toBeVisible();
   await expect(page.locator('html')).not.toHaveClass(/vf-night/);
