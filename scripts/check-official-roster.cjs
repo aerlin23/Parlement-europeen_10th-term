@@ -27,10 +27,10 @@ function compare(local,remote){
 async function fetchOfficial(){
  const response=await fetch(URL_OFFICIELLE,{headers:{Accept:'application/ld+json, application/json;q=0.9','User-Agent':'Vademecum-PE-Data-Check/1.0'},signal:AbortSignal.timeout(30000)});
  if(!response.ok)throw Error('HTTP '+response.status);
- const text=await response.text();if(text.length>15000000)throw Error('Official API response too large');
+ const text=await response.text();if(text.length>65000000)throw Error('Official API response too large');
  const payload=JSON.parse(text);
  const entries=rosterEntries(payload);
- if(entries.length<600||entries.length>750)throw Error('Unexpected official schema or count: '+entries.length+'; no changes proposed');
+ if(entries.length<600||entries.length>750)throw Error('Unexpected official schema or count: '+entries.length+'; data keys: '+Object.keys(payload.data||{}).slice(0,8).join(',')+'; no changes proposed');
  return entries;
 }
 async function main(){
