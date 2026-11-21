@@ -760,6 +760,40 @@ body.reading-large header.ep-header #identityTitle{font-size:clamp(26px,6vw,32px
 @media(min-width:901px) and (hover:hover) and (pointer:fine){html.vf-tools-preview .vf-print-icon{display:inline-flex}}
 .vf-cavalier-dialog{width:min(1000px,94vw);height:90vh;padding:12px;border:1px solid #d5e1e8;border-radius:10px}
 .vf-cavalier-dialog::backdrop{background:#132b4799}
+/* v376 : Mobile Print doit rester clair lorsque le Vademecum est en mode jour.
+   Le meta color-scheme "light dark" du document ne doit pas assombrir le dialog natif. */
+html:not(.vf-night) body dialog.vf-cavalier-dialog{
+ color-scheme:light!important;
+ background:#fff!important;
+ color:#223746!important;
+ border-color:#cbdce5!important;
+}
+html:not(.vf-night) body dialog.vf-cavalier-dialog :is(strong,small,a){
+ color:#254b78!important;
+}
+html:not(.vf-night) body dialog.vf-cavalier-dialog .vf-cavalier-bar strong{
+ color:#223746!important;
+}
+html:not(.vf-night) body dialog.vf-cavalier-dialog a{
+ background:#fff!important;
+ color:#254b78!important;
+}
+html:not(.vf-night) body dialog.vf-cavalier-dialog button{
+ background:#fff!important;
+ color:#254b78!important;
+ border-color:#cbdce5!important;
+}
+html:not(.vf-night) body dialog.vf-cavalier-dialog button.vf-mobile-print-send{
+ background:#254b78!important;
+ color:#fff!important;
+ border-color:#254b78!important;
+}
+html:not(.vf-night) body dialog.vf-cavalier-dialog button:focus-visible,
+html:not(.vf-night) body dialog.vf-cavalier-dialog a:focus-visible{
+ outline:3px solid #003399!important;
+ outline-offset:2px;
+}
+
 .vf-cavalier-bar{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .vf-cavalier-bar strong{flex:1}
 .vf-cavalier-dialog iframe{width:100%;height:calc(100% - 56px);border:0}

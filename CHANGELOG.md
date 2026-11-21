@@ -1,5 +1,11 @@
 # Historique des versions
 
+## v376 — fenêtre Mobile Print en mode jour
+
+- Fenêtre d’impression des cavaliers des fiches députés : fond blanc et textes contrastés en mode jour, indépendamment du thème sombre du téléphone (`color-scheme`).
+- Bouton principal bleu, liens et fermeture lisibles ; mode nuit déjà correct conservé.
+- Versions des styles et du script actualisées pour forcer la mise à jour de la PWA.
+
 ## v375 — roue des paramètres et thème des contacts
 
 - Remplacement de l’engrenage des paramètres des Contacts utiles par une roue dentée au trait fin, accessible et dans le même emplacement.

@@ -49,7 +49,7 @@ async function printCavalier(m){
   close.textContent='×';close.setAttribute('aria-label','Fermer');close.style.cssText='font-size:22px;min-width:38px;padding:4px 10px';
   bar.replaceChildren(title,close);
   const panel=document.createElement('div');panel.style.cssText='display:grid;gap:9px;font-size:13px';
-  const send=document.createElement('button');send.type='button';send.disabled=true;send.style.cssText='display:flex;align-items:center;justify-content:center;gap:8px;background:#254b78;color:white;border:0;padding:12px;border-radius:7px;font-weight:600';
+  const send=document.createElement('button');send.type='button';send.className='vf-mobile-print-send';send.disabled=true;send.style.cssText='display:flex;align-items:center;justify-content:center;gap:8px;background:#254b78;color:white;border:0;padding:12px;border-radius:7px;font-weight:600';
   send.innerHTML='<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 9V3h12v6M6 18H3V9h18v9h-3M6 14h12v8H6zM17 12h1"/></svg>Imprimer via Mobile Print';
   const download=document.createElement('a');download.textContent='Télécharger le cavalier (PDF)';download.download=filename;download.href=url.href;download.style.cssText='text-align:center;padding:9px;border:1px solid #cbdce5;border-radius:7px;text-decoration:none;color:#254b78';
   const openPdf=document.createElement('a');openPdf.href=url.href;openPdf.target='_blank';openPdf.rel='noopener';openPdf.textContent='Voir le cavalier (PDF)';openPdf.style.cssText='text-align:center;padding:7px;color:#254b78';
