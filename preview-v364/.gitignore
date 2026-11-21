@@ -1,0 +1,17 @@
+# Documents privés et exports locaux - ne pas publier
+*prive*.zip
+*privé*.zip
+*private*.zip
+*personnel*.zip
+*.local.json
+*.secret.json
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+node_modules/
+playwright-report/
+test-results/
+lighthouse-results/
+reports-local/

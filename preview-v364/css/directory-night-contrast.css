@@ -1,0 +1,83 @@
+/* Annuaire : lisibilité renforcée en mode nuit.
+   Ciblé sur les fiches de députés ; ne modifie pas les couleurs du mode clair. */
+html.vf-night body #directory .card,
+html.vf-night body #substitutesGrid .card {
+  background: #24364c !important;
+  border-color: #536b85 !important;
+}
+html.vf-night body #directory .card .info,
+html.vf-night body #substitutesGrid .card .info {
+  background: transparent !important;
+}
+html.vf-night body #directory .card .name,
+html.vf-night body #substitutesGrid .card .name {
+  color: #f6f9ff !important;
+}
+html.vf-night body :is(#directory,#substitutesGrid) .card :is(.country,.group-label,.committee-heading) {
+  color: #e2edff !important;
+}
+html.vf-night body :is(#directory,#substitutesGrid) .card .committee-box {
+  color: #cdddf1 !important;
+}
+html.vf-night body :is(#directory,#substitutesGrid) .card .committee-tag {
+  background: #354e6b !important;
+  color: #f5f9ff !important;
+  border: 1px solid #587392 !important;
+  font-weight: 750;
+}
+html.vf-night body :is(#directory,#substitutesGrid) .card .hemicycle-seats {
+  color: #e2edff !important;
+  font-size: 11px;
+}
+html.vf-night body :is(#directory,#substitutesGrid) .card .hemicycle-row {
+  color: #e2edff !important;
+  cursor: pointer;
+}
+html.vf-night body :is(#directory,#substitutesGrid) .card .hemicycle-row[data-city="bru"] .hemicycle-symbol {
+  color: #ebce81 !important;
+}
+html.vf-night body :is(#directory,#substitutesGrid) .card .hemicycle-row[data-city="str"] .hemicycle-symbol {
+  color: #b4d0ff !important;
+}
+html.vf-night body :is(#directory,#substitutesGrid) .card .hemicycle-row[data-city="bru"] .hemicycle-number {
+  background: #f5e8bf !important;
+  color: #513c0a !important;
+}
+html.vf-night body :is(#directory,#substitutesGrid) .card .hemicycle-row[data-city="str"] .hemicycle-number {
+  background: #e7effe !important;
+  color: #153968 !important;
+}
+html.vf-night body :is(#directory,#substitutesGrid) .card .badge.coord {
+  background: #eadcf7 !important;
+  color: #4d286c !important;
+}
+html.vf-night body :is(#directory,#substitutesGrid) .card .badge.committee-role {
+  background: #d7f0e5 !important;
+  color: #174c3a !important;
+}
+html.vf-night body :is(#directory,#substitutesGrid) .card .vf-card-actions :is(a,button) {
+  color: #d3e6ff !important;
+  background: #2b415b !important;
+  border-color: #5e7b9b !important;
+}
+html.vf-night body :is(#directory,#substitutesGrid) .card .hemicycle-row:focus-visible,
+html.vf-night body :is(#directory,#substitutesGrid) .card a:focus-visible {
+  outline: 2px solid #ffd45e !important;
+  outline-offset: 3px;
+}
+/* L’icône reste à l'emplacement convenu sur toutes les pages ;
+   son gabarit réduit masque moins les cartes en défilement. */
+html.vf-night body #vfNightToggle {
+  width: 36px !important;
+  height: 36px !important;
+  padding: 7px !important;
+  background: #244364 !important;
+  border-color: #a9c4e4 !important;
+  color: #fff !important;
+  box-shadow: 0 2px 8px #0007 !important;
+  opacity: .94;
+}
+html.vf-night body #vfNightToggle:focus-visible {
+  outline: 2px solid #ffcc00;
+  outline-offset: 3px;
+}
