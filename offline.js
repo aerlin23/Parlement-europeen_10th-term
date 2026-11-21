@@ -23,6 +23,16 @@ async function downloadOfficialOfflineMedia(){
    }
   }catch(error){console.warn('Médias de la Commission indisponibles pour téléchargement',error)}
 
+ // Conserver aussi les portraits externes de « Autres institutions ».
+ // Les URL sont lues dans la page publiée pour rester synchronisées avec les fiches.
+ try{
+  const response=await fetch('./institutions-agences.html',{cache:'no-store'});
+  if(!response.ok)throw Error('HTTP '+response.status);
+  const html=await response.text();
+  const portraits=[...html.matchAll(new RegExp('"photo":"(https?://[^"]+)"','g'))].map(match=>match[1]);
+  urls.push(...portraits);
+ }catch(error){console.warn('Portraits des autres institutions indisponibles au téléchargement',error)}
+
  // Les dépendances documentaires sont préparées sur demande, pas à chaque visite.
  // Le cache partagé persiste lors des changements de version de la PWA.
  const libraries=[

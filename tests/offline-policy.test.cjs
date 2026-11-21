@@ -19,5 +19,7 @@ for(const uri of ['xlsx-0.20.3','pdf-lib@1.17.1','jszip@3.10.1','pdfjs-dist@3.11
 }
 assert.ok(sw.includes("if(saved)return saved"),'Cached document libraries not prioritized');
 assert.ok(offline.includes('if(applying)reloadOnce();else displayUpdate()'),'Unsolicited SW activation can interrupt user work');
+assert.ok(sw.includes('INSTITUTION_PHOTO_HOSTS')&&sw.includes("request.destination==='image'"),'Institution photos are not cached by the service worker');
+assert.ok(offline.includes("fetch('./institutions-agences.html'")&&offline.includes('urls.push(...portraits)'),'Institution portraits are not included in offline media download');
 assert.ok(page.includes('downloadOffline'),'Offline download action missing');
 console.log('PASS: offline core, cache resources, libraries and non-disruptive updates');
