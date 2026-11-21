@@ -18,6 +18,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Python directory contract regression
+        run: python3 -m unittest discover -s tests -p 'test_*.py' -v
       - run: node tests/data-integrity.test.cjs
       - run: node tests/cavaliers-core.test.cjs
       - run: node tests/offline-policy.test.cjs
