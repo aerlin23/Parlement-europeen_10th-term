@@ -87,3 +87,27 @@ test('assistant cavaliers : génération et téléchargement PDF',async({page})=
  expect(pdf?.head).toBe('%PDF-');
  expect(pdf?.size).toBeGreaterThan(200);
 });
+
+test('mode nuit : contraste des fiches de députés et retour au mode clair',async({page})=>{
+ await page.goto('/index.html');
+ await expect.poll(()=>page.locator('#grid > .card').count()).toBeGreaterThan(0);
+ const cssLink=page.locator('link[href*="directory-night-contrast.css"]');
+ await expect(cssLink).toHaveCount(1);
+ const lightColor=await page.locator('#directory .card .country').first().evaluate(el=>getComputedStyle(el).color);
+ await page.evaluate(()=>document.documentElement.classList.add('vf-night'));
+ const readStyle=async selector=>page.locator(selector).first().evaluate(el=>{
+  const style=getComputedStyle(el);return {color:style.color,background:style.backgroundColor};
+ });
+ const country=await readStyle('#directory .card .country');
+ const committee=await readStyle('#directory .card .committee-tag');
+ const seat=await readStyle('#directory .card .hemicycle-row[data-city="bru"]');
+ expect(country.color).toBe('rgb(226, 237, 255)');
+ expect(committee.color).toBe('rgb(245, 249, 255)');
+ expect(committee.background).toBe('rgb(53, 78, 107)');
+ expect(seat.color).toBe('rgb(226, 237, 255)');
+ const cards=page.locator('#directory .card');
+ await expect(cards.first()).toHaveCSS('background-color','rgb(36, 54, 76)');
+ await page.screenshot({path:'test-results/night-directory-'+test.info().project.name+'.png'});
+ await page.evaluate(()=>document.documentElement.classList.remove('vf-night'));
+ await expect(page.locator('#directory .card .country').first()).toHaveCSS('color',lightColor);
+});
