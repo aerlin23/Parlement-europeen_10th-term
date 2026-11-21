@@ -43,7 +43,7 @@ async function printCavalier(m){
  bar.append(title,print,open,close);
  if(mobile){
   const email='mobileprint@europarl.europa.eu', filename='Cavalier - '+m.name.replace(/[\\/:*?"<>|]/g,'-')+'.pdf';
-  dialog.classList.add('vf-mobile-print-dialog');dialog.style.cssText='height:auto;max-height:85dvh;width:min(440px,92vw);padding:16px;overflow:auto;color:#223746';
+  dialog.classList.add('vf-mobile-print-dialog');dialog.id='vfMobilePrintDialog';dialog.style.cssText='height:auto;max-height:85dvh;width:min(440px,92vw);padding:16px;overflow:auto;color:#223746';
   bar.style.cssText='display:flex;align-items:flex-start;gap:10px;margin-bottom:14px';
   title.textContent='Cavalier — '+m.name;title.style.cssText='font-size:16px;line-height:1.35;overflow-wrap:anywhere';
   close.textContent='×';close.setAttribute('aria-label','Fermer');close.style.cssText='font-size:22px;min-width:38px;padding:4px 10px';
