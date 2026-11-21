@@ -1,0 +1,66 @@
+name: Prepare Claude audit pack (v363)
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/claude-audit-pack.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit-package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Assemble curated source bundle (no portraits, PDFs, private libraries or ZIPs)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p audit-pack/source
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+          root=Path('.')
+          target=Path('audit-pack/source')
+          names=[
+            'index.html','sw.js','offline.js','quiz.js','directory.js','hemicycle.js',
+            'interface.js','features.js','smart-search.js','styles.css',
+            'creation-cavaliers.html','creation-cavaliers-preview.html',
+            'cavaliers-core.js','cavaliers-core-preview.js',
+            'cavaliers-assistant-232.js','cavaliers-assistant-preview.js',
+            'creation-cavaliers-227.js','creation-cavaliers-editor-preview.js',
+            'contacts-personnels.html','outils.html','outils.js',
+            'members.json','commission-members.json','coordinators.json',
+            'README.md','CHANGELOG.md','SECURITY.md','PERFORMANCE.md',
+            'manifest.webmanifest','playwright.config.cjs','package.json'
+          ]
+          for directory in ['tests','scripts','css','js','.github/workflows']:
+            p=root/directory
+            if p.exists():
+              for f in p.rglob('*'):
+                if f.is_file() and f.suffix in ('.js','.cjs','.css','.yml','.yaml','.md','.json'):
+                  names.append(f.as_posix())
+          copied=[]
+          for name in sorted(set(names)):
+            src=root/name
+            if src.is_file() and src.suffix.lower() in ('.html','.js','.cjs','.css','.json','.md','.yml','.yaml','.webmanifest'):
+              dst=target/name
+              dst.parent.mkdir(parents=True,exist_ok=True)
+              shutil.copy2(src,dst)
+              copied.append(name)
+          (target/'AUDIT_SOURCE_MANIFEST.txt').write_text('Source: aerlin23/Parlement-europeen_10th-term main\\nCommit: '+__import__('os').environ.get('GITHUB_SHA','unknown')+'\\n\\n'+'\\n'.join(copied)+'\\n',encoding='utf-8')
+          print(f'Prepared {len(copied)} text sources')
+          PY
+          cd audit-pack
+          zip -qr Vademecum-PE-v363-audit-Claude.zip source
+          ls -lh Vademecum-PE-v363-audit-Claude.zip
+      - name: Upload audit bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: Vademecum-PE-v363-audit-Claude
+          path: audit-pack/Vademecum-PE-v363-audit-Claude.zip
+          retention-days: 30
+          if-no-files-found: error
