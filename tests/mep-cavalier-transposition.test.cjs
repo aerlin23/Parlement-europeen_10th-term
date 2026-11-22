@@ -25,3 +25,24 @@ for(const source of ['cavaliers-assistant-preview.js','preview-v364/cavaliers-as
  assert.deepEqual(candidates('R. DE VINCENTE'),[],'Other typo types handled separately');
 }
 console.log('Official cavalier transposition suggestion checks passed');
+
+{
+ const code=fs.readFileSync(path.join(__dirname,'..','cavaliers-assistant-preview.js'),'utf8');
+ const core=require('../cavaliers-core-preview.js');
+ const entries=require('../cavaliers/index.json').entries;
+ const context={core,entries,privateLabel:()=>[],privateFor:()=>[],privateSurnameCandidates:()=>[],privateTypoCandidates:()=>[]};
+ vm.createContext(context);
+ vm.runInContext(code.slice(code.indexOf('const officialKey='),code.indexOf('const thumbnailCache='))+
+  code.slice(code.indexOf('function resolveSource('),code.indexOf("document.addEventListener('vf-cavaliers-ready'",code.indexOf('function resolveSource('))),context);
+ const resolve=vm.runInContext("label=>resolveSource(entries,buildOfficialNames(entries),{getAttribute:()=>label,dataset:{}})",context);
+ const result=resolve('S. NESCI');
+ assert.deepEqual(Array.from(result.candidates,([,member])=>member.name),['Denis NESCI']);
+ const id=result.candidates[0][0];
+ assert.equal(resolve('D. NESCI').id,id);
+ assert.equal(resolve('S. NESC').candidates,undefined);
+ vm.runInContext("decisions.set(officialKey('S. NESCI'),null)",context);
+ assert.equal(resolve('S. NESCI').candidates,undefined);
+ context.confirmed=id;
+ vm.runInContext("decisions.set(officialKey('S. NESCI'),confirmed)",context);
+ assert.equal(resolve('S. NESCI').id,id);
+}

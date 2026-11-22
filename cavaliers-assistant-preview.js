@@ -94,6 +94,16 @@ function possibleMEPs(entries,value){
  const surname=officialKey(words.slice(1).join(' '));
  return Object.entries(entries).filter(([id,m])=>{const parts=m.name.trim().split(/\s+/);const cut=parts.findIndex((w,i)=>i>0&&w===w.toLocaleUpperCase('fr')&&/\p{Lu}/u.test(w));if(cut<=0)return false;const family=parts.slice(cut);if(officialKey(family.join(' '))===surname)return officialKey(parts[0][0])===officialKey(words[0][0]);return family.length>1&&family.some((_,i)=>i<family.length-1&&officialKey(family.slice(0,i+1).join(' '))===surname)&&officialKey(parts[0][0])===officialKey(words[0][0])});
 }
+function sameSurnameCandidates(entries,label){
+ const abbreviated=/^(?:\p{L}\.\s+)+(.+)$/u.exec(label);
+ if(!abbreviated)return [];
+ const surname=officialKey(abbreviated[1]);
+ return Object.entries(entries).filter(([,member])=>{
+  const words=member.name.trim().split(/\s+/u);
+  const cut=words.findIndex((word,i)=>i>0&&word===word.toLocaleUpperCase('fr')&&/\p{Lu}/u.test(word));
+  return cut>0&&officialKey(words.slice(cut).join(' '))===surname;
+ });
+}
 function possibleMEPTranspositions(entries,label){
  const words=String(label||'').trim().split(/\s+/u);
  if(words.length<2||!/^[\p{L}]\.$/u.test(words[0]))return [];
@@ -268,7 +278,11 @@ const libraryBox=element('details');libraryBox.style.cssText='border:1px solid #
 libraryInput.onchange=async()=>{const file=libraryInput.files[0];if(!file)return;try{if(file.size>100*1024*1024)throw Error('Archive trop volumineuse');await activateLibrary(file);await libraryStore(file);libraryStatus.textContent=privateEntries.length+' PDF originaux disponibles sur cet appareil.'}catch(e){libraryStatus.textContent=e.message}finally{libraryInput.value=''}};
 libraryDelete.onclick=async()=>{if(!confirm('Retirer la bibliothèque privée de cet appareil ?'))return;try{await libraryStore(null);privateEntries=[];privateZip=null;privateRevision++;decisions.clear();lastSignature='';libraryStatus.textContent='Aucune bibliothèque locale chargée';showOfficialCavaliers();schedule()}catch(e){libraryStatus.textContent=e.message}};
 libraryStore().then(async blob=>{if(blob){await activateLibrary(blob);libraryStatus.textContent=privateEntries.length+' PDF originaux disponibles sur cet appareil.'}}).catch(e=>{libraryStatus.textContent='Bibliothèque locale indisponible : '+e.message});
-function resolveSource(entries,names,svg){const label=svg.getAttribute('aria-label'),m=resolveMEP(entries,names,label);if(m.id||m.candidates)return m;const pk='private:'+officialKey([...privateLabel(svg),svg.dataset.firstName,svg.dataset.lastName].join('|'));if(decisions.has(pk)){const id=decisions.get(pk);return {private:id?privateEntries.find(e=>e.id===id):null}}const hits=privateFor(svg);if(hits.length===1)return {private:hits[0]};if(hits.length>1)return {privateCandidates:hits,pk};const fallback=privateSurnameCandidates(svg);if(fallback.length===1&&privateSurePerson(svg,fallback[0]))return {private:fallback[0]};if(fallback.length)return {privateCandidates:fallback,pk};const likely=privateTypoCandidates(svg);return likely.length?{privateCandidates:likely,pk}:m}
+function resolveSource(entries,names,svg){const label=svg.getAttribute('aria-label'),m=resolveMEP(entries,names,label);if(m.id||m.candidates)return m;const pk='private:'+officialKey([...privateLabel(svg),svg.dataset.firstName,svg.dataset.lastName].join('|'));if(decisions.has(pk)){const id=decisions.get(pk);return {private:id?privateEntries.find(e=>e.id===id):null}}const hits=privateFor(svg);if(hits.length===1)return {private:hits[0]};if(hits.length>1)return {privateCandidates:hits,pk};const fallback=privateSurnameCandidates(svg);if(fallback.length===1&&privateSurePerson(svg,fallback[0]))return {private:fallback[0]};if(fallback.length)return {privateCandidates:fallback,pk};const likely=privateTypoCandidates(svg);if(likely.length)return {privateCandidates:likely,pk};
+ if(decisions.has(officialKey(label)))return m;
+ const candidates=sameSurnameCandidates(entries,label);
+ return candidates.length?{candidates}:m;
+}
 
 document.addEventListener('vf-cavaliers-ready',()=>{for(const a of document.querySelectorAll('.official-cavalier-link'))a.remove();showOfficialCavaliers()});
 function inspectWorkbook(sheets,members){
