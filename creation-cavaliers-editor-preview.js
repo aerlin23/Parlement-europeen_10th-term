@@ -87,7 +87,22 @@ function groupDuplicateCavaliers(){
   const detail=document.createElement('button');detail.type='button';detail.className='duplicate-expand';detail.textContent=open?'Masquer les exemplaires':'Voir les exemplaires';
   detail.setAttribute('aria-expanded',String(open));
   detail.onclick=()=>{if(open)openDuplicateGroups.delete(key);else openDuplicateGroups.add(key);editor()};
-  controls.append(count,minus,plus,detail);
+  const exportPDF=document.createElement('button');exportPDF.type='button';exportPDF.className='duplicate-export';
+  exportPDF.textContent='PDF du groupe ('+indices.length+')';
+  exportPDF.setAttribute('aria-label','Télécharger le PDF du groupe '+full(rows[indices[0]])+', '+indices.length+' exemplaires');
+  const exportStatus=document.createElement('span');exportStatus.className='duplicate-export-status';exportStatus.setAttribute('role','status');
+  exportPDF.onclick=async()=>{
+   const svgs=indices.map(i=>entries[i]?.querySelector('.preview > svg'));
+   if(svgs.some(svg=>!svg)){exportStatus.textContent='Un cavalier du groupe est invalide.';return}
+   exportPDF.disabled=true;exportStatus.textContent='Préparation du PDF…';
+   try{
+    if(typeof window.vfDownloadCavalierGroup!=='function')throw Error('Moteur PDF indisponible');
+    await window.vfDownloadCavalierGroup(svgs,full(rows[indices[0]]));
+    exportStatus.textContent='PDF du groupe téléchargé ('+svgs.length+' exemplaires).';
+   }catch(error){exportStatus.textContent='Impossible de créer le PDF : '+error.message}
+   finally{exportPDF.disabled=false}
+  };
+  controls.append(count,minus,plus,detail,exportPDF,exportStatus);
   panel.append(controls);
  }
 }
