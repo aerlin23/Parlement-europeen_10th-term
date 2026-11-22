@@ -101,8 +101,8 @@
   button.addEventListener('click',()=>{
    if(!file)return;
    // navigator.share doit être lancé directement lors du clic, pas après une génération asynchrone.
-   if(navigator.canShare?.({files:[file]})){
-    const sharing=navigator.share({files:[file],title:file.name});
+   if(page.navigator.canShare?.({files:[file]})){
+    const sharing=page.navigator.share({files:[file],title:file.name});
     navigator.clipboard?.writeText(ADDRESS).catch(()=>{});
     status.textContent='Envoie le PDF à '+ADDRESS+'.';
     sharing.catch(e=>{if(e.name!=='AbortError')status.textContent='Partage indisponible : utilise le téléchargement du PDF.'});
