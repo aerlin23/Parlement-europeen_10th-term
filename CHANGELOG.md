@@ -1,5 +1,11 @@
 # Historique des versions
 
+## v380 — PDF individuel des groupes de cavaliers
+
+- Ajout du bouton « PDF du groupe » sur les ensembles de cavaliers identiques avec compteur de copies.
+- Génération d'un PDF unique contenant tous les exemplaires du groupe, en réutilisant les PDF originaux (députés et bibliothèque privée) lorsque disponibles.
+- Aucun changement du PDF global, du regroupement ou du nombre d'exemplaires.
+
 ## v379 — Regroupement des cavaliers identiques
 
 - Les exemplaires strictement identiques sont présentés dans une seule carte avec compteur `× N` dans l'assistant Cavaliers.
