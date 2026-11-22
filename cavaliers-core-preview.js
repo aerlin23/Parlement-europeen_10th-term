@@ -54,10 +54,12 @@ function splitFull(value){
 }
 
 function orderSchema(cells){
- const h=cells.map(norm),qty=h.findIndex(x=>/^(qt|qte|quantite|quantity|qty)$/.test(x));
+ const h=cells.map(norm),qty=h.findIndex(x=>/^(?:qt|qte|qty|quantite|quantity|quantities|nb|nbre|nombre|copies|exemplaires|nombre d['’ ]?exemplaires|nombre de cavaliers|nb cavaliers|number of nameplates|no\. of nameplates|nameplates? quantity|quantity of nameplates)\s*:?$/.test(x));
  if(qty<0)return null;
- const label=h.findIndex(x=>/^(name or institution|personne ou institution|person or institution|participant \/ service)/.test(x));
+ const label=h.findIndex(x=>/^(?:names?\s*(?:or|\/|and|&|ou)\s*(?:institutions?|organi[sz]ations?|services?|functions?)|nom\s*(?:ou|\/|et)\s*(?:institution|organisation|service)|personne ou institution|person or institution|participant \/ service|participants?|names?|noms?|nameplates?|text on (?:the )?nameplates?|wording|libelle|intitule|cavaliers?)\b/.test(x));
  const first=h.findIndex(x=>/^prenom\s*\/\s*first name\s*\/\s*institution/.test(x)),last=h.findIndex(x=>/^nom\s*\/\s*last name/.test(x)),title=h.findIndex(x=>/^titre\s*\/\s*title/.test(x));
+ // Liste « Prénom | Nom » avec une quantité : laisser l'import nominatif classique séparer prénom et nom.
+ if(first<0&&h.some(x=>/^(?:prenoms?|first ?names?|given names?|forenames?)$/.test(x)))return null;
  return label>=0||first>=0?{qty,label,first,last,title}:null;
 }
 const genericAliases={'reserved':'RÉSERVÉ','legal service':'SERVICE JURIDIQUE','european commission':'COMMISSION EUROPÉENNE','commission europeenne':'COMMISSION EUROPÉENNE','council of the european union':'CONSEIL DE L’UNION EUROPÉENNE','dg com':'DIRECTION GÉNÉRALE COMMUNICATION','dg comm':'DIRECTION GÉNÉRALE COMMUNICATION','eeas':'SEAE','european court of auditors':'COUR DES COMPTES EUROPÉENNE','european economic and social committee':'COMITÉ ÉCONOMIQUE ET SOCIAL EUROPÉEN'};
@@ -66,32 +68,32 @@ const genericAliases={'reserved':'RÉSERVÉ','legal service':'SERVICE JURIDIQUE'
 const libraryAliases=Object.fromEntries([
  ['PRESSE',['journalists','journalist','journalistes','journaliste','press','presse','media','medias']],
  ['ASSISTANT PARLEMENTAIRE',['apa','apas','assistants of meps','assistants of mep','assistant of meps','assistant of mep','meps assistants','mep assistants','meps\' assistants','accredited parliamentary assistants','accredited assistants','assistants des deputes','assistants parlementaires','assistants parlementaires accredites']],
- ['COMITE DES REGIONS',['cor','committee of regions','committee of the regions','european committee of the regions','comite des regions','comite europeen des regions']],
- ['COMITE ECONOMIQUE ET SOCIAL EUROPEEN',['ecosoc','eesc','cese','economic and social committee']],
- ['COMMISSION EUROPEENNE',['commission','ec']],
- ['CONSEIL DE L’UNION EUROPEENNE',['council','conseil']],
- ['PRESIDENCE EN EXERCICE DU CONSEIL',['presidency']],
+ ['COMITÉ DES RÉGIONS',['cor','committee of regions','committee of the regions','european committee of the regions','comite des regions','comite europeen des regions']],
+ ['COMITÉ ÉCONOMIQUE ET SOCIAL EUROPÉEN',['ecosoc','eesc','cese','economic and social committee']],
+ ['COMMISSION EUROPÉENNE',['commission','ec']],
+ ['CONSEIL DE L’UNION EUROPÉENNE',['council','conseil']],
+ ['PRÉSIDENCE EN EXERCICE DU CONSEIL',['presidency']],
  ['UNITED NATIONS',['un','un women','unwomen','un-women','united nations','onu','onu femmes','nations unies']],
- ['CEPD / EDPS CONTROLEUR EUROPEEN DE LA PROTECTION DES DONNEES',['edps','cepd','european data protection supervisor']],
- ['CABINET DE LA PRESIDENTE',['cabinet of the president','cabinet president','president\'s cabinet','cabinet de la presidente']],
- ['CABINET DU SECRETAIRE GENERAL',['cabinet secgen','cabinet sg','cabinet of the secretary general','cabinet of the secretary-general','cabinet du secretaire general']],
- ['DEPARTEMENT THEMATIQUE',['poldep','policy department','policy departments','departement thematique']],
- ['DIRECTION CCLA COORDINATION LEGISLATIVE ACTIVITES LEGISLATIVES',['coordleg','ccla']],
- ['DIRECTION GENERALE DE LA PRESIDENCE',['pres']],
- ['DIRECTION GENERALE ECONOMIE, TRANSFORMATION ET INDUSTRIE',['ecti','dg ecti']],
- ['DIRECTION GENERALE COHESION, AGRICULTURE ET POLITIQUES SOCIALES',['casp','dg casp']],
- ['DIRECTION GENERALE DROITS DES CITOYENS, JUSTICE ET AFFAIRES INSTITUTIONNELLES',['iust','dg iust']],
- ['DIRECTION GENERALE AFFAIRES BUDGETAIRES',['budg','dg budg']],
- ['DIRECTION GENERALE POLITIQUES EXTERNES',['expo','dg expo']],
- ['DIRECTION GENERALE RECHERCHE PARLEMENTAIRE',['eprs','dg eprs']],
- ['DIRECTION GENERALE PARTENARIATS POUR LA DEMOCRATIE PARLEMENTAIRE',['part','dg part']],
- ['DIRECTION GENERALE PERSONNEL',['pers','dg pers']],
- ['DIRECTION GENERALE INFRASTRUCTURES ET LOGISTIQUE',['inlo','dg inlo']],
- ['DIRECTION GENERALE TRADUCTION ET DU LANGAGE CLAIR',['trad','dg trad']],
- ['DIRECTION GENERALE LOGISTIQUE ET INTERPRETATION POUR LES CONFERENCES',['linc','dg linc']],
- ['DIRECTION GENERALE FINANCES',['fins','dg fins']],
- ['DIRECTION GENERALE TECHNOLOGIES DE L\'INFORMATION ET DE LA CYBERSECURITE',['itec','dg itec']],
- ['DIRECTION GENERALE SECURITE ET PROTECTION',['safe','dg safe']]
+ ['CEPD / EDPS CONTRÔLEUR EUROPÉEN DE LA PROTECTION DES DONNÉES',['edps','cepd','european data protection supervisor']],
+ ['CABINET DE LA PRÉSIDENTE',['cabinet of the president','cabinet president','president\'s cabinet','cabinet de la presidente']],
+ ['CABINET DU SECRÉTAIRE GÉNÉRAL',['cabinet secgen','cabinet sg','cabinet of the secretary general','cabinet of the secretary-general','cabinet du secretaire general']],
+ ['DÉPARTEMENT THÉMATIQUE',['poldep','policy department','policy departments','departement thematique']],
+ ['DIRECTION CCLA COORDINATION LÉGISLATIVE ACTIVITÉS LÉGISLATIVES',['coordleg','ccla']],
+ ['DIRECTION GÉNÉRALE DE LA PRÉSIDENCE',['pres']],
+ ['DIRECTION GÉNÉRALE ÉCONOMIE, TRANSFORMATION ET INDUSTRIE',['ecti','dg ecti']],
+ ['DIRECTION GÉNÉRALE COHÉSION, AGRICULTURE ET POLITIQUES SOCIALES',['casp','dg casp']],
+ ['DIRECTION GÉNÉRALE DROITS DES CITOYENS, JUSTICE ET AFFAIRES INSTITUTIONNELLES',['iust','dg iust']],
+ ['DIRECTION GÉNÉRALE AFFAIRES BUDGÉTAIRES',['budg','dg budg']],
+ ['DIRECTION GÉNÉRALE POLITIQUES EXTERNES',['expo','dg expo']],
+ ['DIRECTION GÉNÉRALE RECHERCHE PARLEMENTAIRE',['eprs','dg eprs']],
+ ['DIRECTION GÉNÉRALE PARTENARIATS POUR LA DÉMOCRATIE PARLEMENTAIRE',['part','dg part']],
+ ['DIRECTION GÉNÉRALE PERSONNEL',['pers','dg pers']],
+ ['DIRECTION GÉNÉRALE INFRASTRUCTURES ET LOGISTIQUE',['inlo','dg inlo']],
+ ['DIRECTION GÉNÉRALE TRADUCTION ET DU LANGAGE CLAIR',['trad','dg trad']],
+ ['DIRECTION GÉNÉRALE LOGISTIQUE ET INTERPRÉTATION POUR LES CONFÉRENCES',['linc','dg linc']],
+ ['DIRECTION GÉNÉRALE FINANCES',['fins','dg fins']],
+ ['DIRECTION GÉNÉRALE TECHNOLOGIES DE L\'INFORMATION ET DE LA CYBERSÉCURITÉ',['itec','dg itec']],
+ ['DIRECTION GÉNÉRALE SÉCURITÉ ET PROTECTION',['safe','dg safe']]
 ].flatMap(([label,keys])=>keys.map(k=>[k,label])));
 function institutionalRow(value){
  const text=strip(value),k=norm(text);
@@ -104,10 +106,11 @@ function institutionalRow(value){
 
 const sectionTitle=/^(?:(?:agenda\s+)?(?:points?|items?)\s*\d+[a-z]?(?:\s*(?:[-,&+\/]|and|et|to|a)\s*\d+[a-z]?)*|all (?:agenda )?(?:points|items)|political groups|groupes politiques|tous les points|pour tous les points|tout l['’]ordre du jour)\s*:?$/;
 const honorificPrefix=/^(?:executive\s+vice[-\s]president|vice[-\s]president(?:e)?|high\s+representative|commissioner|commissaire|president(?:e)?|présidente?|ambassador|ambassadeur|ambassadrice|minister|ministre|mrs?\.?|ms\.?|mme|madame|monsieur|dr\.?|prof\.?|professor|professeur|h\.\s?e\.|his\s+excellency|her\s+excellency|son\s+excellence|sir|dame|hon\.?)\s+(?!(?:of|de|du|des|for|pour|and|et)\b)/iu;
-const collectiveWord=/^(?:creators?|winners?|guests?|trainees?|visitors?|students?|staff|members?|delegations?|delegates?|experts?|participants?|speakers?|observers?|interpreters?|secretariat|committee|commission|council|parliament|union|office|agency|group|groups|unit|service|services|network|foundation|association|institute|university|college|school|lobby|presidency|cabinet|team|press|media|journalists?|assistants?|reserve|reserved|youth|women|men|ngos?|csos?|partners?|embassy|ambassadors?|ministry|government|region|regions|city|europe|european|international|national|world|global|forum|centre|center|platform|board|bank|court|authority|programme|program|project)$/;
+const collectiveWord=/^(?:creators?|winners?|guests?|trainees?|visitors?|students?|staff|members?|delegations?|delegates?|experts?|participants?|speakers?|observers?|interpreters?|secretariat|committee|commission|council|parliament|union|office|agency|group|groups|unit|service|services|network|foundation|association|institute|university|college|school|lobby|presidency|cabinet|team|press|media|journalists?|assistants?|reserve|reserved|youth|women|men|ngos?|csos?|partners?|embassy|ambassadors?|ministry|government|region|regions|city|europe|european|international|national|world|global|forum|centre|center|platform|board|bank|court|authority|programme|program|project|nations|ombudsman|bureau|department|directorate|direction|institution|institutions|body|organisation|organization|federation|confederation|alliance|movement|party|parties|fund|trust|chamber|assembly|senate|congress|mission|representation|police|army|ministry|minister|agencies|offices|committees|councils|people|public|citizens|family|families|children|society|community|coalition|initiative|observatory|watch|support|guard|security|protection|rights|affairs|relations)$/;
 const mapKey=v=>norm(v).replace(/[^\p{L}\p{N}&]/gu,'');
 function inspectOrder(matrix){
- const accepted=[],review=[],ignored=[];let schema=null,headers=0;
+ const accepted=[],review=[],ignored=[],seenPeople=new Map();let schema=null,headers=0;
+ const person=(rec,row,q)=>{const k=mapKey(display(row));if(seenPeople.has(k)){review.push({...rec,row,quantity:q,reason:'Doublon : déjà en ligne '+seenPeople.get(k)+' — à vérifier'});return}seenPeople.set(k,rec.line);accepted.push({...rec,row,quantity:q})};
  for(let i=0;i<matrix.length;i++){
   const cells=matrix[i].map(v=>String(v??'').replace(/[\r\n\t]+/g,' ').trim());
   if(!cells.some(Boolean))continue;
@@ -126,16 +129,18 @@ function inspectOrder(matrix){
   const generic=genericAliases[norm(label)];
   if(generic){add(generic,q,'','',label);continue}
   if(last&&!/^(director|director general)$/i.test(last)){add(initials(label)+' '+last,q);continue}
+  // Intitulé connu de la bibliothèque (« United Nations », « Cabinet SecGen »…) : jamais traité comme un nom de personne.
+  if(!last&&mapKey(institutionalRow(label).slice(1,3).filter(Boolean).join(' '))!==mapKey(label)){add(label,q,'','',label);continue}
   // Cavalier nominatif déjà abrégé (« H. JALLOUL MURO ») : séparer initiale(s) et nom de famille.
-  const person=!last&&label.match(/^((?:\p{Lu}\.\s*(?:\p{Pd}\s*)?){1,3})\s*(\p{L}[\p{L}\p{M}’'.\p{Pd} ]*)$/u);
+  const abbrev=!last&&label.match(/^((?:\p{Lu}\.\s*(?:\p{Pd}\s*)?){1,3})\s*(\p{L}[\p{L}\p{M}’'.\p{Pd} ]*)$/u);
   // Nom complet « Prénom NOM » (« Delphine COLARD ») : prénom en minuscules, nom en capitales.
   const words=label.split(/\s+/u),cut=words.findIndex((w,i)=>i>0&&/\p{Lu}{2}/u.test(w)&&w===w.toLocaleUpperCase('fr'));
-  if(!person&&!last&&cut>0&&words.slice(0,cut).every(w=>/^\p{Lu}[\p{Ll}\p{M}’'\p{Pd}]+$/u.test(w))&&words.slice(cut).every(w=>w===w.toLocaleUpperCase('fr')&&/^[\p{L}\p{M}’'\p{Pd}]+$/u.test(w))&&Number.isInteger(q)&&q>=1&&q<=100){accepted.push({...rec,row:[words.slice(0,cut).join(' '),words.slice(cut).join(' '),'','',''],quantity:q});continue}
-  if(person&&Number.isInteger(q)&&q>=1&&q<=100){accepted.push({...rec,row:[person[1].replace(/\s+/g,' ').trim(),person[2].trim(),'','',''],quantity:q});continue}
+  if(!abbrev&&!last&&cut>0&&words.slice(0,cut).every(w=>/^\p{Lu}[\p{Ll}\p{M}’'\p{Pd}]+$/u.test(w))&&words.slice(cut).every(w=>w===w.toLocaleUpperCase('fr')&&/^[\p{L}\p{M}’'\p{Pd}]+$/u.test(w))&&Number.isInteger(q)&&q>=1&&q<=100){person(rec,[words.slice(0,cut).join(' '),words.slice(cut).join(' '),'','',''],q);continue}
+  if(abbrev&&Number.isInteger(q)&&q>=1&&q<=100){person(rec,[abbrev[1].replace(/\s+/g,' ').trim(),abbrev[2].trim(),'','',''],q);continue}
   if(honorific&&label!==labelRaw&&!/\p{Lu}\./u.test(label)&&label.split(/\s+/u).length<=3&&Number.isInteger(q)&&q>=1&&q<=100){review.push({...rec,row:['',label.toLocaleUpperCase('fr'),'','',''],quantity:q,reason:'Titre retiré ('+honorific[0].trim()+') : nom seul, cavalier de la bibliothèque à confirmer',preselect:true});continue}
   // « Prénom Nom » en minuscules (« Sonja Wollny ») : toujours l'initiale du prénom (« S. WOLLNY »), sauf intitulé collectif.
   {const w=label.split(/\s+/u),cap=x=>/^\p{Lu}[\p{Ll}\p{M}’'\p{Pd}]+$/u.test(x),particle=x=>/^(?:de|da|di|del|della|des|du|van|von|der|den|ter|la|le|dos|das|af|zu)$/u.test(x);
-   if(!last&&w.length>=2&&w.length<=4&&cap(w[0])&&cap(w.at(-1))&&w.slice(1,-1).every(particle)&&!w.some(x=>collectiveWord.test(norm(x)))&&Number.isInteger(q)&&q>=1&&q<=100){accepted.push({...rec,row:[w[0],w.slice(1).join(' '),'','',''],quantity:q});continue}}
+   if(!last&&w.length>=2&&w.length<=4&&cap(w[0])&&cap(w.at(-1))&&w.slice(1,-1).every(particle)&&!w.some(x=>collectiveWord.test(norm(x)))&&Number.isInteger(q)&&q>=1&&q<=100){person(rec,[w[0],w.slice(1).join(' '),'','',''],q);continue}}
   add(label,q,'','',label);
  }
  return {accepted,review,ignored,headers,score:accepted.length*3+review.length,order:true};
