@@ -102,6 +102,7 @@ function institutionalRow(value){
 }
 
 const sectionTitle=/^(?:(?:agenda\s+)?(?:points?|items?)\s*\d+[a-z]?(?:\s*(?:[-,&+\/]|and|et|to|a)\s*\d+[a-z]?)*|all (?:agenda )?(?:points|items)|political groups|groupes politiques|tous les points|pour tous les points|tout l['’]ordre du jour)\s*:?$/;
+const honorificPrefix=/^(?:executive\s+vice[-\s]president|vice[-\s]president(?:e)?|high\s+representative|commissioner|commissaire|president(?:e)?|présidente?|ambassador|ambassadeur|ambassadrice|minister|ministre|mrs?\.?|ms\.?|mme|madame|monsieur|dr\.?|prof\.?|professor|professeur|h\.\s?e\.|his\s+excellency|her\s+excellency|son\s+excellence|sir|dame|hon\.?)\s+(?!(?:of|de|du|des|for|pour|and|et)\b)/iu;
 const mapKey=v=>norm(v).replace(/[^\p{L}\p{N}&]/gu,'');
 function inspectOrder(matrix){
  const accepted=[],review=[],ignored=[];let schema=null,headers=0;
@@ -111,7 +112,7 @@ function inspectOrder(matrix){
   const found=orderSchema(cells);if(found){schema=found;headers++;continue}
   if(!schema)continue;
   // Quantité vide = 1 exemplaire (listes du secrétariat : seules les lignes génériques ont une quantité).
-  const qtyCell=cells[schema.qty],q=qtyCell===''?1:Number(qtyCell),label=strip(cells[schema.label>=0?schema.label:schema.first]),last=schema.last>=0?strip(cells[schema.last]):'',title=schema.title>=0?strip(cells[schema.title]):'';
+  const qtyCell=cells[schema.qty],q=qtyCell===''?1:Number(qtyCell),labelRaw=strip(cells[schema.label>=0?schema.label:schema.first]),honorific=labelRaw.match(honorificPrefix),label=honorific&&labelRaw.slice(honorific[0].length).trim()?labelRaw.slice(honorific[0].length).trim():labelRaw,last=schema.last>=0?strip(cells[schema.last]):'',title=schema.title>=0?strip(cells[schema.title]):'';
   const rec={line:i+1,raw:cells.filter(Boolean).join(' · '),quantity:q};
   if(!label){ignored.push({...rec,reason:'Ligne sans intitulé'});continue}
   if(qtyCell===''&&sectionTitle.test(norm(label))){ignored.push({...rec,reason:'Titre de section'});continue}
@@ -129,6 +130,7 @@ function inspectOrder(matrix){
   const words=label.split(/\s+/u),cut=words.findIndex((w,i)=>i>0&&/\p{Lu}{2}/u.test(w)&&w===w.toLocaleUpperCase('fr'));
   if(!person&&!last&&cut>0&&words.slice(0,cut).every(w=>/^\p{Lu}[\p{Ll}\p{M}’'\p{Pd}]+$/u.test(w))&&words.slice(cut).every(w=>w===w.toLocaleUpperCase('fr')&&/^[\p{L}\p{M}’'\p{Pd}]+$/u.test(w))&&Number.isInteger(q)&&q>=1&&q<=100){accepted.push({...rec,row:[words.slice(0,cut).join(' '),words.slice(cut).join(' '),'','',''],quantity:q});continue}
   if(person&&Number.isInteger(q)&&q>=1&&q<=100){accepted.push({...rec,row:[person[1].replace(/\s+/g,' ').trim(),person[2].trim(),'','',''],quantity:q});continue}
+  if(honorific&&label!==labelRaw&&!/\p{Lu}\./u.test(label)&&label.split(/\s+/u).length<=3&&Number.isInteger(q)&&q>=1&&q<=100){review.push({...rec,row:['',label.toLocaleUpperCase('fr'),'','',''],quantity:q,reason:'Titre retiré ('+honorific[0].trim()+') : nom seul, cavalier de la bibliothèque à confirmer',preselect:true});continue}
   add(label,q,'','',label);
  }
  return {accepted,review,ignored,headers,score:accepted.length*3+review.length,order:true};

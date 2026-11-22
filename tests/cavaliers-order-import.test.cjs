@@ -11,4 +11,8 @@ assert.deepEqual(lib.accepted.map(x=>x.quantity+' '+core.display(x.row)),['1 D. 
 assert.ok(lib.review.every(x=>x.preselect&&x.reason.startsWith('Correspondance bibliothèque')));
 assert.deepEqual(lib.review.map(x=>x.quantity+' '+core.display(x.row)),['15 ASSISTANT PARLEMENTAIRE','5 PRESSE','1 DIRECTION GENERALE SECURITE ET PROTECTION',"1 DIRECTION GENERALE TECHNOLOGIES DE L'INFORMATION ET DE LA CYBERSECURITE",'1 CABINET DE LA PRESIDENTE','1 CABINET DU SECRETAIRE GENERAL','1 DIRECTION CCLA COORDINATION LEGISLATIVE ACTIVITES LEGISLATIVES','1 COMITE DES REGIONS','2 EPP','2 S&D','2 PFE','2 ECR','2 RENEW','2 VERTS/ALE','2 THE LEFT','2 ESN']);
 assert.deepEqual(lib.ignored.map(x=>x.reason),['Titre de section','Consigne']);
+// Titre devant le nom (« Commissioner Šuiça ») : retiré, nom proposé à vérification pour retrouver « D. ŠUICA ».
+const titled=core.inspectSheet([['Quantity','NAME or INSTITUTION'],['','Commissioner Šuiça'],['','President of the Committee of the Regions'],['','Mr. José MARTÍNEZ']],[]);
+assert.deepEqual(titled.review.map(x=>[core.display(x.row),!!x.preselect]),[['ŠUIÇA',true]]);
+assert.deepEqual(titled.accepted.map(x=>core.display(x.row)),['PRESIDENT OF THE COMMITTEE OF THE REGIONS','J. MARTÍNEZ']);
 console.log('Secretariat order import checked');
