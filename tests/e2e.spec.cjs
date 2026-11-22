@@ -351,14 +351,13 @@ test('logo du Parlement : retour interne au Vademecum sans site externe',async({
 
 test('cavaliers identiques : cartes regroupées, quantités et PDF préservés',async({page})=>{
  await page.goto('/creation-cavaliers.html');
- await page.locator('#paste').fill(['Commission|Européenne','Commission|Européenne','Commission|Européenne','Autre|Exemple'].join(String.fromCharCode(10)));
- await page.locator('#import').click();
+ await page.evaluate(()=>window.vfSetCavalierRows([['Commission','Européenne','','',''],['Commission','Européenne','','',''],['Commission','Européenne','','',''],['Autre','Exemple','','','']]));
  await expect(page.locator('#readyCount')).toHaveText('4');
  await expect(page.locator('#entries .compact-entry')).toHaveCount(4);
  await expect(page.locator('#entries .compact-entry:visible')).toHaveCount(2);
  await expect(page.locator('#entries .duplicate-count')).toHaveText('× 3 exemplaires');
  await expect(page.locator('#entries .preview > svg')).toHaveCount(4);
- await page.getByRole('button',{name:'Ajouter un exemplaire de Commission EUROPÉENNE'}).click();
+ await page.getByRole('button',{name:'Ajouter un exemplaire de C. EUROPÉENNE'}).click();
  await expect(page.locator('#readyCount')).toHaveText('5');
  await expect(page.locator('#entries .compact-entry:visible')).toHaveCount(2);
  await expect(page.locator('#entries .duplicate-count')).toHaveText('× 4 exemplaires');
@@ -367,7 +366,7 @@ test('cavaliers identiques : cartes regroupées, quantités et PDF préservés',
  await expect(page.locator('#entries .compact-entry:visible')).toHaveCount(5);
  await page.getByRole('button',{name:'Masquer les exemplaires'}).click();
  await expect(page.locator('#entries .compact-entry:visible')).toHaveCount(2);
- await page.getByRole('button',{name:'Retirer un exemplaire de Commission EUROPÉENNE'}).click();
+ await page.getByRole('button',{name:'Retirer un exemplaire de C. EUROPÉENNE'}).click();
  await expect(page.locator('#readyCount')).toHaveText('4');
  await expect(page.locator('#entries .duplicate-count')).toHaveText('× 3 exemplaires');
  await expect(page.locator('#entries .preview > svg')).toHaveCount(4);
