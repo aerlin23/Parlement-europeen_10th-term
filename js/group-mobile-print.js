@@ -89,22 +89,28 @@
   const button=page.document.getElementById('vfGroupMobilePrint');
   const status=page.document.getElementById('vfGroupPrintStatus');
   if(!button||!status)return;
-  button.addEventListener('click',async()=>{
-   button.disabled=true;status.textContent='Préparation du PDF…';
-   try{
-    const blob=await generateGroupPdf(list,heading,status);
-    const filename='Vademecum - '+heading.replace(/[\\/:*?"<>|]/g,'-')+'.pdf';
-    const file=new File([blob],filename,{type:'application/pdf'});
-    try{await navigator.clipboard?.writeText(ADDRESS)}catch(e){}
-    if(navigator.canShare?.({files:[file]})){
-     status.textContent='Choisis ta messagerie, puis envoie le PDF à '+ADDRESS+'.';
-     try{await navigator.share({files:[file],title:filename});return}catch(e){if(e.name==='AbortError'){status.textContent='Partage annulé.';return}}
-    }
-    const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=filename;document.body.appendChild(link);link.click();link.remove();
-    setTimeout(()=>URL.revokeObjectURL(link.href),60000);
-    status.textContent='PDF téléchargé. Joins-le à un message adressé à '+ADDRESS+'.';
-   }catch(e){status.textContent='Impossible de générer le PDF pour Mobile Print : '+e.message}
-   finally{button.disabled=false}
+  button.disabled=true;status.textContent='Préparation du PDF pour Mobile Print…';
+  let file=null,blobUrl=null;
+  generateGroupPdf(list,heading,status).then(blob=>{
+   const filename='Vademecum - '+heading.replace(/[\\/:*?"<>|]/g,'-')+'.pdf';
+   file=new File([blob],filename,{type:'application/pdf'});
+   blobUrl=URL.createObjectURL(blob);
+   button.disabled=false;
+   status.textContent='PDF prêt. Appuie sur Mobile Print et choisis ta messagerie.';
+  }).catch(e=>{status.textContent='PDF Mobile Print indisponible : '+e.message});
+  button.addEventListener('click',()=>{
+   if(!file)return;
+   // navigator.share doit être lancé directement lors du clic, pas après une génération asynchrone.
+   if(navigator.canShare?.({files:[file]})){
+    const sharing=navigator.share({files:[file],title:file.name});
+    navigator.clipboard?.writeText(ADDRESS).catch(()=>{});
+    status.textContent='Envoie le PDF à '+ADDRESS+'.';
+    sharing.catch(e=>{if(e.name!=='AbortError')status.textContent='Partage indisponible : utilise le téléchargement du PDF.'});
+    return;
+   }
+   const link=document.createElement('a');link.href=blobUrl;link.download=file.name;page.document.body.appendChild(link);link.click();link.remove();
+   status.textContent='PDF téléchargé. Joins-le à un message adressé à '+ADDRESS+'.';
   });
+  page.addEventListener('pagehide',()=>{if(blobUrl)URL.revokeObjectURL(blobUrl)},{once:true});
  };
 })();
