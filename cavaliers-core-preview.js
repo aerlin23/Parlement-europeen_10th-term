@@ -71,6 +71,7 @@ function institutionalRow(value){
  return ['',extra[k]||genericAliases[k]||text.toLocaleUpperCase('fr'),'','',''];
 }
 
+const sectionTitle=/^(?:(?:agenda\s+)?(?:points?|items?)\s*\d+[a-z]?(?:\s*(?:[-,&+\/]|and|et|to|a)\s*\d+[a-z]?)*|all (?:agenda )?(?:points|items)|tous les points|pour tous les points|tout l['’]ordre du jour)\s*:?$/;
 function inspectOrder(matrix){
  const accepted=[],review=[],ignored=[];let schema=null,headers=0;
  for(let i=0;i<matrix.length;i++){
@@ -78,15 +79,20 @@ function inspectOrder(matrix){
   if(!cells.some(Boolean))continue;
   const found=orderSchema(cells);if(found){schema=found;headers++;continue}
   if(!schema)continue;
-  const q=Number(cells[schema.qty]),label=strip(cells[schema.label>=0?schema.label:schema.first]),last=schema.last>=0?strip(cells[schema.last]):'',title=schema.title>=0?strip(cells[schema.title]):'';
+  // Quantité vide = 1 exemplaire (listes du secrétariat : seules les lignes génériques ont une quantité).
+  const qtyCell=cells[schema.qty],q=qtyCell===''?1:Number(qtyCell),label=strip(cells[schema.label>=0?schema.label:schema.first]),last=schema.last>=0?strip(cells[schema.last]):'',title=schema.title>=0?strip(cells[schema.title]):'';
   const rec={line:i+1,raw:cells.filter(Boolean).join(' · '),quantity:q};
   if(!label){ignored.push({...rec,reason:'Ligne sans intitulé'});continue}
+  if(qtyCell===''&&sectionTitle.test(norm(label))){ignored.push({...rec,reason:'Titre de section'});continue}
   const add=(text,count=q,detail='',reason='')=>{const row=institutionalRow(text);if(detail)row[2]=detail;const item={...rec,row,quantity:count};if(!Number.isInteger(count)||count<1||count>100)review.push({...item,quantity:1,reason:'Quantité à vérifier'});else if(reason)review.push({...item,reason});else accepted.push(item)};
   const group=norm(label).match(/set of (\d+) nameplates per each political group/);
   if(group){const n=Number(group[1]);if(q===n*8){for(const g of ['EPP','S&D','PfE','ECR','RENEW','GREENS/EFA','THE LEFT','ESN'])add(g,n)}else add(label,q,'','Consigne de groupe à vérifier');continue}
   const generic=genericAliases[norm(label)];
   if(generic){add(generic);continue}
   if(last&&!/^(director|director general)$/i.test(last)){add(initials(label)+' '+last,q);continue}
+  // Cavalier nominatif déjà abrégé (« H. JALLOUL MURO ») : séparer initiale(s) et nom de famille.
+  const person=!last&&label.match(/^((?:\p{Lu}\.\s*(?:\p{Pd}\s*)?){1,3})\s*(\p{L}[\p{L}\p{M}’'.\p{Pd} ]*)$/u);
+  if(person&&Number.isInteger(q)&&q>=1&&q<=100){accepted.push({...rec,row:[person[1].replace(/\s+/g,' ').trim(),person[2].trim(),'','',''],quantity:q});continue}
   add(label,q);
  }
  return {accepted,review,ignored,headers,score:accepted.length*3+review.length,order:true};
