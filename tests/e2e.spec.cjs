@@ -351,7 +351,7 @@ test('logo du Parlement : retour interne au Vademecum sans site externe',async({
 
 test('cavaliers identiques : cartes regroupées, quantités et PDF préservés',async({page})=>{
  await page.goto('/creation-cavaliers.html');
- await page.locator('#paste').fill('Commission|Européenne\\nCommission|Européenne\\nCommission|Européenne\\nAutre|Exemple');
+ await page.locator('#paste').fill(['Commission|Européenne','Commission|Européenne','Commission|Européenne','Autre|Exemple'].join(String.fromCharCode(10)));
  await page.locator('#import').click();
  await expect(page.locator('#readyCount')).toHaveText('4');
  await expect(page.locator('#entries .compact-entry')).toHaveCount(4);
