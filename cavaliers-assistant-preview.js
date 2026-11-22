@@ -164,7 +164,20 @@ async function assembleOriginals(svgs,filename,gen){
  }
  return {file:new File([await output.save()],filename,{type:'application/pdf'}),originals};
 }
-let officialToken=0;
+// Un groupe de cavaliers utilise exactement le même moteur que le PDF global,
+ // avec sa propre sélection d'exemplaires et sans modifier l'impression générale.
+ window.vfDownloadCavalierGroup=async(svgs,label)=>{
+  if(!Array.isArray(svgs)||!svgs.length||svgs.some(svg=>!svg?.matches?.('.preview > svg')))throw Error('Groupe de cavaliers invalide');
+  const safe=String(label||'Cavaliers').normalize('NFC').replace(/[\\/:*?"<>|\x00-\x1f]/g,' ').replace(/\s+/g,' ').trim().slice(0,65)||'Cavaliers';
+  const filename=safe+' - '+svgs.length+' exemplaires.pdf';
+  const result=await assembleOriginals(svgs,filename,generation);
+  if(!result)throw Error('Liste modifiée pendant la préparation : réessayez');
+  const url=URL.createObjectURL(result.file),link=document.createElement('a');
+  link.href=url;link.download=filename;document.body.append(link);link.click();link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+  return {filename,count:svgs.length,file:result.file};
+ };
+ let officialToken=0;
 
 let privateEntries=[],privateZip=null,privateRevision=0;
 const privateKey=s=>String(s??'').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().replace(/[^\p{L}\p{N}&]/gu,'');

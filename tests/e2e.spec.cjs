@@ -113,7 +113,7 @@ test('mode nuit : contraste des fiches de députés et retour au mode clair',asy
 });
 
 const isolationCases = {
-  official: { path: '/', version: '379', contrast: './css/directory-night-contrast.css?v=374' },
+  official: { path: '/', version: '380', contrast: './css/directory-night-contrast.css?v=374' },
   older: { path: '/preview-v362/', version: '362', contrast: null },
   tester: { path: '/preview-v364/', version: '364', contrast: './css/directory-night-contrast.css?v=364' }
 };
@@ -370,4 +370,32 @@ test('cavaliers identiques : cartes regroupées, quantités et PDF préservés',
  await expect(page.locator('#readyCount')).toHaveText('4');
  await expect(page.locator('#entries .duplicate-count')).toHaveText('× 3 exemplaires');
  await expect(page.locator('#entries .preview > svg')).toHaveCount(4);
+});
+
+test('PDF de groupe : sélection exacte, copies et PDF global inchangé',async({page})=>{
+ await page.goto('/creation-cavaliers.html');
+ await page.evaluate(()=>window.vfSetCavalierRows([
+ ['Commission','Européenne','','',''],['Commission','Européenne','','',''],
+ ['Commission','Européenne','','',''],['Autre','Exemple','','','']
+ ]));
+ await expect(page.locator('#entries .duplicate-count')).toHaveText('× 3 exemplaires');
+ const all=page.locator('#entries .preview > svg');
+ await expect(all).toHaveCount(4);
+ const button=page.locator('#entries .duplicate-export');
+ await expect(button).toHaveCount(1);
+ await expect(button).toHaveText('PDF du groupe (3)');
+ // L'API est celle du bouton, vérification des pages réelles sans déclencher
+ // de deuxième téléchargement depuis un contexte JavaScript.
+ const result=await page.evaluate(async()=>{
+  const svgs=[...document.querySelectorAll('#entries .preview > svg')].slice(0,3);
+  const file=await window.vfDownloadCavalierGroup(svgs,'Commission européenne');
+  const pdf=await PDFLib.PDFDocument.load(await file.file.arrayBuffer());
+  const global=window.vfCavalierPdf?.();
+  return {count:file.count,pages:pdf.getPageCount(),name:file.filename,globalName:global?.name||null};
+ });
+ expect(result.count).toBe(3);
+ expect(result.pages).toBe(3);
+ expect(result.name).toMatch(/Commission européenne - 3 exemplaires.pdf$/);
+ await expect(page.locator('#readyCount')).toHaveText('4');
+ await expect(all).toHaveCount(4);
 });
