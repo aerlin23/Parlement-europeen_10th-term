@@ -89,6 +89,21 @@
   const button=page.document.getElementById('vfGroupMobilePrint');
   const status=page.document.getElementById('vfGroupPrintStatus');
   if(!button||!status)return;
+  const copy=page.document.getElementById('vfGroupCopyAddress');
+  const feedback=page.document.getElementById('vfGroupCopyFeedback');
+  if(copy&&feedback)copy.addEventListener('click',async()=>{
+   try{
+    if(page.navigator.clipboard?.writeText)await page.navigator.clipboard.writeText(ADDRESS);
+    else if(navigator.clipboard?.writeText)await navigator.clipboard.writeText(ADDRESS);
+    else throw Error('clipboard unavailable');
+    feedback.textContent='Adresse copiée';
+   }catch(e){
+    // Sélection manuelle fiable dans les navigateurs intégrés sans accès au presse-papiers.
+    page.prompt('Copie cette adresse Mobile Print :',ADDRESS);
+    feedback.textContent='Sélectionne puis copie l’adresse affichée.';
+   }
+  });
+
   button.disabled=true;status.textContent='Préparation du PDF pour Mobile Print…';
   let file=null,blobUrl=null;
   generateGroupPdf(list,heading,status).then(blob=>{
