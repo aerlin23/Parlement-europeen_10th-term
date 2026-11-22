@@ -189,6 +189,34 @@ function applyGroupTheme(){
  link.removeAttribute('rel');
  for(const a of document.querySelectorAll('.directories a')){const url=new URL(a.href),isGroup=!!theme&&url.searchParams.get('group')===selected,isHome=!theme&&a.textContent.trim()==='Tous les députés';if(isGroup||isHome)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')}
  const mi=$('mobileInstitutions'),ms=$('mobileInstitutionsSummary');if(mi&&ms){mi.open=false;ms.classList.remove('selected');mi.querySelectorAll('[aria-current]').forEach(a=>a.removeAttribute('aria-current'))}
+ // L'action d'en-tête devient l'impression de tout le groupe, sans modifier le partage général.
+ const groupAction=$('vfSharePage');
+ if(groupAction){
+  if(!groupAction.dataset.vfGroupPrintBound){
+   groupAction.dataset.vfGroupPrintBound='1';
+   groupAction.addEventListener('click',event=>{
+    if(!field('group')||!GROUP_THEMES[field('group')])return;
+    event.preventDefault();event.stopImmediatePropagation();
+    const groupName=field('group');
+    const list=members.filter(m=>m.group===groupName).sort((a,b)=>surname(a).localeCompare(surname(b),'fr',{sensitivity:'base'})||a.name.localeCompare(b.name,'fr'));
+    if(!list.length){notify('Aucun député dans ce groupe.');return}
+    const page=window.open('','_blank');
+    if(!page){notify('Autorisez les fenêtres pop-up pour imprimer le groupe.');return}
+    const escapeHtml=value=>String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    const styles=Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(l=>'<link rel="stylesheet" href="'+escapeHtml(l.href)+'">').join('');
+    const cards=list.map(m=>directoryCard(m).outerHTML).join('');
+    const heading=GROUP_THEMES[groupName]?.title||groupName;
+    page.document.open();
+    page.document.write('<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+escapeHtml(heading)+' — Fiches des députés</title>'+styles+'<style>body{background:#fff!important;color:#172333!important;margin:0;padding:18px;font:14px Arial,sans-serif}.print-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;margin-bottom:16px;background:#f1f5fb;border-radius:8px}.print-toolbar button{padding:10px 16px;border:0;border-radius:6px;background:#003399;color:#fff;cursor:pointer}.print-title{margin:0 0 14px;font-size:22px}.print-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.print-grid .card{break-inside:avoid;page-break-inside:avoid;box-shadow:none!important;border:1px solid #cbd5e1!important;background:#fff!important;color:#172333!important}.print-grid .card *{color:#172333}.print-grid .card .vf-card-actions,.print-grid .card .vf-share-icon,.print-grid .card button{display:none!important}@page{size:A4;margin:12mm}@media print{body{padding:0!important}.print-toolbar{display:none!important}.print-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.print-grid{grid-template-columns:1fr}} </style></head><body><div class="print-toolbar"><span>'+escapeHtml(heading)+' · '+list.length+' députés</span><button type="button" onclick="window.print()">Imprimer / Enregistrer en PDF</button></div><h1 class="print-title">'+escapeHtml(heading)+'</h1><main class="print-grid">'+cards+'</main></body></html>');
+    page.document.close();
+   },true);
+  }
+  const printing=!!theme;
+  groupAction.title=printing?'Imprimer toutes les fiches du groupe':'Partager la page';
+  groupAction.setAttribute('aria-label',groupAction.title);
+  if(!groupAction.dataset.vfShareSvg)groupAction.dataset.vfShareSvg=groupAction.innerHTML;
+  groupAction.innerHTML=printing?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H3V9h18v9h-3M6 14h12v8H6zM17 12h1"/></svg>':groupAction.dataset.vfShareSvg;
+ }
  const mobileGroups=$('mobileGroups'),mobileSummary=$('mobileGroupsSummary');if(mobileGroups&&mobileSummary){mobileGroups.classList.toggle('active',!!theme);mobileSummary.textContent=theme?'Groupes · '+selected:'Groupes politiques';mobileGroups.open=false}
 }
 function syncCommissionFunctionMenu(){
