@@ -102,6 +102,7 @@ function institutionalRow(value){
 }
 
 const sectionTitle=/^(?:(?:agenda\s+)?(?:points?|items?)\s*\d+[a-z]?(?:\s*(?:[-,&+\/]|and|et|to|a)\s*\d+[a-z]?)*|all (?:agenda )?(?:points|items)|political groups|groupes politiques|tous les points|pour tous les points|tout l['’]ordre du jour)\s*:?$/;
+const mapKey=v=>norm(v).replace(/[^\p{L}\p{N}&]/gu,'');
 function inspectOrder(matrix){
  const accepted=[],review=[],ignored=[];let schema=null,headers=0;
  for(let i=0;i<matrix.length;i++){
@@ -115,12 +116,12 @@ function inspectOrder(matrix){
   if(!label){ignored.push({...rec,reason:'Ligne sans intitulé'});continue}
   if(qtyCell===''&&sectionTitle.test(norm(label))){ignored.push({...rec,reason:'Titre de section'});continue}
   if(qtyCell===''&&/^(?:please|merci|pls|nb|n\.b\.|note|remarque|attention)\b/.test(norm(label))){ignored.push({...rec,reason:'Consigne'});continue}
-  const add=(text,count=q,detail='',reason='')=>{const row=institutionalRow(text);if(detail)row[2]=detail;const item={...rec,row,quantity:count};if(!Number.isInteger(count)||count<1||count>100)review.push({...item,quantity:1,reason:'Quantité à vérifier'});else if(reason)review.push({...item,reason});else accepted.push(item)};
+  const add=(text,count=q,detail='',reason='',from='')=>{const row=institutionalRow(text);if(detail)row[2]=detail;const item={...rec,row,quantity:count};if(!Number.isInteger(count)||count<1||count>100)review.push({...item,quantity:1,reason:'Quantité à vérifier'});else if(reason)review.push({...item,reason});else if(from&&mapKey(row.slice(1,3).filter(Boolean).join(' '))!==mapKey(from))review.push({...item,reason:'Correspondance bibliothèque : '+from+' → '+row.slice(1,3).filter(Boolean).join(' '),preselect:true});else accepted.push(item)};
   const group=norm(label).match(/set of (\d+) nameplates per each political group/);
-  if(!group&&/^(?:\d+\s+)?(?:nameplates?\s+)?(?:per|for)\s+(?:each\s+)?political\s+groups?$|^par\s+groupe\s+politique$/.test(norm(label))&&Number.isInteger(q)&&q>=1&&q<=12){for(const g of ['EPP','S&D','PfE','ECR','RENEW','GREENS/EFA','THE LEFT','ESN'])add(g,q);continue}
-  if(group){const n=Number(group[1]);if(q===n*8){for(const g of ['EPP','S&D','PfE','ECR','RENEW','GREENS/EFA','THE LEFT','ESN'])add(g,n)}else add(label,q,'','Consigne de groupe à vérifier');continue}
+  if(!group&&/^(?:\d+\s+)?(?:nameplates?\s+)?(?:per|for)\s+(?:each\s+)?political\s+groups?$|^par\s+groupe\s+politique$/.test(norm(label))&&Number.isInteger(q)&&q>=1&&q<=12){for(const g of ['EPP','S&D','PfE','ECR','RENEW','GREENS/EFA','THE LEFT','ESN'])add(g,q,'','',label);continue}
+  if(group){const n=Number(group[1]);if(q===n*8){for(const g of ['EPP','S&D','PfE','ECR','RENEW','GREENS/EFA','THE LEFT','ESN'])add(g,n,'','',label)}else add(label,q,'','Consigne de groupe à vérifier');continue}
   const generic=genericAliases[norm(label)];
-  if(generic){add(generic);continue}
+  if(generic){add(generic,q,'','',label);continue}
   if(last&&!/^(director|director general)$/i.test(last)){add(initials(label)+' '+last,q);continue}
   // Cavalier nominatif déjà abrégé (« H. JALLOUL MURO ») : séparer initiale(s) et nom de famille.
   const person=!last&&label.match(/^((?:\p{Lu}\.\s*(?:\p{Pd}\s*)?){1,3})\s*(\p{L}[\p{L}\p{M}’'.\p{Pd} ]*)$/u);
@@ -128,7 +129,7 @@ function inspectOrder(matrix){
   const words=label.split(/\s+/u),cut=words.findIndex((w,i)=>i>0&&/\p{Lu}{2}/u.test(w)&&w===w.toLocaleUpperCase('fr'));
   if(!person&&!last&&cut>0&&words.slice(0,cut).every(w=>/^\p{Lu}[\p{Ll}\p{M}’'\p{Pd}]+$/u.test(w))&&words.slice(cut).every(w=>w===w.toLocaleUpperCase('fr')&&/^[\p{L}\p{M}’'\p{Pd}]+$/u.test(w))&&Number.isInteger(q)&&q>=1&&q<=100){accepted.push({...rec,row:[words.slice(0,cut).join(' '),words.slice(cut).join(' '),'','',''],quantity:q});continue}
   if(person&&Number.isInteger(q)&&q>=1&&q<=100){accepted.push({...rec,row:[person[1].replace(/\s+/g,' ').trim(),person[2].trim(),'','',''],quantity:q});continue}
-  add(label,q);
+  add(label,q,'','',label);
  }
  return {accepted,review,ignored,headers,score:accepted.length*3+review.length,order:true};
 }
