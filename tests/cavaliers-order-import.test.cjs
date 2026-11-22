@@ -2,7 +2,7 @@ const assert=require('node:assert/strict');const core=require('../cavaliers-core
 // Liste type du secrétariat : quantité vide pour les cavaliers nominatifs, titres « Point n » dans la colonne des noms.
 const sheet=[['LOCATION: JAN 6Q2'],['Quantity','NAME or INSTITUTION','FUNCTION'],['','',''],['','Point 6 ',''],['','H. JALLOUL MURO','MEP (AFET)'],['','R. Tildesley','gender researcher'],['42','Committee of Regions',''],['20','RESERVE','invitees'],['','All points',''],['','Sonja Wollny','Director IUST'],['abc','N. DATTA','']];
 const r=core.inspectSheet(sheet,[]);
-assert.deepEqual(r.accepted.map(x=>[x.quantity,core.display(x.row)]),[[1,'H. JALLOUL MURO'],[1,'R. TILDESLEY'],[20,'RESERVE'],[1,'SONJA WOLLNY']]);
+assert.deepEqual(r.accepted.map(x=>[x.quantity,core.display(x.row)]),[[1,'H. JALLOUL MURO'],[1,'R. TILDESLEY'],[20,'RESERVE'],[1,'S. WOLLNY']]);
 assert.deepEqual(r.ignored.map(x=>x.reason),['Titre de section','Titre de section']);
 assert.deepEqual(r.review.map(x=>[x.quantity,core.display(x.row),!!x.preselect]),[[42,'COMITE DES REGIONS',true],[1,'N. DATTA',false]]);
 // Intitulés anglais → cavaliers de la bibliothèque, proposés à vérification (pré-cochés).
@@ -17,4 +17,7 @@ assert.deepEqual(titled.review.map(x=>[core.display(x.row),!!x.preselect]),[['Š
 assert.deepEqual(titled.accepted.map(x=>core.display(x.row)),['PRESIDENT OF THE COMMITTEE OF THE REGIONS','J. MARTÍNEZ']);
 const un=core.inspectSheet([['Quantity','NAME or INSTITUTION'],['3','UN women']],[]);
 assert.equal(un.review[0].reason,'Correspondance bibliothèque : UN women → UNITED NATIONS');assert.equal(un.review[0].quantity,3);
+// Toujours l'initiale du prénom, sauf pour un intitulé collectif.
+const names=core.inspectSheet([['Quantity','NAME or INSTITUTION'],['','Sonja Wollny'],['','Ursula von der Leyen'],['6','Content Creators'],['5','Charlemagne winners']],[]);
+assert.deepEqual(names.accepted.map(x=>core.display(x.row)),['S. WOLLNY','U. VON DER LEYEN','CONTENT CREATORS','CHARLEMAGNE WINNERS']);
 console.log('Secretariat order import checked');

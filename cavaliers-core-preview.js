@@ -104,6 +104,7 @@ function institutionalRow(value){
 
 const sectionTitle=/^(?:(?:agenda\s+)?(?:points?|items?)\s*\d+[a-z]?(?:\s*(?:[-,&+\/]|and|et|to|a)\s*\d+[a-z]?)*|all (?:agenda )?(?:points|items)|political groups|groupes politiques|tous les points|pour tous les points|tout l['’]ordre du jour)\s*:?$/;
 const honorificPrefix=/^(?:executive\s+vice[-\s]president|vice[-\s]president(?:e)?|high\s+representative|commissioner|commissaire|president(?:e)?|présidente?|ambassador|ambassadeur|ambassadrice|minister|ministre|mrs?\.?|ms\.?|mme|madame|monsieur|dr\.?|prof\.?|professor|professeur|h\.\s?e\.|his\s+excellency|her\s+excellency|son\s+excellence|sir|dame|hon\.?)\s+(?!(?:of|de|du|des|for|pour|and|et)\b)/iu;
+const collectiveWord=/^(?:creators?|winners?|guests?|trainees?|visitors?|students?|staff|members?|delegations?|delegates?|experts?|participants?|speakers?|observers?|interpreters?|secretariat|committee|commission|council|parliament|union|office|agency|group|groups|unit|service|services|network|foundation|association|institute|university|college|school|lobby|presidency|cabinet|team|press|media|journalists?|assistants?|reserve|reserved|youth|women|men|ngos?|csos?|partners?|embassy|ambassadors?|ministry|government|region|regions|city|europe|european|international|national|world|global|forum|centre|center|platform|board|bank|court|authority|programme|program|project)$/;
 const mapKey=v=>norm(v).replace(/[^\p{L}\p{N}&]/gu,'');
 function inspectOrder(matrix){
  const accepted=[],review=[],ignored=[];let schema=null,headers=0;
@@ -132,6 +133,9 @@ function inspectOrder(matrix){
   if(!person&&!last&&cut>0&&words.slice(0,cut).every(w=>/^\p{Lu}[\p{Ll}\p{M}’'\p{Pd}]+$/u.test(w))&&words.slice(cut).every(w=>w===w.toLocaleUpperCase('fr')&&/^[\p{L}\p{M}’'\p{Pd}]+$/u.test(w))&&Number.isInteger(q)&&q>=1&&q<=100){accepted.push({...rec,row:[words.slice(0,cut).join(' '),words.slice(cut).join(' '),'','',''],quantity:q});continue}
   if(person&&Number.isInteger(q)&&q>=1&&q<=100){accepted.push({...rec,row:[person[1].replace(/\s+/g,' ').trim(),person[2].trim(),'','',''],quantity:q});continue}
   if(honorific&&label!==labelRaw&&!/\p{Lu}\./u.test(label)&&label.split(/\s+/u).length<=3&&Number.isInteger(q)&&q>=1&&q<=100){review.push({...rec,row:['',label.toLocaleUpperCase('fr'),'','',''],quantity:q,reason:'Titre retiré ('+honorific[0].trim()+') : nom seul, cavalier de la bibliothèque à confirmer',preselect:true});continue}
+  // « Prénom Nom » en minuscules (« Sonja Wollny ») : toujours l'initiale du prénom (« S. WOLLNY »), sauf intitulé collectif.
+  {const w=label.split(/\s+/u),cap=x=>/^\p{Lu}[\p{Ll}\p{M}’'\p{Pd}]+$/u.test(x),particle=x=>/^(?:de|da|di|del|della|des|du|van|von|der|den|ter|la|le|dos|das|af|zu)$/u.test(x);
+   if(!last&&w.length>=2&&w.length<=4&&cap(w[0])&&cap(w.at(-1))&&w.slice(1,-1).every(particle)&&!w.some(x=>collectiveWord.test(norm(x)))&&Number.isInteger(q)&&q>=1&&q<=100){accepted.push({...rec,row:[w[0],w.slice(1).join(' '),'','',''],quantity:q});continue}}
   add(label,q,'','',label);
  }
  return {accepted,review,ignored,headers,score:accepted.length*3+review.length,order:true};
