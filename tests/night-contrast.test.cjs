@@ -52,7 +52,7 @@ console.log('PASS: Contacts theme structure and dark palette WCAG AA checks');
 // L'import doit rester visible sans annuaire et migrer sous l'engrenage dès le chargement.
 assert.ok(contacts.includes("$('settingsPanel').prepend($('setup'))"),'Loaded contacts import should be accessible only via settings');
 assert.ok(contacts.includes("grid-template-columns:78px minmax(0,1fr)"),'Aligned BRU/STR columns missing');
-assert.ok(sw.includes("const VERSION='pe-pwa-v379'"),'Contacts UI update should refresh offline cache');
+assert.ok(sw.includes("const VERSION='pe-pwa-v380'"),'Contacts UI update should refresh offline cache');
 
 // Contrôles statiques : l'identité des groupes et les commissions ne changent qu'en mode nuit.
 for(const group of ['PPE','S%26D','PfE','ECR','Renew','Verts%2FALE','The%20Left','ESN','NI'])assert.ok(css.includes('group='+group),'Night group color missing: '+group);
@@ -87,5 +87,11 @@ const previewHTML=fs.readFileSync(path.join(root,'creation-cavaliers-preview.htm
 assert.ok(editorSource.includes('function groupDuplicateCavaliers()'),'Identical cavalier grouping missing');
 assert.ok(editorSource.includes('entries[i].hidden=!open'),'Duplicate cards must collapse visually');
 assert.ok(editorSource.includes("groupDuplicateCavaliers();document.dispatchEvent(new Event('vf-cavaliers-ready'))"),'PDF regeneration event missing after grouping');
-assert.ok(previewHTML.includes('creation-cavaliers-editor-preview.js?v=379'),'Editor grouping cache version not updated');
-assert.ok(sw.includes('creation-cavaliers-editor-preview.js?v=379'),'Offline grouping script not cached');
+assert.ok(previewHTML.includes('creation-cavaliers-editor-preview.js?v=380'),'Editor grouping cache version not updated');
+assert.ok(sw.includes('creation-cavaliers-editor-preview.js?v=380'),'Offline grouping script not cached');
+
+const assistantV380=fs.readFileSync(path.join(root,'cavaliers-assistant-preview.js'),'utf8');
+assert.ok(assistantV380.includes('window.vfDownloadCavalierGroup=async'),'Group PDF export API missing');
+assert.ok(editorSource.includes("exportPDF.className='duplicate-export'"),'Group export button missing');
+assert.ok(previewHTML.includes('cavaliers-assistant-preview.js?v=380'),'Group exporter not refreshed');
+assert.ok(sw.includes('./cavaliers-assistant-preview.js?v=380'),'Group exporter not precached');
