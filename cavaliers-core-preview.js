@@ -71,6 +71,7 @@ const libraryAliases=Object.fromEntries([
  ['COMMISSION EUROPEENNE',['commission','ec']],
  ['CONSEIL DE L’UNION EUROPEENNE',['council','conseil']],
  ['PRESIDENCE EN EXERCICE DU CONSEIL',['presidency']],
+ ['UNITED NATIONS',['un','un women','unwomen','un-women','united nations','onu','onu femmes','nations unies']],
  ['CEPD / EDPS CONTROLEUR EUROPEEN DE LA PROTECTION DES DONNEES',['edps','cepd','european data protection supervisor']],
  ['CABINET DE LA PRESIDENTE',['cabinet of the president','cabinet president','president\'s cabinet','cabinet de la presidente']],
  ['CABINET DU SECRETAIRE GENERAL',['cabinet secgen','cabinet sg','cabinet of the secretary general','cabinet of the secretary-general','cabinet du secretaire general']],

@@ -15,4 +15,6 @@ assert.deepEqual(lib.ignored.map(x=>x.reason),['Titre de section','Consigne']);
 const titled=core.inspectSheet([['Quantity','NAME or INSTITUTION'],['','Commissioner Šuiça'],['','President of the Committee of the Regions'],['','Mr. José MARTÍNEZ']],[]);
 assert.deepEqual(titled.review.map(x=>[core.display(x.row),!!x.preselect]),[['ŠUIÇA',true]]);
 assert.deepEqual(titled.accepted.map(x=>core.display(x.row)),['PRESIDENT OF THE COMMITTEE OF THE REGIONS','J. MARTÍNEZ']);
+const un=core.inspectSheet([['Quantity','NAME or INSTITUTION'],['3','UN women']],[]);
+assert.equal(un.review[0].reason,'Correspondance bibliothèque : UN women → UNITED NATIONS');assert.equal(un.review[0].quantity,3);
 console.log('Secretariat order import checked');
