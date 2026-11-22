@@ -225,6 +225,15 @@ function privateSurnameCandidates(svg){
  const last=svg.dataset.lastName||'',key=unorderedNameKey(last);if(key.replace(/\|/g,'').length<4)return [];
  const surname=key.split('|');return privateEntries.filter(e=>[...e.aliases,e.title].some(a=>{const tokens=unorderedNameKey(a).split('|');return surname.every(t=>tokens.includes(t))}));
 }
+// Une seule fiche de la bibliothèque porte ce nom, sous la forme « initiale. NOM fonction » (« A. CHIOCCHETTI SECRETAIRE GENERAL… ») :
+// cavalier reconnu directement, sauf si la fiche indique une autre initiale.
+function privateSurePerson(svg,entry){
+ const fold=v=>String(v??'').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+ const last=fold(svg.dataset.lastName),init=fold(svg.dataset.firstName).charAt(0);if(!last||!init||last.replace(/ /g,'').length<4)return false;
+ const aliases=[...entry.aliases,entry.title].map(a=>fold(a).replace(/^\d+[a-z]?\s+/,''));
+ if(aliases.some(a=>{const m=a.match(/^([a-z]) (.+)$/);return m&&(m[2]===last||m[2].startsWith(last+' '))&&m[1]!==init}))return false;
+ return aliases.some(a=>a===init+' '+last||a.startsWith(init+' '+last+' ')||a===last||a.startsWith(last+' '));
+}
 function privateTypoCandidates(svg){
  const words=value=>String(value??'').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().match(/[\p{L}]+/gu)||[];
  const first=words(svg.dataset.firstName||''),last=words(svg.dataset.lastName||'');
@@ -258,7 +267,7 @@ const libraryBox=element('details');libraryBox.style.cssText='border:1px solid #
 libraryInput.onchange=async()=>{const file=libraryInput.files[0];if(!file)return;try{if(file.size>100*1024*1024)throw Error('Archive trop volumineuse');await activateLibrary(file);await libraryStore(file);libraryStatus.textContent=privateEntries.length+' PDF originaux disponibles sur cet appareil.'}catch(e){libraryStatus.textContent=e.message}finally{libraryInput.value=''}};
 libraryDelete.onclick=async()=>{if(!confirm('Retirer la bibliothèque privée de cet appareil ?'))return;try{await libraryStore(null);privateEntries=[];privateZip=null;privateRevision++;decisions.clear();lastSignature='';libraryStatus.textContent='Aucune bibliothèque locale chargée';showOfficialCavaliers();schedule()}catch(e){libraryStatus.textContent=e.message}};
 libraryStore().then(async blob=>{if(blob){await activateLibrary(blob);libraryStatus.textContent=privateEntries.length+' PDF originaux disponibles sur cet appareil.'}}).catch(e=>{libraryStatus.textContent='Bibliothèque locale indisponible : '+e.message});
-function resolveSource(entries,names,svg){const label=svg.getAttribute('aria-label'),m=resolveMEP(entries,names,label);if(m.id||m.candidates)return m;const pk='private:'+officialKey([...privateLabel(svg),svg.dataset.firstName,svg.dataset.lastName].join('|'));if(decisions.has(pk)){const id=decisions.get(pk);return {private:id?privateEntries.find(e=>e.id===id):null}}const hits=privateFor(svg);if(hits.length===1)return {private:hits[0]};if(hits.length>1)return {privateCandidates:hits,pk};const fallback=privateSurnameCandidates(svg);if(fallback.length)return {privateCandidates:fallback,pk};const likely=privateTypoCandidates(svg);return likely.length?{privateCandidates:likely,pk}:m}
+function resolveSource(entries,names,svg){const label=svg.getAttribute('aria-label'),m=resolveMEP(entries,names,label);if(m.id||m.candidates)return m;const pk='private:'+officialKey([...privateLabel(svg),svg.dataset.firstName,svg.dataset.lastName].join('|'));if(decisions.has(pk)){const id=decisions.get(pk);return {private:id?privateEntries.find(e=>e.id===id):null}}const hits=privateFor(svg);if(hits.length===1)return {private:hits[0]};if(hits.length>1)return {privateCandidates:hits,pk};const fallback=privateSurnameCandidates(svg);if(fallback.length===1&&privateSurePerson(svg,fallback[0]))return {private:fallback[0]};if(fallback.length)return {privateCandidates:fallback,pk};const likely=privateTypoCandidates(svg);return likely.length?{privateCandidates:likely,pk}:m}
 
 document.addEventListener('vf-cavaliers-ready',()=>{for(const a of document.querySelectorAll('.official-cavalier-link'))a.remove();showOfficialCavaliers()});
 function inspectWorkbook(sheets,members){
