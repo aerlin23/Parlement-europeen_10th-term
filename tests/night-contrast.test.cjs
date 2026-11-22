@@ -95,5 +95,5 @@ assert.ok(sw.includes('creation-cavaliers-editor-preview.js?v=380'),'Offline gro
 const assistantV380=fs.readFileSync(path.join(root,'cavaliers-assistant-preview.js'),'utf8');
 assert.ok(assistantV380.includes('window.vfDownloadCavalierGroup=async'),'Group PDF export API missing');
 assert.ok(editorSource.includes("exportPDF.className='duplicate-export'"),'Group export button missing');
-assert.ok(previewHTML.includes('cavaliers-assistant-preview.js?v=395'),'Group exporter not refreshed');
-assert.ok(sw.includes('./cavaliers-assistant-preview.js?v=395'),'Group exporter not precached');
+assert.ok(previewHTML.includes('cavaliers-assistant-preview.js?v=396'),'Group exporter not refreshed');
+assert.ok(sw.includes('./cavaliers-assistant-preview.js?v=396'),'Group exporter not precached');

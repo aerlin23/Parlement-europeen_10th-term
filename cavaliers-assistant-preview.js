@@ -225,14 +225,15 @@ function privateSurnameCandidates(svg){
  const last=svg.dataset.lastName||'',key=unorderedNameKey(last);if(key.replace(/\|/g,'').length<4)return [];
  const surname=key.split('|');return privateEntries.filter(e=>[...e.aliases,e.title].some(a=>{const tokens=unorderedNameKey(a).split('|');return surname.every(t=>tokens.includes(t))}));
 }
-// Une seule fiche de la bibliothèque porte ce nom, sous la forme « initiale. NOM fonction » (« A. CHIOCCHETTI SECRETAIRE GENERAL… ») :
-// cavalier reconnu directement, sauf si la fiche indique une autre initiale.
+// Une fiche nominative peut inclure une fonction après le nom complet.
 function privateSurePerson(svg,entry){
  const fold=v=>String(v??'').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
  const last=fold(svg.dataset.lastName),init=fold(svg.dataset.firstName).charAt(0);if(!last||!init||last.replace(/ /g,'').length<4)return false;
  const aliases=[...entry.aliases,entry.title].map(a=>fold(a).replace(/^\d+[a-z]?\s+/,''));
  if(aliases.some(a=>{const m=a.match(/^([a-z]) (.+)$/);return m&&(m[2]===last||m[2].startsWith(last+' '))&&m[1]!==init}))return false;
- return aliases.some(a=>a===init+' '+last||a.startsWith(init+' '+last+' ')||a===last||a.startsWith(last+' '));
+ const expected=init+' '+last;
+ const role=/^(?:(?:directeur|directrice|director|ambassadeur|ambassadrice|ambassador|commissaire|commissioner)\b|(?:secretaire general(?:e)?|secretary general|chef de cabinet)\b)/;
+ return aliases.some(a=>a===expected||(a.startsWith(expected+' ')&&role.test(a.slice(expected.length+1))));
 }
 function privateTypoCandidates(svg){
  const words=value=>String(value??'').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().match(/[\p{L}]+/gu)||[];
