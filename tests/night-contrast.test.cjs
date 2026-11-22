@@ -85,7 +85,7 @@ assert.ok(sw.includes('./interface.js?v=378'),'Fresh navigation script missing f
 const editorSource=fs.readFileSync(path.join(root,'creation-cavaliers-editor-preview.js'),'utf8');
 const previewHTML=fs.readFileSync(path.join(root,'creation-cavaliers-preview.html'),'utf8');
 assert.ok(editorSource.includes('function groupDuplicateCavaliers()'),'Identical cavalier grouping missing');
-assert.ok(editorSource.includes('entry.hidden=!open'),'Duplicate cards must collapse visually');
+assert.ok(editorSource.includes('entries[i].hidden=!open'),'Duplicate cards must collapse visually');
 assert.ok(editorSource.includes("groupDuplicateCavaliers();document.dispatchEvent(new Event('vf-cavaliers-ready'))"),'PDF regeneration event missing after grouping');
 assert.ok(previewHTML.includes('creation-cavaliers-editor-preview.js?v=379'),'Editor grouping cache version not updated');
 assert.ok(sw.includes('creation-cavaliers-editor-preview.js?v=379'),'Offline grouping script not cached');
