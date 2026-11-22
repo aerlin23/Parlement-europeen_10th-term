@@ -52,7 +52,8 @@ console.log('PASS: Contacts theme structure and dark palette WCAG AA checks');
 // L'import doit rester visible sans annuaire et migrer sous l'engrenage dès le chargement.
 assert.ok(contacts.includes("$('settingsPanel').prepend($('setup'))"),'Loaded contacts import should be accessible only via settings');
 assert.ok(contacts.includes("grid-template-columns:78px minmax(0,1fr)"),'Aligned BRU/STR columns missing');
-assert.ok(sw.includes("const VERSION='pe-pwa-v380'"),'Contacts UI update should refresh offline cache');
+const activePwaVersion=sw.match(/const VERSION='pe-pwa-v(\d+)'/);
+assert.ok(activePwaVersion && Number(activePwaVersion[1])>=380,'Contacts UI update should refresh offline cache');
 
 // Contrôles statiques : l'identité des groupes et les commissions ne changent qu'en mode nuit.
 for(const group of ['PPE','S%26D','PfE','ECR','Renew','Verts%2FALE','The%20Left','ESN','NI'])assert.ok(css.includes('group='+group),'Night group color missing: '+group);
@@ -80,7 +81,8 @@ const interfaceSource=fs.readFileSync(path.join(root,'interface.js'),'utf8');
 assert.ok(interfaceSource.includes("link.href='./index.html'"),'Dynamic logo must always return to Vademecum home');
 assert.ok(!interfaceSource.includes("link.target=theme?'':'_blank'"),'External logo target still restored by interface');
 assert.ok(html.includes('class="ep-logo" href="./index.html"'),'Official logo still links to external site');
-assert.ok(sw.includes('./interface.js?v=378'),'Fresh navigation script missing from offline cache');
+const currentInterfaceVersion=html.match(/<script src="\.\/interface\.js\?v=(\d+)" defer><\/script>/);
+assert.ok(currentInterfaceVersion && sw.includes("'./interface.js?v="+currentInterfaceVersion[1]+"'"),'Navigation script version differs between page and offline cache');
 
 const editorSource=fs.readFileSync(path.join(root,'creation-cavaliers-editor-preview.js'),'utf8');
 const previewHTML=fs.readFileSync(path.join(root,'creation-cavaliers-preview.html'),'utf8');
