@@ -6,3 +6,8 @@ assert.deepEqual(r.accepted.map(x=>[x.quantity,core.display(x.row)]),[[1,'H. JAL
 assert.deepEqual(r.ignored.map(x=>x.reason),['Titre de section','Titre de section']);
 assert.deepEqual(r.review.map(x=>x.reason),['Quantité à vérifier']);
 console.log('Secretariat order import checked');
+// Libellés de la bibliothèque, groupes politiques, consignes et noms complets.
+const lib=core.inspectSheet([['Quantity','NAME or INSTITUTION','FUNCTION'],['15','assistants of MEPs'],['5','journalists '],['1','SAFE'],['1','ITEC'],['1','PERS'],['1','LINC'],['1','CoR'],['','Political groups'],['2','per each political group'],['','Delphine COLARD','HoU'],['','please have cavaliers for all EP MEPs on stand-by']],[]);
+assert.deepEqual(lib.accepted.map(x=>x.quantity+' '+core.display(x.row)),['15 APA','5 PRESSE','1 DG SAFE','1 DG ITEC','1 DG PERS','1 DG LINC','1 COMITÉ DES RÉGIONS','2 EPP','2 S&D','2 PFE','2 ECR','2 RENEW','2 VERTS/ALE','2 THE LEFT','2 ESN','1 D. COLARD']);
+assert.deepEqual(lib.ignored.map(x=>x.reason),['Titre de section','Consigne']);
+console.log('Library labels checked');

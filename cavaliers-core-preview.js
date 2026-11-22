@@ -62,16 +62,23 @@ function orderSchema(cells){
 }
 const genericAliases={'reserved':'RÉSERVÉ','legal service':'SERVICE JURIDIQUE','european commission':'COMMISSION EUROPÉENNE','commission europeenne':'COMMISSION EUROPÉENNE','council of the european union':'CONSEIL DE L’UNION EUROPÉENNE','dg com':'DIRECTION GÉNÉRALE COMMUNICATION','dg comm':'DIRECTION GÉNÉRALE COMMUNICATION','eeas':'SEAE','european court of auditors':'COUR DES COMPTES EUROPÉENNE','european economic and social committee':'COMITÉ ÉCONOMIQUE ET SOCIAL EUROPÉEN'};
 
+// Intitulés des listes du secrétariat → libellés de la bibliothèque de cavaliers.
+const libraryAliases=Object.fromEntries([
+ ['PRESSE',['journalists','journalist','journalistes','journaliste','press','presse','media','medias']],
+ ['APA',['apa','apas','assistants of meps','assistants of mep','assistant of meps','assistant of mep','meps assistants','mep assistants','meps\' assistants','accredited parliamentary assistants','accredited assistants','assistants des deputes','assistants parlementaires accredites']],
+ ['DG SAFE',['safe','dg safe']],['DG ITEC',['itec','dg itec']],['DG PERS',['pers','dg pers']],['DG LINC',['linc','dg linc']],
+ ['COMITÉ DES RÉGIONS',['cor','committee of regions','committee of the regions','european committee of the regions','comite des regions','comite europeen des regions']]
+].flatMap(([label,keys])=>keys.map(k=>[k,label])));
 function institutionalRow(value){
  const text=strip(value),k=norm(text);
  if(/^(?:presidence\s+d['’]\s*ue|presidence\s+de\s+l['’]\s*ue|presidence\s+du\s+conseil|presidence\s+en\s+exercice\s+du\s+conseil|eu presidency|council presidency|[a-z]{2} presidency)$/i.test(k))return ['', 'PRÉSIDENCE EN EXERCICE DU CONSEIL','','',''];
  const sec=k.match(/^(?:([a-z]{3,5})\s+secretariat|secretariat\s+([a-z]{3,5}))$/);
  if(sec)return ['', (sec[1]||sec[2]).toUpperCase(),'SECRETARIAT','',''];
- const extra={'general secretariat council':'CONSEIL DE L’UNION EUROPÉENNE','general secretariat of the council':'CONSEIL DE L’UNION EUROPÉENNE','general secretariat of the council of the european union':'CONSEIL DE L’UNION EUROPÉENNE','council general secretariat':'CONSEIL DE L’UNION EUROPÉENNE','gsc':'CONSEIL DE L’UNION EUROPÉENNE','secrétariat général du conseil':'CONSEIL DE L’UNION EUROPÉENNE','secretariat general du conseil':'CONSEIL DE L’UNION EUROPÉENNE','greens':'VERTS','greens/efa':'VERTS/ALE','verts':'VERTS','the left':'THE LEFT','assistant parlementaire':'ASSISTANT PARLEMENTAIRE','parliamentary assistant':'ASSISTANT PARLEMENTAIRE','pres - dla/directorate for legislative acts':'DIRECTION DES ACTES LÉGISLATIFS','dg pres':'DIRECTION GÉNÉRALE DE LA PRÉSIDENCE','dg presidency':'DIRECTION GÉNÉRALE DE LA PRÉSIDENCE'};
+ const extra={'general secretariat council':'CONSEIL DE L’UNION EUROPÉENNE','general secretariat of the council':'CONSEIL DE L’UNION EUROPÉENNE','general secretariat of the council of the european union':'CONSEIL DE L’UNION EUROPÉENNE','council general secretariat':'CONSEIL DE L’UNION EUROPÉENNE','gsc':'CONSEIL DE L’UNION EUROPÉENNE','secrétariat général du conseil':'CONSEIL DE L’UNION EUROPÉENNE','secretariat general du conseil':'CONSEIL DE L’UNION EUROPÉENNE','greens':'VERTS','greens/efa':'VERTS/ALE','verts':'VERTS','the left':'THE LEFT','assistant parlementaire':'ASSISTANT PARLEMENTAIRE','parliamentary assistant':'ASSISTANT PARLEMENTAIRE','pres - dla/directorate for legislative acts':'DIRECTION DES ACTES LÉGISLATIFS','dg pres':'DIRECTION GÉNÉRALE DE LA PRÉSIDENCE','dg presidency':'DIRECTION GÉNÉRALE DE LA PRÉSIDENCE',...libraryAliases};
  return ['',extra[k]||genericAliases[k]||text.toLocaleUpperCase('fr'),'','',''];
 }
 
-const sectionTitle=/^(?:(?:agenda\s+)?(?:points?|items?)\s*\d+[a-z]?(?:\s*(?:[-,&+\/]|and|et|to|a)\s*\d+[a-z]?)*|all (?:agenda )?(?:points|items)|tous les points|pour tous les points|tout l['’]ordre du jour)\s*:?$/;
+const sectionTitle=/^(?:(?:agenda\s+)?(?:points?|items?)\s*\d+[a-z]?(?:\s*(?:[-,&+\/]|and|et|to|a)\s*\d+[a-z]?)*|all (?:agenda )?(?:points|items)|political groups|groupes politiques|tous les points|pour tous les points|tout l['’]ordre du jour)\s*:?$/;
 function inspectOrder(matrix){
  const accepted=[],review=[],ignored=[];let schema=null,headers=0;
  for(let i=0;i<matrix.length;i++){
@@ -84,14 +91,19 @@ function inspectOrder(matrix){
   const rec={line:i+1,raw:cells.filter(Boolean).join(' · '),quantity:q};
   if(!label){ignored.push({...rec,reason:'Ligne sans intitulé'});continue}
   if(qtyCell===''&&sectionTitle.test(norm(label))){ignored.push({...rec,reason:'Titre de section'});continue}
+  if(qtyCell===''&&/^(?:please|merci|pls|nb|n\.b\.|note|remarque|attention)\b/.test(norm(label))){ignored.push({...rec,reason:'Consigne'});continue}
   const add=(text,count=q,detail='',reason='')=>{const row=institutionalRow(text);if(detail)row[2]=detail;const item={...rec,row,quantity:count};if(!Number.isInteger(count)||count<1||count>100)review.push({...item,quantity:1,reason:'Quantité à vérifier'});else if(reason)review.push({...item,reason});else accepted.push(item)};
   const group=norm(label).match(/set of (\d+) nameplates per each political group/);
+  if(!group&&/^(?:\d+\s+)?(?:nameplates?\s+)?(?:per|for)\s+(?:each\s+)?political\s+groups?$|^par\s+groupe\s+politique$/.test(norm(label))&&Number.isInteger(q)&&q>=1&&q<=12){for(const g of ['EPP','S&D','PfE','ECR','RENEW','GREENS/EFA','THE LEFT','ESN'])add(g,q);continue}
   if(group){const n=Number(group[1]);if(q===n*8){for(const g of ['EPP','S&D','PfE','ECR','RENEW','GREENS/EFA','THE LEFT','ESN'])add(g,n)}else add(label,q,'','Consigne de groupe à vérifier');continue}
   const generic=genericAliases[norm(label)];
   if(generic){add(generic);continue}
   if(last&&!/^(director|director general)$/i.test(last)){add(initials(label)+' '+last,q);continue}
   // Cavalier nominatif déjà abrégé (« H. JALLOUL MURO ») : séparer initiale(s) et nom de famille.
   const person=!last&&label.match(/^((?:\p{Lu}\.\s*(?:\p{Pd}\s*)?){1,3})\s*(\p{L}[\p{L}\p{M}’'.\p{Pd} ]*)$/u);
+  // Nom complet « Prénom NOM » (« Delphine COLARD ») : prénom en minuscules, nom en capitales.
+  const words=label.split(/\s+/u),cut=words.findIndex((w,i)=>i>0&&/\p{Lu}{2}/u.test(w)&&w===w.toLocaleUpperCase('fr'));
+  if(!person&&!last&&cut>0&&words.slice(0,cut).every(w=>/^\p{Lu}[\p{Ll}\p{M}’'\p{Pd}]+$/u.test(w))&&words.slice(cut).every(w=>w===w.toLocaleUpperCase('fr')&&/^[\p{L}\p{M}’'\p{Pd}]+$/u.test(w))&&Number.isInteger(q)&&q>=1&&q<=100){accepted.push({...rec,row:[words.slice(0,cut).join(' '),words.slice(cut).join(' '),'','',''],quantity:q});continue}
   if(person&&Number.isInteger(q)&&q>=1&&q<=100){accepted.push({...rec,row:[person[1].replace(/\s+/g,' ').trim(),person[2].trim(),'','',''],quantity:q});continue}
   add(label,q);
  }
