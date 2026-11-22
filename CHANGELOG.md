@@ -1,5 +1,11 @@
 # Historique des versions
 
+## v379 — Regroupement des cavaliers identiques
+
+- Les exemplaires strictement identiques sont présentés dans une seule carte avec compteur `× N` dans l'assistant Cavaliers.
+- Boutons + et − pour ajuster le nombre de copies, et option pour afficher chaque fiche séparément afin de la modifier.
+- Chaque exemplaire reste conservé dans le document PDF généré et dans le compteur global ; la bibliothèque privée et les PDF originaux ne changent pas.
+
 ## v378 — logo du Parlement : retour à l'accueil
 
 - Suppression de l'ouverture du portail officiel lors du clic sur le logo du Parlement européen.

@@ -55,7 +55,43 @@ function model(r){
  return {texts,positions,sizes,count,warning,nameLines:name.lines.length}
 }
 function svg(r){const m=model(r),s=document.createElementNS(NS,'svg');s.setAttribute('viewBox','0 0 595.276 841.89');s.setAttribute('role','img');s.setAttribute('aria-label',full(r));s.dataset.firstName=cleanName(r[0]);s.dataset.lastName=cleanName(r[1]);for(let side=0;side<2;side++){const g=document.createElementNS(NS,'g');if(side)g.setAttribute('transform','translate(595.276 841.89) rotate(180)');m.texts.forEach((str,i)=>{const t=document.createElementNS(NS,'text');t.setAttribute('x','297.638');t.setAttribute('y',m.positions[i]);t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','central');t.setAttribute('font-family','Arial, sans-serif');t.setAttribute('font-weight','700');t.setAttribute('font-size',m.sizes[i]);t.setAttribute('fill','#000');t.textContent=str;g.append(t)});s.append(g)}return s}
-function refresh(){const list=$('entries');let valid=0,invalid=0;rows.forEach((r,i)=>{const m=model(r),ok=!!cleanName(r[1])&&(r[0]?core.analyze(r.join('|')).accepted.length===1:true)&&!m.warning;const entry=$('entries').children[i];if(entry){entry.querySelector('.preview')?.remove();entry.style.background='';entry.style.border=ok?'':'2px solid #b86b32';entry.title=ok?'':'À corriger : nom manquant ou texte trop long';}if(!ok){invalid++;return}valid++;const box=document.createElement('div');box.className='preview';const p=document.createElement('p');p.textContent=full(r);box.dataset.surname=cleanName(r[1]).toLocaleUpperCase('fr');box.append(svg(r),p);entry.prepend(box)});$('print').disabled=!valid;$('topPrint').disabled=!valid;$('status').textContent=valid+' cavalier(s) prêt(s)'+(invalid?' — '+invalid+' ligne(s) à corriger, exclue(s) de l’impression. Voir les champs encadrés en orange.':'');$('readyCount').textContent=valid;$('fixCount').textContent=invalid;$('importSummary').hidden=!rows.length&&!Number($('rejectedCount').textContent);$('status').textContent='';$('entries').dataset.excluded=String(invalid);document.dispatchEvent(new Event('vf-cavaliers-ready'))}
+// Les exemplaires identiques partagent une carte visuelle, sans supprimer aucune page du PDF.
+const openDuplicateGroups=new Set();
+function cavalierGroupKey(row){
+ return JSON.stringify(row.map(value=>clean(value).replace(/\s+/gu,' ').trim()));
+}
+function duplicateGroups(items){
+ const groups=new Map();
+ items.forEach((row,i)=>{
+  const key=cavalierGroupKey(row);
+  if(!groups.has(key))groups.set(key,[]);
+  groups.get(key).push(i);
+ });
+ return groups;
+}
+function groupDuplicateCavaliers(){
+ const entries=[...$('entries').children],groups=duplicateGroups(rows);
+ entries.forEach(entry=>{entry.hidden=false;entry.querySelector('.duplicate-tools')?.remove()});
+ for(const [key,indices] of groups){
+  if(indices.length<2)continue;
+  const first=entries[indices[0]],panel=first?.querySelector('.preview');
+  if(!first||!panel)continue;
+  const open=openDuplicateGroups.has(key);
+  for(const i of indices.slice(1))entries[i].hidden=!open;
+  const controls=document.createElement('div');controls.className='duplicate-tools';
+  const count=document.createElement('strong');count.className='duplicate-count';count.textContent='× '+indices.length+' exemplaires';
+  const minus=document.createElement('button');minus.type='button';minus.textContent='−';minus.title='Retirer un exemplaire';minus.setAttribute('aria-label','Retirer un exemplaire de '+full(rows[indices[0]]));
+  minus.onclick=()=>{const last=indices.at(-1);lastRemoved={row:rows[last].slice(),index:last};rows.splice(last,1);expanded=-1;editor()};
+  const plus=document.createElement('button');plus.type='button';plus.textContent='+';plus.title='Ajouter un exemplaire';plus.setAttribute('aria-label','Ajouter un exemplaire de '+full(rows[indices[0]]));
+  plus.onclick=()=>{rows.splice(indices.at(-1)+1,0,rows[indices[0]].slice());expanded=-1;editor()};
+  const detail=document.createElement('button');detail.type='button';detail.className='duplicate-expand';detail.textContent=open?'Masquer les exemplaires':'Voir les exemplaires';
+  detail.setAttribute('aria-expanded',String(open));
+  detail.onclick=()=>{if(open)openDuplicateGroups.delete(key);else openDuplicateGroups.add(key);editor()};
+  controls.append(count,minus,plus,detail);
+  panel.append(controls);
+ }
+}
+function refresh(){const list=$('entries');let valid=0,invalid=0;rows.forEach((r,i)=>{const m=model(r),ok=!!cleanName(r[1])&&(r[0]?core.analyze(r.join('|')).accepted.length===1:true)&&!m.warning;const entry=$('entries').children[i];if(entry){entry.querySelector('.preview')?.remove();entry.style.background='';entry.style.border=ok?'':'2px solid #b86b32';entry.title=ok?'':'À corriger : nom manquant ou texte trop long';}if(!ok){invalid++;return}valid++;const box=document.createElement('div');box.className='preview';const p=document.createElement('p');p.textContent=full(r);box.dataset.surname=cleanName(r[1]).toLocaleUpperCase('fr');box.append(svg(r),p);entry.prepend(box)});$('print').disabled=!valid;$('topPrint').disabled=!valid;$('status').textContent=valid+' cavalier(s) prêt(s)'+(invalid?' — '+invalid+' ligne(s) à corriger, exclue(s) de l’impression. Voir les champs encadrés en orange.':'');$('readyCount').textContent=valid;$('fixCount').textContent=invalid;$('importSummary').hidden=!rows.length&&!Number($('rejectedCount').textContent);$('status').textContent='';$('entries').dataset.excluded=String(invalid);groupDuplicateCavaliers();document.dispatchEvent(new Event('vf-cavaliers-ready'))}
 let expanded=-1,lastRemoved=null;
 $('undoRemove').onclick=()=>{if(!lastRemoved)return;rows.splice(Math.min(lastRemoved.index,rows.length),0,lastRemoved.row);lastRemoved=null;expanded=-1;editor()};
 function editor(){

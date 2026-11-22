@@ -113,7 +113,7 @@ test('mode nuit : contraste des fiches de députés et retour au mode clair',asy
 });
 
 const isolationCases = {
-  official: { path: '/', version: '378', contrast: './css/directory-night-contrast.css?v=374' },
+  official: { path: '/', version: '379', contrast: './css/directory-night-contrast.css?v=374' },
   older: { path: '/preview-v362/', version: '362', contrast: null },
   tester: { path: '/preview-v364/', version: '364', contrast: './css/directory-night-contrast.css?v=364' }
 };
@@ -346,4 +346,28 @@ test('logo du Parlement : retour interne au Vademecum sans site externe',async({
  await expect(page).toHaveURL(/\/index\.html$/);
  await expect(logo).toHaveAttribute('href','./index.html');
  await expect(page.locator('#group')).toHaveValue('');
+});
+
+
+test('cavaliers identiques : cartes regroupées, quantités et PDF préservés',async({page})=>{
+ await page.goto('/creation-cavaliers.html');
+ await page.evaluate(()=>window.vfSetCavalierRows([['Commission','Européenne','','',''],['Commission','Européenne','','',''],['Commission','Européenne','','',''],['Autre','Exemple','','','']]));
+ await expect(page.locator('#readyCount')).toHaveText('4');
+ await expect(page.locator('#entries .compact-entry')).toHaveCount(4);
+ await expect(page.locator('#entries .compact-entry:visible')).toHaveCount(2);
+ await expect(page.locator('#entries .duplicate-count')).toHaveText('× 3 exemplaires');
+ await expect(page.locator('#entries .preview > svg')).toHaveCount(4);
+ await page.getByRole('button',{name:'Ajouter un exemplaire de C. EUROPÉENNE'}).click();
+ await expect(page.locator('#readyCount')).toHaveText('5');
+ await expect(page.locator('#entries .compact-entry:visible')).toHaveCount(2);
+ await expect(page.locator('#entries .duplicate-count')).toHaveText('× 4 exemplaires');
+ await expect(page.locator('#entries .preview > svg')).toHaveCount(5);
+ await page.getByRole('button',{name:'Voir les exemplaires'}).click();
+ await expect(page.locator('#entries .compact-entry:visible')).toHaveCount(5);
+ await page.getByRole('button',{name:'Masquer les exemplaires'}).click();
+ await expect(page.locator('#entries .compact-entry:visible')).toHaveCount(2);
+ await page.getByRole('button',{name:'Retirer un exemplaire de C. EUROPÉENNE'}).click();
+ await expect(page.locator('#readyCount')).toHaveText('4');
+ await expect(page.locator('#entries .duplicate-count')).toHaveText('× 3 exemplaires');
+ await expect(page.locator('#entries .preview > svg')).toHaveCount(4);
 });
