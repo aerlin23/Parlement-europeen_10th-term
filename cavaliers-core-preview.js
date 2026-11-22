@@ -65,9 +65,32 @@ const genericAliases={'reserved':'RÉSERVÉ','legal service':'SERVICE JURIDIQUE'
 // Intitulés des listes du secrétariat → libellés de la bibliothèque de cavaliers.
 const libraryAliases=Object.fromEntries([
  ['PRESSE',['journalists','journalist','journalistes','journaliste','press','presse','media','medias']],
- ['APA',['apa','apas','assistants of meps','assistants of mep','assistant of meps','assistant of mep','meps assistants','mep assistants','meps\' assistants','accredited parliamentary assistants','accredited assistants','assistants des deputes','assistants parlementaires accredites']],
- ['DG SAFE',['safe','dg safe']],['DG ITEC',['itec','dg itec']],['DG PERS',['pers','dg pers']],['DG LINC',['linc','dg linc']],
- ['COMITÉ DES RÉGIONS',['cor','committee of regions','committee of the regions','european committee of the regions','comite des regions','comite europeen des regions']]
+ ['ASSISTANT PARLEMENTAIRE',['apa','apas','assistants of meps','assistants of mep','assistant of meps','assistant of mep','meps assistants','mep assistants','meps\' assistants','accredited parliamentary assistants','accredited assistants','assistants des deputes','assistants parlementaires','assistants parlementaires accredites']],
+ ['COMITE DES REGIONS',['cor','committee of regions','committee of the regions','european committee of the regions','comite des regions','comite europeen des regions']],
+ ['COMITE ECONOMIQUE ET SOCIAL EUROPEEN',['ecosoc','eesc','cese','economic and social committee']],
+ ['COMMISSION EUROPEENNE',['commission','ec']],
+ ['CONSEIL DE L’UNION EUROPEENNE',['council','conseil']],
+ ['PRESIDENCE EN EXERCICE DU CONSEIL',['presidency']],
+ ['CEPD / EDPS CONTROLEUR EUROPEEN DE LA PROTECTION DES DONNEES',['edps','cepd','european data protection supervisor']],
+ ['CABINET DE LA PRESIDENTE',['cabinet of the president','cabinet president','president\'s cabinet','cabinet de la presidente']],
+ ['CABINET DU SECRETAIRE GENERAL',['cabinet secgen','cabinet sg','cabinet of the secretary general','cabinet of the secretary-general','cabinet du secretaire general']],
+ ['DEPARTEMENT THEMATIQUE',['poldep','policy department','policy departments','departement thematique']],
+ ['DIRECTION CCLA COORDINATION LEGISLATIVE ACTIVITES LEGISLATIVES',['coordleg','ccla']],
+ ['DIRECTION GENERALE DE LA PRESIDENCE',['pres']],
+ ['DIRECTION GENERALE ECONOMIE, TRANSFORMATION ET INDUSTRIE',['ecti','dg ecti']],
+ ['DIRECTION GENERALE COHESION, AGRICULTURE ET POLITIQUES SOCIALES',['casp','dg casp']],
+ ['DIRECTION GENERALE DROITS DES CITOYENS, JUSTICE ET AFFAIRES INSTITUTIONNELLES',['iust','dg iust']],
+ ['DIRECTION GENERALE AFFAIRES BUDGETAIRES',['budg','dg budg']],
+ ['DIRECTION GENERALE POLITIQUES EXTERNES',['expo','dg expo']],
+ ['DIRECTION GENERALE RECHERCHE PARLEMENTAIRE',['eprs','dg eprs']],
+ ['DIRECTION GENERALE PARTENARIATS POUR LA DEMOCRATIE PARLEMENTAIRE',['part','dg part']],
+ ['DIRECTION GENERALE PERSONNEL',['pers','dg pers']],
+ ['DIRECTION GENERALE INFRASTRUCTURES ET LOGISTIQUE',['inlo','dg inlo']],
+ ['DIRECTION GENERALE TRADUCTION ET DU LANGAGE CLAIR',['trad','dg trad']],
+ ['DIRECTION GENERALE LOGISTIQUE ET INTERPRETATION POUR LES CONFERENCES',['linc','dg linc']],
+ ['DIRECTION GENERALE FINANCES',['fins','dg fins']],
+ ['DIRECTION GENERALE TECHNOLOGIES DE L\'INFORMATION ET DE LA CYBERSECURITE',['itec','dg itec']],
+ ['DIRECTION GENERALE SECURITE ET PROTECTION',['safe','dg safe']]
 ].flatMap(([label,keys])=>keys.map(k=>[k,label])));
 function institutionalRow(value){
  const text=strip(value),k=norm(text);
