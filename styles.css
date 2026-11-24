@@ -861,3 +861,14 @@ html.vf-tools-mobile-preview .vf-tools-tab{display:inline-flex}
 
 /* Réserve de l'espace pendant le chargement pour limiter les déplacements du pied de page. */
 html:not(.vf-members-ready) #grid:empty{min-height:65vh}
+
+.directory-search-field{position:relative;flex:1;min-width:0;display:flex}
+#filters .directory-search-field #search{padding-inline-end:44px}
+.directory-search-field #search::-webkit-search-cancel-button{display:none}
+.directory-search-field #search::-ms-clear{display:none}
+#clearDirectorySearch{position:absolute;inset-block:0;inset-inline-end:0;width:44px;padding:0;border:0;background:transparent;color:inherit;font-size:24px;cursor:pointer}
+.vf-group-print-dialog{width:min(360px,90vw);padding:20px;border:1px solid #b9c9da;border-radius:12px;color:#172333;background:#fff}
+.vf-group-print-dialog::backdrop{background:#101d3980}
+.vf-group-print-dialog form{display:grid;gap:10px}
+.vf-group-print-dialog h2{margin:0 0 4px;font-size:19px}
+.vf-group-print-dialog button{min-height:44px;border:1px solid #b9c9da;border-radius:7px;background:#f1f5fb;color:#003399;cursor:pointer}

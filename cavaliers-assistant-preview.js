@@ -198,6 +198,24 @@ const knownPrivateGroups=[
  ['Pietro Ducci','P. Ducci','Ducci Pietro','Ducci P.','Ducci','DUCCI DIRECTEUR GENERAL POLITIQUES EXTERNES','P. DUCCI DIRECTEUR GENERAL POLITIQUES EXTERNES'],
  ['Raquel de Vicente','R. de Vicente','de Vicente Raquel','de Vicente R.','de Vicente','Vicente Raquel','R. Vicente','DE VICENTE DIRECTRICE','R. DE VICENTE DIRECTRICE']
 ].map(g=>new Set(g.map(privateKey)));
+const politicalGroupAliases=new Map([
+ ['ppe','PPE','EPP'],
+ ['sd','S&D','S & D','S D'],
+ ['pfe','PFE','PfE','Patriotes pour l’Europe','Patriots for Europe'],
+ ['ecr','ECR','CRE'],
+ ['renew','Renew','Renew Europe','RE'],
+ ['greens','Greens','Greens/EFA','Verts/ALE','Verts'],
+ ['left','The Left','GUE/NGL','La Gauche'],
+ ['esn','ESN','ENS','Europe of Sovereign Nations','Europe des nations souveraines'],
+ ['ni','NI','Non-inscrits','Non-attached']
+].flatMap(([group,...aliases])=>aliases.map(alias=>[privateKey(alias),group])));
+function politicalGroupKey(value){
+ const label=String(value??'').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase()
+  .replace(/\.pdf$/,'').replace(/[_–—-]/g,' ')
+  .replace(/^\s*\d{1,3}\s+/, '')
+  .replace(/\b(?:groupe\s+politique|political\s+group)\b/g,' ');
+ return politicalGroupAliases.get(privateKey(label));
+}
 function privateVariants(value){
  const raw=String(value??'').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().replace(/\.(?:pdf)$/i,'').replace(/[_–—-]/g,' ');
  const clean=raw.replace(/\b(?:dg|dir|directeur general|directrice generale|directeur|directrice|director general|director|mr|mme|madame|monsieur)\b/g,' ').replace(/\b(?:expo)\b/g,' ');
@@ -221,6 +239,10 @@ function privateInitialMatch(label,alias){
 }
 function privateMatches(label){
  const k=institutionalKey(label), exact=privateEntries.filter(e=>[...e.aliases,e.title].some(a=>institutionalKey(a)===k));if(exact.length)return exact;
+ const politicalGroup=politicalGroupKey(label);
+ if(politicalGroup){
+  return privateEntries.filter(e=>[...e.aliases,e.title].some(alias=>politicalGroupKey(alias)===politicalGroup));
+ }
  const key=unorderedNameKey(label);if(key.includes('|')){const reordered=privateEntries.filter(e=>[...e.aliases,e.title].some(a=>unorderedNameKey(a)===key));if(reordered.length)return reordered;}
  const group=knownPrivateGroups.find(g=>[...privateVariants(label)].some(v=>g.has(v)));if(group){const known=privateEntries.filter(e=>[...e.aliases,e.title].some(a=>[...privateVariants(a)].some(v=>group.has(v))));if(known.length)return known;}
  return privateEntries.filter(e=>[...e.aliases,e.title].some(a=>privateInitialMatch(label,a)));

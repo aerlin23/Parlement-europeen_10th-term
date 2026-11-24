@@ -85,7 +85,34 @@
   }
   return new Blob([await pdf.save()],{type:'application/pdf'});
  }
- window.vfGroupMobilePrint=function({list,heading,page}){
+ async function generateCavaliersPdf(list,status){
+  const [{PDFDocument},index]=await Promise.all([
+   loadPdfLib(),
+   fetch('./cavaliers/index.json').then(response=>{
+    if(!response.ok)throw Error('Index des cavaliers indisponible');
+    return response.json();
+   })
+  ]);
+  const pdf=await PDFDocument.create();
+  const batchSize=6;
+  for(let start=0;start<list.length;start+=batchSize){
+   status.textContent='Assemblage des cavaliers · '+start+'/'+list.length+'…';
+   const originals=await Promise.all(list.slice(start,start+batchSize).map(async member=>{
+    const id=String(member.id),entry=index.entries?.[id];
+    if(!/^\d+$/.test(id)||entry?.name!==member.name||entry.country!==member.country){
+     throw Error('Cavalier non vérifié pour '+member.name);
+    }
+    const response=await fetch('./cavaliers/'+id+'.pdf');
+    if(!response.ok)throw Error('Cavalier indisponible pour '+member.name);
+    return PDFDocument.load(await response.arrayBuffer());
+   }));
+   for(const original of originals){
+    for(const page of await pdf.copyPages(original,original.getPageIndices()))pdf.addPage(page);
+   }
+  }
+  return new Blob([await pdf.save()],{type:'application/pdf'});
+ }
+ window.vfGroupMobilePrint=function({list,heading,page,cavaliers=false}){
   const button=page.document.getElementById('vfGroupMobilePrint');
   const status=page.document.getElementById('vfGroupPrintStatus');
   if(!button||!status)return;
@@ -106,12 +133,16 @@
 
   button.disabled=true;status.textContent='Préparation du PDF pour Mobile Print…';
   let file=null,blobUrl=null;
-  generateGroupPdf(list,heading,status).then(blob=>{
-   const filename='Vademecum - '+heading.replace(/[\\/:*?"<>|]/g,'-')+'.pdf';
+  const pdf=cavaliers?generateCavaliersPdf(list,status):generateGroupPdf(list,heading,status);
+  pdf.then(blob=>{
+   if(page.closed)return;
+   const filename=(cavaliers?'Cavaliers - ':'Vademecum - ')+heading.replace(/[\\/:*?"<>|]/g,'-')+'.pdf';
    file=new File([blob],filename,{type:'application/pdf'});
    blobUrl=URL.createObjectURL(blob);
+   const open=page.document.getElementById('vfGroupOpenPdf');
+   if(open){open.href=blobUrl;open.hidden=false}
    button.disabled=false;
-   status.textContent='PDF prêt. Appuie sur Mobile Print et choisis ta messagerie.';
+   status.textContent=cavaliers?'PDF prêt · '+list.length+' cavaliers.':'PDF prêt. Appuie sur Mobile Print et choisis ta messagerie.';
   }).catch(e=>{status.textContent='PDF Mobile Print indisponible : '+e.message});
   button.addEventListener('click',()=>{
    if(!file)return;

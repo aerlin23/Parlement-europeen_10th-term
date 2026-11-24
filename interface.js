@@ -96,6 +96,7 @@ function renderCommitteeLeadership(){
  if(relevant.length){panel.append(listing.section);if(historical)listing.section.append(el('p','leader-note','* Nominations de 2024 : maintien en fonction à confirmer.'))}
 }
 function render(){
+ $('clearDirectorySearch').hidden=!field('search');
  syncCommissionFunctionMenu();window.vademecumRefreshCommitteeShare?.();filtered=selectMembers();directoryVisible=0;
  window.updateAlphaFloating?.();
  if(directoryObserver)directoryObserver.disconnect();
@@ -194,26 +195,39 @@ function applyGroupTheme(){
  if(groupAction){
   if(!groupAction.dataset.vfGroupPrintBound){
    groupAction.dataset.vfGroupPrintBound='1';
+   const printDialog=document.createElement('dialog');
+   printDialog.className='vf-group-print-dialog';
+   printDialog.setAttribute('aria-labelledby','vfGroupPrintHeading');
+   printDialog.innerHTML='<form method="dialog"><h2 id="vfGroupPrintHeading">Imprimer le groupe</h2><button value="cavaliers">Imprimer les cavaliers</button><button value="vademecum">Imprimer le Vademecum</button><button value="cancel">Annuler</button></form>';
+   document.body.append(printDialog);
    groupAction.addEventListener('click',event=>{
-    if(!field('group')||!GROUP_THEMES[field('group')])return;
+    if(!GROUP_THEMES[field('group')])return;
     event.preventDefault();event.stopImmediatePropagation();
+    printDialog.showModal();
+   },true);
+   printDialog.querySelector('form').addEventListener('submit',event=>{
+    const mode=event.submitter?.value;
+    if(!mode||mode==='cancel')return;
+    event.preventDefault();
+    printDialog.close();
     const groupName=field('group');
     const list=members.filter(m=>m.group===groupName).sort((a,b)=>surname(a).localeCompare(surname(b),'fr',{sensitivity:'base'})||a.name.localeCompare(b.name,'fr'));
-    if(!list.length){notify('Aucun député dans ce groupe.');return}
+    if(!list.length){window.alert('Aucun député dans ce groupe.');return}
     const page=window.open('','_blank');
-    if(!page){notify('Autorisez les fenêtres pop-up pour imprimer le groupe.');return}
+    if(!page){window.alert('Autorisez les fenêtres pop-up pour imprimer le groupe.');return}
     const escapeHtml=value=>String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
     const styles=Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(l=>'<link rel="stylesheet" href="'+escapeHtml(l.href)+'">').join('');
-    const cards=list.map(m=>directoryCard(m).outerHTML).join('');
+    const cavaliers=mode==='cavaliers';
+    const cards=cavaliers?'':list.map(m=>directoryCard(m).outerHTML).join('');
     const heading=GROUP_THEMES[groupName]?.title||groupName;
     page.document.open();
-    page.document.write('<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+escapeHtml(heading)+' — Fiches des députés</title>'+styles+'<style>body{background:#fff!important;color:#172333!important;margin:0;padding:18px;font:14px Arial,sans-serif}.print-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:12px;margin-bottom:16px;background:#f1f5fb;border-radius:8px}.print-toolbar button{padding:10px 16px;border:0;border-radius:6px;background:#003399;color:#fff;cursor:pointer}.vf-mobile-address{flex-basis:100%;font-size:14px;line-height:1.5}.print-toolbar .vf-mobile-address button{display:inline;min-height:32px;padding:4px 7px;background:transparent;color:#003399;text-decoration:underline;text-underline-offset:3px;font:inherit;font-weight:600;overflow-wrap:anywhere}.vf-mobile-address small{display:block;color:#235b31;font-weight:600}.print-title{margin:0 0 14px;font-size:22px}.print-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.print-grid .card{break-inside:avoid;page-break-inside:avoid;box-shadow:none!important;border:1px solid #cbd5e1!important;background:#fff!important;color:#172333!important}.print-grid .card *{color:#172333}.print-grid .card .vf-card-actions,.print-grid .card .vf-share-icon,.print-grid .card button{display:none!important}@page{size:A4;margin:12mm}@media print{body{padding:0!important}.print-toolbar{display:none!important}.print-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.print-grid{grid-template-columns:1fr}} </style></head><body><div class="print-toolbar"><span>'+escapeHtml(heading)+' · '+list.length+' députés</span><button type="button" onclick="window.print()">Imprimer / Enregistrer en PDF</button><button type="button" id="vfGroupMobilePrint">Imprimer via Mobile Print</button><div class="vf-mobile-address">Envoie le PDF à <button type="button" id="vfGroupCopyAddress" title="Copier l’adresse Mobile Print" aria-label="Copier l’adresse Mobile Print">mobileprint@europarl.europa.eu <span aria-hidden="true">▢</span></button><small id="vfGroupCopyFeedback" role="status" aria-live="polite"></small></div><small id="vfGroupPrintStatus" role="status" style="flex-basis:100%;line-height:1.4"></small></div><h1 class="print-title">'+escapeHtml(heading)+'</h1><main class="print-grid">'+cards+'</main></body></html>');
+    page.document.write('<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+escapeHtml(heading)+(cavaliers?' — Cavaliers':' — Fiches des députés')+'</title>'+styles+'<style>body{background:#fff!important;color:#172333!important;margin:0;padding:18px;font:14px Arial,sans-serif}.print-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:12px;margin-bottom:16px;background:#f1f5fb;border-radius:8px}.print-toolbar button{padding:10px 16px;border:0;border-radius:6px;background:#003399;color:#fff;cursor:pointer}.vf-mobile-address{flex-basis:100%;font-size:14px;line-height:1.5}.print-toolbar .vf-mobile-address button{display:inline;min-height:32px;padding:4px 7px;background:transparent;color:#003399;text-decoration:underline;text-underline-offset:3px;font:inherit;font-weight:600;overflow-wrap:anywhere}.vf-mobile-address small{display:block;color:#235b31;font-weight:600}.print-title{margin:0 0 14px;font-size:22px}.print-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.print-grid .card{break-inside:avoid;page-break-inside:avoid;box-shadow:none!important;border:1px solid #cbd5e1!important;background:#fff!important;color:#172333!important}.print-grid .card *{color:#172333}.print-grid .card .vf-card-actions,.print-grid .card .vf-share-icon,.print-grid .card button{display:none!important}@page{size:A4;margin:12mm}@media print{body{padding:0!important}.print-toolbar{display:none!important}.print-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.print-grid{grid-template-columns:1fr}} .print-toolbar [hidden]{display:none}</style></head><body><div class="print-toolbar"><span>'+escapeHtml(heading)+' · '+list.length+' députés</span>'+ (cavaliers?'<a id="vfGroupOpenPdf" target="_blank" rel="noopener" hidden>Ouvrir et imprimer le PDF</a>':'<button type="button" onclick="window.print()">Imprimer / Enregistrer en PDF</button>')+'<button type="button" id="vfGroupMobilePrint">Imprimer via Mobile Print</button><div class="vf-mobile-address">Envoie le PDF à <button type="button" id="vfGroupCopyAddress" title="Copier l’adresse Mobile Print" aria-label="Copier l’adresse Mobile Print">mobileprint@europarl.europa.eu <span aria-hidden="true">▢</span></button><small id="vfGroupCopyFeedback" role="status" aria-live="polite"></small></div><small id="vfGroupPrintStatus" role="status" style="flex-basis:100%;line-height:1.4"></small></div><h1 class="print-title">'+escapeHtml(heading)+'</h1><main class="print-grid">'+cards+'</main></body></html>');
     page.document.close();
-    window.vfGroupMobilePrint?.({list,heading,page});
-   },true);
+    window.vfGroupMobilePrint?.({list,heading,page,cavaliers});
+   });
   }
   const printing=!!theme;
-  groupAction.title=printing?'Imprimer toutes les fiches du groupe':'Partager la page';
+  groupAction.title=printing?'Imprimer le groupe':'Partager la page';
   groupAction.setAttribute('aria-label',groupAction.title);
   if(!groupAction.dataset.vfShareSvg)groupAction.dataset.vfShareSvg=groupAction.innerHTML;
   groupAction.innerHTML=printing?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H3V9h18v9h-3M6 14h12v8H6zM17 12h1"/></svg>':groupAction.dataset.vfShareSvg;
@@ -236,6 +250,12 @@ function syncCommissionFunctionMenu(){
  const leadership=select.querySelector('option[value="groupleadership"]');if(leadership)leadership.textContent='Présidence et vice-présidences du groupe';
 }
 function changeFilters(){syncCommissionFunctionMenu();if(session)endSession(true);$('studyIntro').hidden=false;$('studyEnd').hidden=true;applyGroupTheme();render()}
+$('clearDirectorySearch').addEventListener('click',()=>{
+ const input=$('search');
+ input.value='';
+ input.focus();
+ input.dispatchEvent(new Event('input',{bubbles:true}));
+});
 for(const id of ['search','gender','country','function','assignment','kind','sort'])if($(id))$(id).addEventListener(id==='search'?'input':'change',changeFilters);
 $('committee').addEventListener('change',()=>{$('function').value='';$('sort').value=$('committee').value||$('group').value?'role':'name';changeFilters()});
 $('group').addEventListener('change',()=>{$('function').value='';$('sort').value=$('group').value||$('committee').value?'role':'name';changeFilters()});
