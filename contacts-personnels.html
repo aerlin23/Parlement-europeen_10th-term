@@ -163,12 +163,13 @@ async function extractPdf(file){
    if(row.y>=.63&&row.y<=.835){
      const read=(lo,hi)=>row.items.filter(i=>i.x>=lo&&i.x<hi).map(i=>i.s).join(' ').trim();
      const t=read(.415,1);
-     const mobile=t.match(/\b0\d{3}\s*\d{2}\s*\d{2}\s*\d{2}\b/);
+     // Portable belge (0477 02 57 33) ou étranger (0034 609 60 51 48, +33 6 12 34 56 78), éventuellement « (privé) ».
+     const mobile=t.match(/(?:\+|\b00)\d{2,3}(?:\s*\d{1,4}){2,5}\b|\b0\d{3}\s*\d{2}\s*\d{2}\s*\d{2}\b/);
      const rest=mobile?t.replace(mobile[0],' '):t;
      const nums=rest.match(/\b[3467]\d{4}\b/g)||[];
      if(/secr[ée]tariat de l/i.test(t)){if(nums.length)add('Secrétariat','Secrétariat de l’unité',nums.join('/'),'');}
      else if(nums.length&&!/extension/i.test(t)){
-       const surname=read(.415,.553).replace(/stagiaires\s+schumann/i,'').trim();const given=read(.553,.697).trim();const name=[given,surname].filter(Boolean).join(' ');
+       const surname=read(.415,.553).replace(/stagiaires\s+schumann/i,'').trim();const given=read(.553,.697).replace(/(?:\+|\b00)\d{2,3}(?:\s*\d{1,4}){2,5}\b|\b0\d{3}\s*\d{2}\s*\d{2}\s*\d{2}\b/g,' ').replace(/\(\s*priv[ée]\s*\)/gi,' ').replace(/\s+/g,' ').trim();const name=[given,surname].filter(Boolean).join(' ');
        if(name&&/[a-zÀ-ÿ]/i.test(name)){add('Secrétariat',name,nums.join('/'),mobile?mobile[0]:'');count++}
      }
    }
