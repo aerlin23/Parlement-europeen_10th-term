@@ -28,8 +28,9 @@ console.log('PASS: CSS is night-scoped, precached and palette passes WCAG AA tex
 
 // Régression de thème sur la page Contacts utiles.
 const contacts=fs.readFileSync(path.join(root,'contacts-personnels.html'),'utf8');
-assert.ok(contacts.includes('<html lang="fr">'),'Contacts starts in light mode');
-assert.ok(!contacts.includes('<html lang="fr" class="vf-night">'),'Contacts forces dark theme');
+const contactsHtmlTag=(contacts.match(/<html\b[^>]*>/)||[''])[0];
+assert.ok(/\blang="fr"/.test(contactsHtmlTag),'Contacts starts in light mode');
+assert.ok(!/\bvf-night\b/.test(contactsHtmlTag),'Contacts forces dark theme');
 assert.ok(contacts.includes("key='vf-night-theme'"),'Shared theme storage missing');
 assert.ok(contacts.includes("classList.toggle('vf-night',dark)"),'Toggle missing');
 assert.ok(contacts.includes("b.id='vfNightToggle'"),'Floating theme button missing');
@@ -71,7 +72,8 @@ assert.ok(stylesV376.includes('html:not(.vf-night) body dialog.vf-cavalier-dialo
 assert.ok(stylesV376.includes('color-scheme:light!important'),'Native dark dialog not overridden in light mode');
 assert.ok(stylesV376.includes('button.vf-mobile-print-send'),'Primary print button override missing');
 assert.ok(featuresV376.includes("send.className='vf-mobile-print-send'"),'Print button selector missing');
-assert.ok(sw.includes('./styles.css?v=376')&&sw.includes('./features.js?v=376'),'Updated styles and scripts not cached');
+{const indexHtml=fs.readFileSync(path.join(root,'index.html'),'utf8');const used=[...new Set(indexHtml.match(/(?:styles\.css|features\.js)\?v=\d+/g)||[])];
+assert.ok(used.length===2&&used.every(u=>sw.includes('./'+u)),'Updated styles and scripts not cached');}
 
 // Le thème de l'annuaire officiel ne dépend plus des anciennes clés preview.
 assert.ok(!html.includes("if(!personal&&!root.matches('.vf-tools-preview,.vf-tools-mobile-preview'))return"),'Night toggle is still restricted to preview installations');
@@ -95,5 +97,6 @@ assert.ok(sw.includes('creation-cavaliers-editor-preview.js?v=380'),'Offline gro
 const assistantV380=fs.readFileSync(path.join(root,'cavaliers-assistant-preview.js'),'utf8');
 assert.ok(assistantV380.includes('window.vfDownloadCavalierGroup=async'),'Group PDF export API missing');
 assert.ok(editorSource.includes("exportPDF.className='duplicate-export'"),'Group export button missing');
-assert.ok(previewHTML.includes('cavaliers-assistant-preview.js?v=397'),'Group exporter not refreshed');
-assert.ok(sw.includes('./cavaliers-assistant-preview.js?v=397'),'Group exporter not precached');
+{const exporter=(previewHTML.match(/cavaliers-assistant-preview\.js\?v=(\d+)/)||[])[1];
+assert.ok(exporter&&Number(exporter)>=397,'Group exporter not refreshed');
+assert.ok(sw.includes('./cavaliers-assistant-preview.js?v='+exporter),'Group exporter not precached');}

@@ -172,7 +172,10 @@ async function extractPdf(file){
        if(name&&/[a-zÀ-ÿ]/i.test(name)){add('Secrétariat',name,nums.join('/'),mobile?mobile[0]:'');count++}
      }
    }
-   if(left){const m=left.match(/^(.+?)\s+((?:0?\d{3})\s+\d{2}\s+\d{2}\s+\d{2})(.*)$/);if(m){const name=m[1].trim(),tail=m[3],priv=/priv[ée]/i.test(left);const short=tail.match(/\b\d{5}\b(?:\s*\/\s*\d{5}\b)?/);add('Unité',name.replace(/\s*\(priv[ée]\)\s*/ig,'').trim(),short?short[0]:'',(m[2].replace(/\s/g,'').length===9?'0':'')+m[2]);count++}}
+   if(left){const m=left.match(/^(.+?)\s+((?:0?\d{3})\s+\d{2}\s+\d{2}\s+\d{2})(.*)$/);if(m){const name=m[1].trim(),tail=m[3],priv=/priv[ée]/i.test(left);const short=tail.match(/\b\d{5}\b(?:\s*\/\s*\d{5}\b)?/);add('Unité',name.replace(/\s*\(priv[ée]\)\s*/ig,'').trim(),short?short[0]:'',(m[2].replace(/\s/g,'').length===9?'0':'')+m[2]);count++}else{
+     // Collègue sans portable (« SIKIER Mustafa ») : NOM en capitales + prénom, éventuellement suivi du numéro abrégé ou de TBC.
+     const n=left.match(/^(\p{Lu}[\p{Lu}'’\- ]*\p{Lu})\s+(\p{Lu}[\p{Ll}'’\-]+(?:[\s-]\p{Lu}[\p{Ll}'’\-]+)*)(?:\s+(\d{5}(?:\s*\/\s*\d{5})?(?:\s*\(STR\))?|TBC))?$/u);
+     if(n){add('Unité',n[1].trim()+' '+n[2].trim(),n[3]&&n[3]!=='TBC'?n[3]:'','');count++}}}
    if(row.y>=.63&&row.y<=.835)continue;
    // Four independent columns, with state for labels spanning multiple lines.
    const band=(lo,hi)=>row.items.filter(i=>i.x>=lo&&i.x<hi).map(i=>i.s).join(' ').trim();
