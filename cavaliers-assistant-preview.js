@@ -344,5 +344,9 @@ async function load(file){if(!file)return;decisions.clear();const token=++loadTo
  inspectWorkbook(sheets,members);$('status').textContent='Sélectionnez et vérifiez la feuille à importer.';
  }catch(e){if(token===loadToken)$('status').textContent=e.message}}
 $('clear').addEventListener('click',()=>{loadToken++;decisions.clear();preparedRows=null;preparedText='';excelPanel.hidden=true;excelPanel.replaceChildren()});
-$('excelFile').onchange=e=>load(e.target.files[0]);const zone=$('dropZone');zone.ondragover=e=>e.preventDefault();zone.ondrop=e=>{e.preventDefault();load(e.dataTransfer.files[0])};
+$('excelFile').onchange=e=>load(e.target.files[0]);const zone=$('dropZone');zone.ondragover=e=>{e.preventDefault();if(e.dataTransfer)e.dataTransfer.dropEffect='copy'};zone.ondrop=e=>{e.preventDefault();const dt=e.dataTransfer;if(!dt)return;if(dt.files&&dt.files.length){load(dt.files[0]);return}
+ // Texte glissé depuis Word, Outlook ou une page web : ajouté à la liste de l'encadré vert, une ligne par paragraphe.
+ let text=dt.getData('text/plain');if(!text.trim()){const html=dt.getData('text/html');if(html){const doc=new DOMParser().parseFromString(html,'text/html');doc.querySelectorAll('br').forEach(n=>n.replaceWith('\n'));doc.querySelectorAll('p,li,div,tr,h1,h2,h3,h4,h5,h6').forEach(n=>n.append('\n'));doc.querySelectorAll('td,th').forEach(n=>n.append('\t'));text=doc.body?.textContent||''}}
+ text=text.replace(/\r\n?/g,'\n').replace(/\u00a0/g,' ').split('\n').map(l=>l.replace(/\t+$/,'').trimEnd()).filter(l=>l.trim()).join('\n');if(!text)return;
+ const area=$('paste'),current=area.value.replace(/\s+$/,'');area.value=(current?current+'\n':'')+text;area.dispatchEvent(new Event('input',{bubbles:true}));area.focus();$('status').textContent=text.split('\n').length+' ligne(s) ajoutée(s) à la liste.'};
 })();
