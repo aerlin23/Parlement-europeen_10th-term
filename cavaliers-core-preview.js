@@ -7,8 +7,10 @@ function cleanName(s){return strip(s).replace(/[\/\\]+/gu,' ').replace(/(^|\s)[\
 const name=/^\p{L}[\p{L}\p{M}’'.\p{Pd}]*(?:\s+\p{L}[\p{L}\p{M}’'.\p{Pd}]*)*$/u;
 function initials(s){return cleanName(s).split(/\s+/u).filter(Boolean).map(w=>w.split(/\p{Pd}+/u).map(x=>{const c=x.match(/\p{L}/u)?.[0];return c?c.toLocaleUpperCase('fr')+'.':''}).filter(Boolean).join(' ')).filter(Boolean).join(' ')}
 function display(r){if(!r[0]&&r[1])return strip(r[1]).toLocaleUpperCase('fr');return [initials(r[0]),cleanName(r[1]).toLocaleUpperCase('fr')].filter(Boolean).join(' ')}
-function parse(line){const cells=line.split(line.includes('\t')?'\t':'|');if(cells.length>1)return [cleanName(cells[0]),cleanName(cells[1]),...cells.slice(2,5).map(strip)].concat(['','','']).slice(0,5);const words=cleanName(line).split(' ');return [words.shift()||'',words.join(' '),'','','']}
-function analyze(text){const accepted=[],rejected=[],seen=new Set();for(const raw of String(text).split(/\r?\n/u)){if(!raw.trim())continue;const cells=raw.split(raw.includes('\t')?'\t':'|');const n=norm(strip(raw)),r=parse(raw);let reason='',recover=false;const par=/^\s*[(（].*[)）]\s*$/u.test(raw);const candidate=r;
+// Puces et numéros de liste collés depuis Word/Outlook (« • », « - », « 1. », « a) ») : ignorés en début de ligne.
+const unbullet=s=>String(s??'').replace(/^\s*(?:[•·◦▪▫‣⁃●○■□►▶➢➤✓✔*]+|\d{1,3}[.)](?!\d)|[a-z][)]|[\p{Pd}]+(?=\s))\s*/u,'');
+function parse(line){line=unbullet(line);const cells=line.split(line.includes('\t')?'\t':'|');if(cells.length>1)return [cleanName(cells[0]),cleanName(cells[1]),...cells.slice(2,5).map(strip)].concat(['','','']).slice(0,5);const words=cleanName(line).split(' ');return [words.shift()||'',words.join(' '),'','','']}
+function analyze(text){const accepted=[],rejected=[],seen=new Set();for(const raw of String(text).split(/\r?\n/u).map(unbullet)){if(!raw.trim())continue;const cells=raw.split(raw.includes('\t')?'\t':'|');const n=norm(strip(raw)),r=parse(raw);let reason='',recover=false;const par=/^\s*[(（].*[)）]\s*$/u.test(raw);const candidate=r;
 if(header(cells)||/^(prenom|first name)\s+(nom|surname|last name)/u.test(n)){reason='En-tête'}
 else if(/^(?:pause|dejeuner|lunch|agenda|participants?|delegation|total|a confirmer|tbc|absent|excuse|coffee break|meeting|reunion|fin de reunion)(?:\s|$)/u.test(n)||/\d{1,2}[:h]\d{2}/u.test(strip(raw))||!/[\p{L}]/u.test(raw)){reason='Commentaire / horaire'}
 else if(par||!strip(raw)){reason='Commentaire entre parenthèses';recover=false}
@@ -182,7 +184,7 @@ function inspectSheet(matrix,members=[]){
 
 
 function quantityPrefix(value){
- const s=strip(value);
+ const s=strip(unbullet(value));
  const m=s.match(/^(\d{1,3})\s*(?:[x×]\s*|\s+)(?=\p{L})(.+)$/iu);
  if(!m||Number(m[1])<1||Number(m[1])>100)return {value:s,quantity:1,explicit:false};
  return {value:m[2].trim(),quantity:Number(m[1]),explicit:/^\d+\s*[x×]/i.test(s)};

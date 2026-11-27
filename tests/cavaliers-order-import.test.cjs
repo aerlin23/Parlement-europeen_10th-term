@@ -26,4 +26,7 @@ assert.deepEqual(shown(fr.accepted),['4 PRESSE','1 DELVAUX']);
 // « Quantité | Prénom | Nom » : import nominatif classique (prénom et nom séparés).
 const classic=core.inspectSheet([['Quantité','Prénom','Nom'],['1','Anna','Kowalska']],[]);
 assert.ok(!classic.order);assert.deepEqual(classic.accepted[0].row.slice(0,2),['Anna','Kowalska']);
+// Puces et numéros de liste collés dans l'encadré vert : ignorés, le prénom vient après.
+for(const [line,expected] of [['•\tJosé Gutiérrez','J. GUTIÉRREZ'],['•\tKristian Johansson Kalzén','K. JOHANSSON KALZÉN'],['- Anna Kowalska','A. KOWALSKA'],['1. Jean-Pierre DUPONT','J. P. DUPONT']]){const x=core.analyze(line);assert.equal(x.accepted.length,1,line);assert.equal(core.display(x.accepted[0]),expected)}
+assert.deepEqual(core.quantityPrefix('• 2 x PRESSE'),{value:'PRESSE',quantity:2,explicit:true});
 console.log('Secretariat order import checked');
